@@ -1,2 +1,2 @@
 # MyPets
-Repositorio de código para MyPets
+Repositorio de código para MyPets - App
