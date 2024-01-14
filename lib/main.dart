@@ -1,70 +1,162 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyPets App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+void main() => runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
       ),
-      home: const MyHomePage(title: 'MyPets'),
     );
-  }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              stops: [0.0, 1.0],
+              colors: [
+                Color.fromRGBO(18, 69, 140, 1.0),
+                Color.fromRGBO(110, 130, 158, 1.0),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 300,
+                width: 350,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('android/assets/images/Logo3.png'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              Stack(
+                children: [
+                  Container(
+                    constraints: BoxConstraints(
+                      maxWidth: 395,
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 7.0, top: 0.1),
+                        child: Text(
+                          "Inicio de Sesion",
+                          style: TextStyle(
+                            fontFamily: 'GemunuLibre',
+                            fontSize: 34,
+                          ),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          maxLines: null,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+  padding: EdgeInsets.all(20.0),
+  child: Column(
+    children: <Widget>[
+      SizedBox(height: 30),
+      Padding(
+        padding: EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            Container(
+              padding: EdgeInsets.all(2),
+              margin: EdgeInsets.only(bottom: 30.0),  
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(243, 243, 243, 243),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 10.0,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Usuario",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Container(
+              padding: EdgeInsets.all(2),
+              decoration: BoxDecoration(
+               color: const Color.fromARGB(243, 243, 243, 243),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 10.0,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Contraseña",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            SizedBox(height: 30,),
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(41, 150, 189, 1),
+                    Color.fromRGBO(41, 150, 189, 1)
+                    
+                  ]
+                )
+              ),
+              child: Center(
+                child: Text("Iniciar Sesion", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+              ),
+            ),
+            SizedBox(height: 30,),
+            Text("¿Se te olvido la contraseña?", style: TextStyle(color: Colors.white, fontFamily: 'Abel'),)
+
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    ],
+  ),
+)
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
