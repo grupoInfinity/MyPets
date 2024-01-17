@@ -12,8 +12,9 @@ class login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width, 
           decoration: BoxDecoration(
             gradient: LinearGradient(
               stops: [0.0, 1.0],
@@ -157,7 +158,7 @@ class login extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
+    
   }
 }
