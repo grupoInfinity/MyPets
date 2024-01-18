@@ -3,8 +3,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
-
-  infomasc({required this.onClose});
+  final String code;
+  infomasc({required this.onClose,required this.code});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class infomasc extends StatelessWidget {
                 size: 200.0,
               ),*/
               SizedBox(height: 20.0),
-              Text('Escanee el código QR'),
+              Text('Bienvenido $code'),
               ElevatedButton(
                 onPressed: onClose,
                 child: Text('CLICK DE VUELTA'),

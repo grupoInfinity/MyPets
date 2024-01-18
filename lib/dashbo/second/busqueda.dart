@@ -13,9 +13,7 @@ class busqueda extends StatefulWidget {
 
 class _QRScannerScreenState extends State<busqueda> {
   final String usr;
-
   _QRScannerScreenState({required this.usr});
-
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String qrText = "";
@@ -33,6 +31,7 @@ class _QRScannerScreenState extends State<busqueda> {
                     subpage = false;
                   });
                 },
+                code:qrText
               )
             : Center(
                 child: Column(
@@ -87,7 +86,8 @@ class _QRScannerScreenState extends State<busqueda> {
         });
 
         if (qrText.isNotEmpty) {
-          Navigator.push(
+            subpage=true;
+          /*Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ResultScreen(result: qrText, usr: usr),
@@ -96,7 +96,7 @@ class _QRScannerScreenState extends State<busqueda> {
             setState(() {
               resultScreenOpened = false;
             });
-          });
+          });*/
         }
       }
     });
@@ -109,7 +109,8 @@ class _QRScannerScreenState extends State<busqueda> {
     });
 
     if (qrText.isNotEmpty) {
-      Navigator.push(
+        subpage=true;
+      /*Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ResultScreen(result: qrText, usr: usr),
@@ -118,26 +119,7 @@ class _QRScannerScreenState extends State<busqueda> {
         setState(() {
           resultScreenOpened = false;
         });
-      });
+      });*/
     }
-  }
-}
-
-class ResultScreen extends StatelessWidget {
-  final String result;
-  final String usr;
-
-  ResultScreen({required this.result, required this.usr});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Result Screen'),
-      ),
-      body: Center(
-        child: Text('Resultado: $result , Bienvenido $usr'),
-      ),
-    );
   }
 }
