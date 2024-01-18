@@ -87,6 +87,7 @@ class _QRScannerScreenState extends State<busqueda> {
 
         if (qrText.isNotEmpty) {
             subpage=true;
+            resultScreenOpened = false;
           /*Navigator.push(
             context,
             MaterialPageRoute(
@@ -110,6 +111,7 @@ class _QRScannerScreenState extends State<busqueda> {
 
     if (qrText.isNotEmpty) {
         subpage=true;
+        resultScreenOpened = false;
       /*Navigator.push(
         context,
         MaterialPageRoute(
