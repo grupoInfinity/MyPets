@@ -2,28 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class dashboard extends StatelessWidget {
-  final int idUs;
+  final String usr;
 
-  dashboard({required this.idUs});
+  dashboard({required this.usr});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(id: idUs,),
+      home: MyHomePage(usr: usr,),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  final int id;
+  final String usr;
 
-  MyHomePage({required this.id});
+  MyHomePage({required this.usr});
   @override
-  _MyHomePageState createState() => _MyHomePageState(idUs:id);
+  _MyHomePageState createState() => _MyHomePageState(usr:usr);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int idUs;
-  _MyHomePageState({required this.idUs});
+  String usr;
+  _MyHomePageState({required this.usr});
 
   late List<Widget> _children;
   @override
