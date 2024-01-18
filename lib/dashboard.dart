@@ -23,7 +23,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String usr;
+  final String usr;
   _MyHomePageState({required this.usr});
 
   late List<Widget> _children;
@@ -32,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Inicializar _screens en initState para evitar problemas con StatefulWidget
     _children = [
+    busqueda(usr: usr)
       //,
       //ScreenTwo(),
       //ScreenThree(),

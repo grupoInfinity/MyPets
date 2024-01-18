@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QRScannerScreen extends StatefulWidget {
+class busqueda extends StatefulWidget {
   final String usr;
-  QRScannerScreen({required this.usr});
+  busqueda({required this.usr});
   @override
   _QRScannerScreenState createState() => _QRScannerScreenState(usr: usr);
 }
 
-class _QRScannerScreenState extends State<QRScannerScreen> {
+class _QRScannerScreenState extends State<busqueda> {
   final String usr;
   _QRScannerScreenState({required this.usr});
 
