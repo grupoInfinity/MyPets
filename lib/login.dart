@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() => runApp(
       MaterialApp(
@@ -8,6 +10,41 @@ void main() => runApp(
     );
 
 class login extends StatelessWidget {
+  final TextEditingController txtUser = TextEditingController();
+  final TextEditingController txtClave = TextEditingController();
+
+
+  Future<void> fetchData(String usr,String clave) async {
+    try {
+      final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
+          'sec/sec_usuario.php?accion=LP&usr='+usr+'&clave='+clave+'&estado=A';
+
+      final response = await http.get(Uri.parse(url));
+      //logger.d('Solicitando datos a: $url');
+      if (response.statusCode == 200) {
+
+        //logger.d('Respuesta exitosa: ${response.body}');
+
+        final List<dynamic> results = json.decode(response.body);
+        /*items.clear();
+
+        for (var row in results) {
+          Item newItem = Item(int.parse(row['idMascota']), row['nombre'], row['dueno']);
+          if (!items.contains(newItem)) {
+            items.add(newItem);
+          }
+        }*/
+        //setState(() {});
+      } else {
+        //print('Cuerpo de la respuesta: ${response.body}');
+        //logger.e('Error en la respuesta: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Error: $e");
+      //logger.e('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +124,7 @@ class login extends StatelessWidget {
                                   Container(
                                     padding: EdgeInsets.all(8.0),
                                     child: TextField(
+                                      controller: txtUser,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Usuario",
@@ -115,6 +153,7 @@ class login extends StatelessWidget {
                                   Container(
                                     padding: EdgeInsets.all(8.0),
                                     child: TextField(
+                                      controller: txtClave,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Contraseña",
@@ -139,7 +178,8 @@ class login extends StatelessWidget {
                               ),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  
+                                  //AQUI
+
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.transparent,
