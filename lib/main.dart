@@ -7,7 +7,8 @@ void main(){
   runApp(MaterialApp(
     routes: {
      '/':(context) => Splash(),
-     '/login':(context) => Principal(),
+     '/login':(context) => login(),
+     '/main': (context) => Principal(),
     },
   ));
 }

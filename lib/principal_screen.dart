@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:mypets_app/contanst/app_contanst.dart';
 
 class Principal extends StatelessWidget {
   const Principal({Key? key}) : super(key: key);
+
+  _buildButton({String? title, Color? color, VoidCallback? onPressed}) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: color ?? Colors.transparent,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Text(
+            title ?? 'title',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +60,7 @@ class Principal extends StatelessWidget {
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .9,
+                        height: MediaQuery.of(context).size.height * .1,
                         child: const Text(
                           "MyPets: ¡Tu registro completo para tus fieles compañeros!",
                           textAlign: TextAlign.center,
@@ -50,16 +71,50 @@ class Principal extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 120,),
+                      Container(
+                        height: 100,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.white,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded( // Registrarse Button
+                                child: _buildButton(
+                                  title: AppContanst.RegistrarseT,
+                                  color: Colors.white,
+                                  onPressed: () {
+                                    
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10), //Log In Button
+                              Expanded(
+                                child: _buildButton(
+                                  title: AppContanst.LogInT,
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/login');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-          Container(
-            height: 100,
-            color: Colors.amber,
-          )
         ],
       ),
     );
