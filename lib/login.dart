@@ -1,6 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
+
+import 'package:mypets_app/dashboard.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -14,7 +18,7 @@ class login extends StatelessWidget {
   final TextEditingController txtClave = TextEditingController();
 
 
-  Future<void> fetchData(String usr,String clave) async {
+  Future<void> logear(BuildContext context,String usr,String clave) async {
     try {
       final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
           'sec/sec_usuario.php?accion=LP&usr='+usr+'&clave='+clave+'&estado=A';
@@ -22,22 +26,41 @@ class login extends StatelessWidget {
       final response = await http.get(Uri.parse(url));
       //logger.d('Solicitando datos a: $url');
       if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = json.decode(response.body);
 
-        //logger.d('Respuesta exitosa: ${response.body}');
+        if (jsonResponse['status'] == 1) {
+          List<dynamic> infoList = jsonResponse['info'];
 
-        final List<dynamic> results = json.decode(response.body);
-        /*items.clear();
+          if (infoList.isNotEmpty) {
+            String usuario = infoList[0]['usr'];
 
-        for (var row in results) {
-          Item newItem = Item(int.parse(row['idMascota']), row['nombre'], row['dueno']);
-          if (!items.contains(newItem)) {
-            items.add(newItem);
+            Navigator.push(
+              context ,
+              MaterialPageRoute(builder: (context) => dashboard(usr: usuario)),
+            );
+          } else {
+            // Mostrar un mensaje de alerta si la lista está vacía
+            Fluttertoast.showToast(
+              msg: "Credenciales incorrectas",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+            );
           }
-        }*/
-        //setState(() {});
+        } else {
+          // Mostrar un mensaje de alerta si el estado no es 1
+          Fluttertoast.showToast(
+            msg: "Credenciales incorrectas",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
       } else {
-        //print('Cuerpo de la respuesta: ${response.body}');
-        //logger.e('Error en la respuesta: ${response.statusCode}');
+        // Mostrar un mensaje de alerta si la solicitud no es exitosa
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
       }
     } catch (e) {
       print("Error: $e");
@@ -179,7 +202,7 @@ class login extends StatelessWidget {
                               child: ElevatedButton(
                                 onPressed: () {
                                   //AQUI
-
+                                  logear(context,txtUser.text,txtClave.text);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.transparent,
