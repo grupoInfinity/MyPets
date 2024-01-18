@@ -17,14 +17,13 @@ class _QRScannerScreenState extends State<busqueda> {
   String qrText = "";
   bool resultScreenOpened = false;
   TextEditingController textEditingController = TextEditingController();
+  bool subpage = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('QR Scanner'),
-      ),
-      body: Column(
+      body: subpage?
+      Column(
         children: <Widget>[
           Expanded(
             flex: 3,

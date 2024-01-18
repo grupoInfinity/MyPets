@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mypets_app/dashbo/busqueda.dart';
+import 'package:mypets_app/dashbo/second/busqueda.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class dashboard extends StatelessWidget {
