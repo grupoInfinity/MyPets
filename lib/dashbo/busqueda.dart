@@ -27,7 +27,7 @@ class _QRScannerScreenState extends State<busqueda> {
       body: Column(
         children: <Widget>[
           Expanded(
-            flex: 5,
+            flex: 3,
             child: QRView(
               key: qrKey,
               onQRViewCreated: _onQRViewCreated,
@@ -52,7 +52,7 @@ class _QRScannerScreenState extends State<busqueda> {
                     // Abre el escáner QR manualmente
                     _openQRScanner();
                   },
-                  child: Text('Escanear QR'),
+                  child: Text('Buscar'),
                 ),
               ],
             ),
