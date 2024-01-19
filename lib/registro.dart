@@ -3,12 +3,19 @@ import 'package:mypets_app/contanst/app_contanst.dart';
 import 'package:iconsax/iconsax.dart';
 
 class RegistroP extends StatelessWidget {
-  const RegistroP({Key? key});
+  RegistroP({Key? key});
+  final TextEditingController txtNomb = TextEditingController();
+  final TextEditingController txtApell = TextEditingController();
+  final TextEditingController txtUser = TextEditingController();
+  final TextEditingController txtEmail = TextEditingController();
+  final TextEditingController txtContra = TextEditingController();
+  final TextEditingController txtTel = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, 
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -31,7 +38,8 @@ class RegistroP extends StatelessWidget {
             padding: const EdgeInsets.all(TSizes.defaultspace),
             child: Column(
               children: [
-                SizedBox(height: AppBar().preferredSize.height), // Alinea el contenido debajo del AppBar
+                SizedBox(height: AppBar().preferredSize.height),
+                // Alinea el contenido debajo del AppBar
                 Text(
                   "Crea tu Cuenta en MyPets!",
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -44,59 +52,121 @@ class RegistroP extends StatelessWidget {
                         children: [
                           Expanded(
                             child: TextFormField(
+                              controller: txtNomb,
                               expands: false,
                               decoration: const InputDecoration(
-                                labelText: "Nombre",
+                                labelText: "Nombres",
                                 prefixIcon: Icon(Iconsax.user),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, introduce tu nombre.';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           const SizedBox(width: TSizes.spacebtwInputFields),
                           Expanded(
                             child: TextFormField(
+                              controller: txtApell,
                               expands: false,
-                              decoration: const InputDecoration(labelText: "Apellido", prefixIcon: Icon(Iconsax.user)
-                              ),
+                              decoration: const InputDecoration(
+                                  labelText: "Apellidos",
+                                  prefixIcon: Icon(Iconsax.user)),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, introduce tus apellidos.';
+                                }
+                                return null;
+                              },
                             ),
                           ),
-                         
-                          
-                          
-                      
                         ],
                       ),
-                       const SizedBox(height: TSizes.spacebtwInputFields),
-                           
-                            TextFormField(
-                              expands: false,
-                              decoration: const InputDecoration(labelText: "Correo Electronico", prefixIcon: Icon(Iconsax.direct)
-                              ),
-                            ),
                       const SizedBox(height: TSizes.spacebtwInputFields),
-                            TextFormField(
-                              
-                              decoration: const InputDecoration(labelText: "Usuario", prefixIcon: Icon(Iconsax.user1)
-                              ),
-                            ),
-                          
-                     TextFormField(
-                            obscureText: true,
-                              
-                              decoration: const InputDecoration(labelText: "Contraseña", prefixIcon: Icon(Iconsax.password_check),
-                              suffixIcon: Icon(Iconsax.eye_slash)
-                              ),
-                            ),
-                            const SizedBox(height: TSizes.spacebtwSections),
-                            SizedBox(width: double.infinity, child: ElevatedButton(onPressed: (){}, child: Text("Crear Cuenta")),)
+                      TextFormField(
+                        controller: txtUser,
+                        decoration: const InputDecoration(
+                            labelText: "Usuario",
+                            prefixIcon: Icon(Iconsax.user1)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, introduce tu nombre de usuario.';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: TSizes.spacebtwInputFields),
+                      TextFormField(
+                        controller: txtEmail,
+                        expands: false,
+                        decoration: const InputDecoration(
+                            labelText: "Correo Electrónico",
+                            prefixIcon: Icon(Iconsax.direct)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, introduce tu correo electrónico.';
+                          }
+                          if (!RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").hasMatch(value)) {
+                            return 'Por favor, introduce un correo electrónico válido.';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: TSizes.spacebtwInputFields),
+                      TextFormField(
+                        controller: txtTel,
+                        expands: false,
+                        decoration: const InputDecoration(
+                            labelText: "Teléfono",
+                            prefixIcon: Icon(Iconsax.direct)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, introduce tu número de teléfono.';
+                          }
+                          // Puedes agregar una validación adicional según tus necesidades
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: txtContra,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                            labelText: "Contraseña",
+                            prefixIcon: Icon(Iconsax.password_check),
+                            suffixIcon: Icon(Iconsax.eye_slash)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, introduce tu contraseña.';
+                          }
+                          // Puedes agregar una validación adicional según tus necesidades
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: TSizes.spacebtwSections),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // La validación del formulario fue exitosa, puedes realizar acciones adicionales aquí
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Formulario válido, puedes proceder.')),
+                              );
+                            }
+                          },
+                          child: Text("Crear Cuenta"),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                
               ],
             ),
           ),
         ),
       ),
-    );  
+    );
   }
 }
