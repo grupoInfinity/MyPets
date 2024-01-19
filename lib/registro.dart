@@ -57,7 +57,11 @@ class RegistroP extends StatelessWidget {
                               decoration: const InputDecoration(
                                 labelText: "Nombres",
                                 prefixIcon: Icon(Iconsax.user),
+                                 enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+                                 )
                               ),
+                              
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Por favor, introduce tu nombre.';
@@ -66,14 +70,21 @@ class RegistroP extends StatelessWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: TSizes.spacebtwInputFields),
-                          Expanded(
-                            child: TextFormField(
-                              controller: txtApell,
-                              expands: false,
-                              decoration: const InputDecoration(
-                                  labelText: "Apellidos",
-                                  prefixIcon: Icon(Iconsax.user)),
+                        const SizedBox(width: TSizes.spacebtwInputFields),
+Expanded(
+  child: TextFormField(
+    controller: txtApell,
+    expands: false,
+    decoration: const InputDecoration(
+      labelText: "Apellidos",
+      prefixIcon: Icon(Iconsax.user),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color.fromRGBO(10, 59, 99, 1)),
+      ),
+    ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Por favor, introduce tus apellidos.';
@@ -84,12 +95,20 @@ class RegistroP extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: TSizes.spacebtwInputFields),
-                      TextFormField(
-                        controller: txtUser,
-                        decoration: const InputDecoration(
-                            labelText: "Usuario",
-                            prefixIcon: Icon(Iconsax.user1)),
+                     const SizedBox(height: TSizes.spacebtwInputFields),
+TextFormField(
+  controller: txtUser,
+  decoration: const InputDecoration(
+    labelText: "Usuario",
+    prefixIcon: Icon(Iconsax.user1),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.blue),
+    ),
+  ),
+
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, introduce tu nombre de usuario.';
@@ -103,7 +122,13 @@ class RegistroP extends StatelessWidget {
                         expands: false,
                         decoration: const InputDecoration(
                             labelText: "Correo Electrónico",
-                            prefixIcon: Icon(Iconsax.direct)),
+                            prefixIcon: Icon(Iconsax.direct)
+                            ,
+                                  enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)
+              ),
+                                  )
+                            ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, introduce tu correo electrónico.';
@@ -120,7 +145,13 @@ class RegistroP extends StatelessWidget {
                         expands: false,
                         decoration: const InputDecoration(
                             labelText: "Teléfono",
-                            prefixIcon: Icon(Iconsax.direct)),
+                            prefixIcon: Icon(Iconsax.direct)
+                            ,
+                                  enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)
+              ),
+                                  )
+                            ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, introduce tu número de teléfono.';
@@ -129,13 +160,20 @@ class RegistroP extends StatelessWidget {
                           return null;
                         },
                       ),
+                      const SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
                         controller: txtContra,
                         obscureText: true,
                         decoration: const InputDecoration(
                             labelText: "Contraseña",
                             prefixIcon: Icon(Iconsax.password_check),
-                            suffixIcon: Icon(Iconsax.eye_slash)),
+                            suffixIcon: Icon(Iconsax.eye_slash)
+                            ,
+                                  enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)
+              ),
+                                  )
+                            ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, introduce tu contraseña.';
