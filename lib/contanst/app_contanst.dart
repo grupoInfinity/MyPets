@@ -18,6 +18,6 @@ static const double xl = 32.0;
 //Espacio entre secciones
 
 static const defaultspace = 24.0;
-
+static const spacebtwInputFields = 16.0;
 static const spacebtwSections = 32.0;
 }
