@@ -109,7 +109,8 @@ class _RegistroPState extends State<sRegistroP> {
                               expands: false,
                               decoration: const InputDecoration(
                                 labelText: "Nombres",
-                                prefixIcon: Icon(Iconsax.user),
+                                labelStyle: TextStyle(color: Colors.white),
+                                prefixIcon: Icon(Iconsax.user,color: Colors.white),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -125,8 +126,9 @@ class _RegistroPState extends State<sRegistroP> {
                               controller: txtApell,
                               expands: false,
                               decoration: const InputDecoration(
+                                  labelStyle: TextStyle(color: Colors.white),
                                   labelText: "Apellidos",
-                                  prefixIcon: Icon(Iconsax.user)),
+                                  prefixIcon: Icon(Iconsax.user,color: Colors.white)),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Complete el campo';
@@ -142,7 +144,9 @@ class _RegistroPState extends State<sRegistroP> {
                         controller: txtUser,
                         decoration: const InputDecoration(
                             labelText: "Usuario",
-                            prefixIcon: Icon(Iconsax.user1)),
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon: Icon(Iconsax.user1,color: Colors.white)),
+
                         onChanged: (value) {
                           // Llama a tu función de verificación en la base de datos aquí
                           verifUser(value);
@@ -162,7 +166,8 @@ class _RegistroPState extends State<sRegistroP> {
                         expands: false,
                         decoration: const InputDecoration(
                             labelText: "Correo Electrónico",
-                            prefixIcon: Icon(Icons.email)),
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon: Icon(Icons.email,color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingrese un correo electrónico';
@@ -180,7 +185,8 @@ class _RegistroPState extends State<sRegistroP> {
                         expands: false,
                         decoration: const InputDecoration(
                             labelText: "Teléfono",
-                            prefixIcon: Icon(Iconsax.activity)),
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon: Icon(Iconsax.activity,color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Complete el campo';
@@ -193,8 +199,9 @@ class _RegistroPState extends State<sRegistroP> {
                         obscureText: true,
                         decoration: const InputDecoration(
                             labelText: "Contraseña",
-                            prefixIcon: Icon(Iconsax.password_check),
-                            suffixIcon: Icon(Iconsax.eye_slash)),
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon: Icon(Iconsax.password_check,color: Colors.white),
+                            suffixIcon: Icon(Iconsax.eye_slash,color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Complete el campo';
