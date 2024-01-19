@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 
 import 'package:mypets_app/dashboard.dart';
+import 'package:mypets_app/recup/verifUser.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -221,9 +222,20 @@ class login extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 15),
-                            Text(
-                              "¿Se te olvidó la contraseña?",
-                              style: TextStyle(color: Colors.white, fontFamily: 'Abel'),
+                            GestureDetector(
+                              onTap: () {
+                                // Navegar a la nueva pantalla cuando se toca el texto
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => verifUser(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "¿Se te olvidó la contraseña?",
+                                style: TextStyle(color: Colors.white, fontFamily: 'Abel'),
+                              ),
                             ),
                           ],
                         ),
