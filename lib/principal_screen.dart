@@ -26,6 +26,7 @@ class Principal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -92,7 +93,7 @@ class Principal extends StatelessWidget {
                                   title: AppContanst.RegistrarseT,
                                   color: Colors.white,
                                   onPressed: () {
-                                    
+                                    Navigator.pushNamed(context, '/registro');
                                   },
                                 ),
                               ),
