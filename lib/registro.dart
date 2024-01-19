@@ -1,9 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mypets_app/contanst/app_contanst.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegistroP extends StatelessWidget {
-  RegistroP({Key? key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: sRegistroP(),
+    );
+  }
+}
+
+class sRegistroP extends StatefulWidget {
+  sRegistroP({Key? key});
+
+  @override
+  _RegistroPState createState() => _RegistroPState();
+}
+
+class _RegistroPState extends State<sRegistroP> {
   final TextEditingController txtNomb = TextEditingController();
   final TextEditingController txtApell = TextEditingController();
   final TextEditingController txtUser = TextEditingController();
@@ -11,6 +30,39 @@ class RegistroP extends StatelessWidget {
   final TextEditingController txtContra = TextEditingController();
   final TextEditingController txtTel = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool userExist = false;
+
+  Future<void> verifUser(String usr) async {
+    try {
+      if (usr.isEmpty) {
+        usr = ".¡¡?";
+      }
+      final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
+          'sec/sec_usuario.php?accion=C&usr=$usr';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> user = json.decode(response.body);
+        if (user['status'] == 1) {
+          setState(() {
+            userExist = true;
+          });
+        } else {
+          setState(() {
+            userExist = false;
+          });
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +98,7 @@ class RegistroP extends StatelessWidget {
                 ),
                 const SizedBox(height: TSizes.spacebtwSections),
                 Form(
+                  key: _formKey,
                   child: Column(
                     children: [
                       Row(
@@ -57,63 +110,50 @@ class RegistroP extends StatelessWidget {
                               decoration: const InputDecoration(
                                 labelText: "Nombres",
                                 prefixIcon: Icon(Iconsax.user),
-                                 enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
-                                 )
                               ),
-                              
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Por favor, introduce tu nombre.';
+                                  return 'Complete el campo';
                                 }
-                                return null;
+                                return null; // La validación pasó
                               },
                             ),
                           ),
-                        const SizedBox(width: TSizes.spacebtwInputFields),
-Expanded(
-  child: TextFormField(
-    controller: txtApell,
-    expands: false,
-    decoration: const InputDecoration(
-      labelText: "Apellidos",
-      prefixIcon: Icon(Iconsax.user),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Color.fromRGBO(10, 59, 99, 1)),
-      ),
-    ),
+                          const SizedBox(width: TSizes.spacebtwInputFields),
+                          Expanded(
+                            child: TextFormField(
+                              controller: txtApell,
+                              expands: false,
+                              decoration: const InputDecoration(
+                                  labelText: "Apellidos",
+                                  prefixIcon: Icon(Iconsax.user)),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Por favor, introduce tus apellidos.';
+                                  return 'Complete el campo';
                                 }
-                                return null;
+                                return null; // La validación pasó
                               },
                             ),
                           ),
                         ],
                       ),
-                     const SizedBox(height: TSizes.spacebtwInputFields),
-TextFormField(
-  controller: txtUser,
-  decoration: const InputDecoration(
-    labelText: "Usuario",
-    prefixIcon: Icon(Iconsax.user1),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.blue),
-    ),
-  ),
-
+                      const SizedBox(height: TSizes.spacebtwInputFields),
+                      TextFormField(
+                        controller: txtUser,
+                        decoration: const InputDecoration(
+                            labelText: "Usuario",
+                            prefixIcon: Icon(Iconsax.user1)),
+                        onChanged: (value) {
+                          // Llama a tu función de verificación en la base de datos aquí
+                          verifUser(value);
+                        },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Por favor, introduce tu nombre de usuario.';
+                            return 'Complete el campo';
+                          } else if (userExist) {
+                            return 'Usuario ya existe';
                           }
-                          return null;
+                          return null; // La validación pasó
                         },
                       ),
                       const SizedBox(height: TSizes.spacebtwInputFields),
@@ -122,21 +162,16 @@ TextFormField(
                         expands: false,
                         decoration: const InputDecoration(
                             labelText: "Correo Electrónico",
-                            prefixIcon: Icon(Iconsax.direct)
-                            ,
-                                  enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)
-              ),
-                                  )
-                            ),
+                            prefixIcon: Icon(Icons.email)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Por favor, introduce tu correo electrónico.';
+                            return 'Por favor, ingrese un correo electrónico';
+                          } else if (!RegExp(
+                              r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
+                              .hasMatch(value)) {
+                            return 'Por favor, ingrese un correo electrónico válido';
                           }
-                          if (!RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").hasMatch(value)) {
-                            return 'Por favor, introduce un correo electrónico válido.';
-                          }
-                          return null;
+                          return null; // La validación pasó
                         },
                       ),
                       const SizedBox(height: TSizes.spacebtwInputFields),
@@ -145,41 +180,26 @@ TextFormField(
                         expands: false,
                         decoration: const InputDecoration(
                             labelText: "Teléfono",
-                            prefixIcon: Icon(Iconsax.direct)
-                            ,
-                                  enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)
-              ),
-                                  )
-                            ),
+                            prefixIcon: Icon(Iconsax.activity)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Por favor, introduce tu número de teléfono.';
+                            return 'Complete el campo';
                           }
-                          // Puedes agregar una validación adicional según tus necesidades
-                          return null;
+                          return null; // La validación pasó
                         },
                       ),
-                      const SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
                         controller: txtContra,
                         obscureText: true,
                         decoration: const InputDecoration(
                             labelText: "Contraseña",
                             prefixIcon: Icon(Iconsax.password_check),
-                            suffixIcon: Icon(Iconsax.eye_slash)
-                            ,
-                                  enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)
-              ),
-                                  )
-                            ),
+                            suffixIcon: Icon(Iconsax.eye_slash)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Por favor, introduce tu contraseña.';
+                            return 'Complete el campo';
                           }
-                          // Puedes agregar una validación adicional según tus necesidades
-                          return null;
+                          return null; // La validación pasó
                         },
                       ),
                       const SizedBox(height: TSizes.spacebtwSections),
@@ -187,10 +207,20 @@ TextFormField(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
+                            print("Botón presionado");
+
                             if (_formKey.currentState!.validate()) {
-                              // La validación del formulario fue exitosa, puedes realizar acciones adicionales aquí
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Formulario válido, puedes proceder.')),
+                                const SnackBar(
+                                    content: Text(
+                                        'Formulario válido, puedes proceder. ni')),
+                              );
+                              print(
+                                  'Correo electrónico válido: ${txtEmail.text}');
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Formulario invali. ni')),
                               );
                             }
                           },
@@ -208,3 +238,4 @@ TextFormField(
     );
   }
 }
+
