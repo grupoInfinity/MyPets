@@ -6,6 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypets_app/login.dart';
+import 'package:mypets_app/recup/cambiarC.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class verifPin extends StatelessWidget {
@@ -73,7 +74,7 @@ class verifPin extends StatelessWidget {
                     children: [
                       PinCodeTextField(
                         appContext: context,
-                        length: 4,
+                        length: 6,
                         onChanged: (value) {
 
                         },
@@ -85,7 +86,7 @@ class verifPin extends StatelessWidget {
                         },
                         onCompleted: (value) {
                           // Validar el PIN cuando se completa la entrada
-                          vPin(usr,value);
+                          vPin(context,usr,value);
                         },
                         pinTheme: PinTheme(
                           shape: PinCodeFieldShape.box,
@@ -146,7 +147,7 @@ class verifPin extends StatelessWidget {
     );
   }
 
-Future<void> vPin(String usr,String pin) async {
+Future<void> vPin(BuildContext context,String usr,String pin) async {
     try {
       final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
           'sec/sec_usuario.php?accion=C&usr=$usr&pin=$pin';
@@ -155,8 +156,14 @@ Future<void> vPin(String usr,String pin) async {
         Map<String, dynamic> user = json.decode(response.body);
         if (user['status'] == 1) {
             pinCorrect = true;
+            Navigator.push(context,
+              MaterialPageRoute(
+                builder: (context) => cambiarC(usr: usr),
+              ),
+            );
         } else {
             pinCorrect = false;
+            alerta(context, "PIN INCORRECTO");
         }
       } else {
         Fluttertoast.showToast(
@@ -168,6 +175,34 @@ Future<void> vPin(String usr,String pin) async {
     } catch (e) {
       print("Error: $e");
     }
+  }
+  void alerta(BuildContext context, String mensaje) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Información Importante",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            mensaje,
+            style: TextStyle(fontSize: 18.0),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar la alerta
+              },
+              child: Text(
+                "Aceptar",
+                style: TextStyle(fontSize: 18.0, color: Colors.blue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 

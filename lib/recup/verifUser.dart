@@ -40,31 +40,19 @@ class verifUser extends StatelessWidget {
               final response3 = await http.get(Uri.parse(url3));
               if (response3.statusCode == 200) {
                 Map<String, dynamic> user2 = json.decode(response3.body);
-                if (user['status'] == 1) {
-                  List<dynamic> infoList2 = user['info'];
-                  if (infoList.isNotEmpty) {
+                if (user2['status'] == 1) {
+                  List<dynamic> infoList2 = user2['info'];
+                  if (infoList2.isNotEmpty) {
                     final url4 =
                         'http://192.168.1.11/MyPets_Admin/servicios/PHPMailer.php?user=' +
-                            infoList[0]['usr'] +'&pin=' +infoList[0]['pin'] +
-                            '&email=' +infoList[0]['email'];
+                            infoList2[0]['usr'] +'&pin=' +infoList2[0]['pin'] +
+                            '&email=' +infoList2[0]['email'];
                     final response4 = await http.get(Uri.parse(url4));
                     alerta(context, 'Verifique su bandeja de correos');
-                    Navigator.push(context,
-                      MaterialPageRoute(
-                        builder: (context) => verifPin(usr: usuario),
-                      ),
-                    );
-                    /*if (response4.statusCode == 200) {
-
-                    }*/
                   }
                 }
               }
             }
-            /*Navigator.push(
-              context ,
-              MaterialPageRoute(builder: (context) => dashboard(usr: usuario)),
-            );*/
           } else {
             // Mostrar un mensaje de alerta si la lista está vacía
             Fluttertoast.showToast(
@@ -110,7 +98,12 @@ class verifUser extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Cerrar la alerta
+                Navigator.of(context).pop();
+                Navigator.push(context,
+                  MaterialPageRoute(
+                    builder: (context) => verifPin(usr: usuario),
+                  ),
+                );// Cerrar la alerta
               },
               child: Text(
                 "Aceptar",
