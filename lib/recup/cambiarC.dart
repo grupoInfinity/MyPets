@@ -121,7 +121,10 @@ class cambiarC extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             //AQUI
-                            //logear(context, txtUser.text);
+                            if (_formKey.currentState!.validate()) {
+                              uClave(context,usr,txtC2.text);
+                            } else {
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.transparent,
@@ -153,7 +156,7 @@ class cambiarC extends StatelessWidget {
   Future<void> uClave(BuildContext context,String usr,String clave) async {
     try {
       final url = 'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U' +
-          '&usorig=$usr&user=$usr&clave$clave';
+          '&usorig=$usr&user=$usr&clave=$clave';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> user = json.decode(response.body);
@@ -164,7 +167,11 @@ class cambiarC extends StatelessWidget {
               ),
             );
         } else {
-
+          Fluttertoast.showToast(
+            msg: "Error en la respuesta",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
         }
       } else {
         Fluttertoast.showToast(
