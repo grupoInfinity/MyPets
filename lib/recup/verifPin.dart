@@ -9,12 +9,13 @@ import 'package:mypets_app/login.dart';
 import 'package:mypets_app/recup/cambiarC.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../design/alerta.dart';
+
 class verifPin extends StatelessWidget {
   final String usr;
 
   verifPin({required this.usr});
 
-  final TextEditingController txtPin = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool pinCorrect = false;
@@ -102,40 +103,6 @@ class verifPin extends StatelessWidget {
                         animationDuration: Duration(milliseconds: 300),
                       ),
 
-                      const SizedBox(height: TSizes.spacebtwSections),
-
-                      Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: LinearGradient(
-                            colors: [
-                              Color.fromRGBO(41, 150, 189, 1),
-                              Color.fromRGBO(41, 150, 189, 1)
-                            ],
-                          ),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            //AQUI
-                            //logear(context, txtUser.text);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.transparent,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text(
-                            "Confirmar",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -163,7 +130,8 @@ Future<void> vPin(BuildContext context,String usr,String pin) async {
             );
         } else {
             pinCorrect = false;
-            alerta(context, "PIN INCORRECTO");
+            alertas alert =alertas();
+            alert.alerta(context, "PIN INCORRECTO");
         }
       } else {
         Fluttertoast.showToast(
@@ -176,34 +144,7 @@ Future<void> vPin(BuildContext context,String usr,String pin) async {
       print("Error: $e");
     }
   }
-  void alerta(BuildContext context, String mensaje) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            "Información Importante",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            mensaje,
-            style: TextStyle(fontSize: 18.0),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cerrar la alerta
-              },
-              child: Text(
-                "Aceptar",
-                style: TextStyle(fontSize: 18.0, color: Colors.blue),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 
 
 }

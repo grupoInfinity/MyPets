@@ -13,7 +13,8 @@ class cambiarC extends StatelessWidget {
 
   cambiarC({required this.usr});
 
-  final TextEditingController txtPin = TextEditingController();
+  final TextEditingController txtC1 = TextEditingController();
+  final TextEditingController txtC2 = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool pinCorrect = false;
@@ -71,38 +72,41 @@ class cambiarC extends StatelessWidget {
                   key: _formKey,
                   child: Column(
                     children: [
-                      PinCodeTextField(
-                        appContext: context,
-                        length: 4,
-                        onChanged: (value) {
-
-                        },
+                      const SizedBox(height: TSizes.spacebtwInputFields),
+                      TextFormField(
+                        controller: txtC1,
+                        decoration: const InputDecoration(
+                            labelText: "Nueva Clave",
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon:
+                            Icon(Iconsax.security, color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Complete el campo';
+                          }else if(value!=txtC2.text){
+                            return 'Tienen que ser igual';
                           }
                           return null; // La validación pasó
                         },
-                        onCompleted: (value) {
-                          // Validar el PIN cuando se completa la entrada
-                          vPin(usr,value);
-                        },
-                        pinTheme: PinTheme(
-                          shape: PinCodeFieldShape.box,
-                          borderRadius: BorderRadius.circular(5),
-                          fieldHeight: 50,
-                          fieldWidth: 40,
-                          activeColor: Colors.blue,
-                          inactiveColor: Colors.grey,
-                          selectedColor: Colors.black,
-                        ),
-                        keyboardType: TextInputType.number,
-                        animationType: AnimationType.fade,
-                        animationDuration: Duration(milliseconds: 300),
                       ),
-
+                      const SizedBox(height: TSizes.spacebtwInputFields),
+                      TextFormField(
+                        controller: txtC2,
+                        decoration: const InputDecoration(
+                            labelText: "Digitela de nuevo",
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon:
+                            Icon(Iconsax.security, color: Colors.white)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Complete el campo';
+                          }else if(value!=txtC1.text){
+                            return 'Tienen que ser igual';
+                          }
+                          return null; // La validación pasó
+                        },
+                      ),
                       const SizedBox(height: TSizes.spacebtwSections),
-
                       Container(
                         height: 60,
                         decoration: BoxDecoration(
@@ -146,10 +150,10 @@ class cambiarC extends StatelessWidget {
     );
   }
 
-  Future<void> vPin(String usr,String pin) async {
+  Future<void> uClave(String usr,String clave) async {
     try {
       final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
-          'sec/sec_usuario.php?accion=C&usr=$usr&pin=$pin';
+          'sec/sec_usuario.php?accion=C&usr=$usr&pin=$clave';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> user = json.decode(response.body);
