@@ -47,10 +47,20 @@ class verifPin extends StatelessWidget {
             padding: const EdgeInsets.all(TSizes.defaultspace),
             child: Column(
               children: [
+                Container(
+                  height: 300,
+                  width: 350,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('android/assets/images/Logo3.png'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
                 SizedBox(height: AppBar().preferredSize.height),
                 // Alinea el contenido debajo del AppBar
                 Text(
-                  "Crea tu Cuenta en MyPets !",
+                  "Ingrese el PIN",
                   style: Theme
                       .of(context)
                       .textTheme
@@ -66,6 +76,12 @@ class verifPin extends StatelessWidget {
                         length: 4,
                         onChanged: (value) {
 
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Complete el campo';
+                          }
+                          return null; // La validación pasó
                         },
                         onCompleted: (value) {
                           // Validar el PIN cuando se completa la entrada
