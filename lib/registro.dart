@@ -192,14 +192,17 @@ class _RegistroPState extends State<sRegistroP> {
                             print("Botón presionado");
 
                             if (_formKey.currentState!.validate()) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Formulario válido, puedes proceder. ni')),
+                              Usuario nuevoUsuario = Usuario(
+                                usr: txtUser.text,
+                                clave: txtContra.text,
+                                nombre: txtNomb.text,
+                                apellido: txtApell.text,
+                                tel: txtTel.text,
+                                email: txtEmail.text,
+                                usuario: txtUser.text, // o utiliza el valor deseado para el campo usuario
                               );
-                              print(
-                                  'Correo electrónico válido: ${txtEmail.text}');
-                            } else {
+                              insertUs(nuevoUsuario);
+                              } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('Formulario invali. ni')),
@@ -256,7 +259,7 @@ class _RegistroPState extends State<sRegistroP> {
       final url =
           'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=I&usr=${usuario.usr}'
           '&clave=${usuario.clave}&nombre=${usuario.nombre}&apellido=${usuario.apellido}'
-          '&tel=${usuario.tel}&email=${usuario.email}&estado=${usuario.estado}&user=${usuario.usuario}';
+          '&tel=${usuario.tel}&email=${usuario.email}&estado=A&user=${usuario.usuario}';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> user = json.decode(response.body);
@@ -291,7 +294,6 @@ class Usuario {
   String apellido;
   String tel;
   String email;
-  String estado;
   String usuario;
 
   Usuario({
@@ -301,7 +303,6 @@ class Usuario {
     required this.apellido,
     required this.tel,
     required this.email,
-    required this.estado,
     required this.usuario,
   });
 }
