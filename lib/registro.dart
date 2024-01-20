@@ -201,7 +201,7 @@ class _RegistroPState extends State<sRegistroP> {
                                 email: txtEmail.text,
                                 usuario: txtUser.text, // o utiliza el valor deseado para el campo usuario
                               );
-                              insertUs(nuevoUsuario);
+                              insertUs(context,nuevoUsuario);
                               } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -254,7 +254,7 @@ class _RegistroPState extends State<sRegistroP> {
     }
   }
 
-  Future<void> insertUs(Usuario usuario) async {
+  Future<void> insertUs(BuildContext context,Usuario usuario) async {
     try {
       final url =
           'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=I&usr=${usuario.usr}'
