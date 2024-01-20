@@ -223,7 +223,7 @@ class verifPin extends StatelessWidget {
     );
   }
 
-  Future<void> verifUser(String usr) async {
+  /*Future<void> verifUser(String usr) async {
     try {
       if (usr.isEmpty) {
         usr = ".¡¡?";
@@ -284,5 +284,5 @@ class verifPin extends StatelessWidget {
     } catch (e) {
       print("Error: $e");
     }
-  }
+  }*/
 }
