@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:mypets_app/design/alerta.dart';
 import 'dart:convert';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:mypets_app/recup/verifPin.dart';
@@ -49,8 +48,13 @@ class verifUser extends StatelessWidget {
                             infoList2[0]['usr'] +'&pin=' +infoList2[0]['pin'] +
                             '&email=' +infoList2[0]['email'];
                     final response4 = await http.get(Uri.parse(url4));
-                    alertas alert =alertas();
-                    alert.alerta(context, 'Verifique su bandeja de correos');
+                    alerta(context, 'Verifique su bandeja de correos');
+
+
+                    /*Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (context) => verifPin(usr: usuario),
+                        ));*/
                   }
                 }
               }
@@ -84,9 +88,10 @@ class verifUser extends StatelessWidget {
       //logger.e('Error: $e');
     }
   }
-  /*void alerta(BuildContext context, String mensaje) {
+  void alerta(BuildContext context, String mensaje) {
     showDialog(
       context: context,
+      barrierDismissible: false, // Evita cerrar tocando fuera del cuadro de diálogo
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
@@ -101,11 +106,12 @@ class verifUser extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(context,
+                Navigator.push(
+                  context,
                   MaterialPageRoute(
                     builder: (context) => verifPin(usr: usuario),
                   ),
-                );// Cerrar la alerta
+                ); // Cerrar la alerta
               },
               child: Text(
                 "Aceptar",
@@ -116,7 +122,8 @@ class verifUser extends StatelessWidget {
         );
       },
     );
-  }*/
+  }
+
 
 
   Widget build(BuildContext context) {

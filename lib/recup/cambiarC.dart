@@ -150,27 +150,21 @@ class cambiarC extends StatelessWidget {
     );
   }
 
-  Future<void> uClave(String usr,String clave) async {
+  Future<void> uClave(BuildContext context,String usr,String clave) async {
     try {
-      final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
-          'sec/sec_usuario.php?accion=C&usr=$usr&pin=$clave';
+      final url = 'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U' +
+          '&usorig=$usr&user=$usr&clave$clave';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> user = json.decode(response.body);
         if (user['status'] == 1) {
-          pinCorrect = true;
-          /*Navigator.push(context,
+          Navigator.push(context,
               MaterialPageRoute(
-                builder: (context) => verifPin(usr: usuario),
+                builder: (context) => login(),
               ),
-            );*/
+            );
         } else {
-          pinCorrect = false;
-          /*Navigator.push(context,
-              MaterialPageRoute(
-                builder: (context) => verifPin(usr: usuario),
-              ),
-            );*/
+
         }
       } else {
         Fluttertoast.showToast(
