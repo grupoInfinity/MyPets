@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iconsax/iconsax.dart';
 import 'dart:convert';
-
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:mypets_app/recup/verifPin.dart';
+
+import '../contanst/app_contanst.dart';
 
 class verifUser extends StatelessWidget {
   final TextEditingController txtUser = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   String usuario = "";
 
   Future<void> logear(BuildContext context, String usr) async {
@@ -117,12 +123,20 @@ class verifUser extends StatelessWidget {
     );
   }
 
-  @override
+
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Container(
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             stops: [0.0, 1.0],
             colors: [
@@ -133,129 +147,81 @@ class verifUser extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300,
-              width: 350,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('android/assets/images/Logo3.png'),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            Stack(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(TSizes.defaultspace),
+            child: Column(
               children: [
-                Container(
-                  constraints: BoxConstraints(
-                    maxWidth: 395,
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 7.0, top: 0.1),
-                      child: Text(
-                        "Recuperacion de clave",
-                        style: TextStyle(
-                          fontFamily: 'GemunuLibre',
-                          fontSize: 34,
-                        ),
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                        maxLines: null,
-                        overflow: TextOverflow.visible,
-                      ),
-                    ),
-                  ),
+                SizedBox(height: AppBar().preferredSize.height),
+                // Alinea el contenido debajo del AppBar
+                Text(
+                  "Crea tu Cuenta en MyPets!",
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headlineMedium,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(20.0),
+                const SizedBox(height: TSizes.spacebtwSections),
+                Form(
+                  key: _formKey,
                   child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(2),
-                              margin: EdgeInsets.only(bottom: 30.0),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(243, 243, 243, 243),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10.0,
-                                    offset: Offset(0, 10),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextField(
-                                      controller: txtUser,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Usuario",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                    children: [
+                      const SizedBox(height: TSizes.spacebtwInputFields),
+                      TextFormField(
+                        controller: txtUser,
+                        decoration: const InputDecoration(
+                            labelText: "Usuario",
+                            labelStyle: TextStyle(color: Colors.white),
+                            prefixIcon:
+                            Icon(Iconsax.user1, color: Colors.white)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Complete el campo';
+                          }
+                          return null; // La validación pasó
+                        },
+                      ),
+
+                      const SizedBox(height: TSizes.spacebtwSections),
+
+                      Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromRGBO(41, 150, 189, 1),
+                              Color.fromRGBO(41, 150, 189, 1)
+                            ],
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            //AQUI
+                            if (_formKey.currentState!.validate()) {
+                              logear(context, txtUser.text);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Campos invalidos')),
+                              );
+                            }
+
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.transparent,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            Container(
-                              padding: EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(243, 243, 243, 243),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10.0,
-                                    offset: Offset(0, 10),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          child: Text(
+                            "Confirmar",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: 30),
-                            Container(
-                              height: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromRGBO(41, 150, 189, 1),
-                                    Color.fromRGBO(41, 150, 189, 1)
-                                  ],
-                                ),
-                              ),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  //AQUI
-                                  logear(context, txtUser.text);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.transparent,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  "Confirmar",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
@@ -263,9 +229,9 @@ class verifUser extends StatelessWidget {
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }

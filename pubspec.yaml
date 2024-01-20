@@ -19,6 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mysql1: ^0.20.0
+  pin_code_fields: ^7.3.0
   fluttertoast: ^8.0.7
   image: ^3.0.1
   http: ^0.13.3
