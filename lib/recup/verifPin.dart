@@ -50,7 +50,7 @@ class verifPin extends StatelessWidget {
                 SizedBox(height: AppBar().preferredSize.height),
                 // Alinea el contenido debajo del AppBar
                 Text(
-                  "Crea tu Cuenta en MyPets!",
+                  "Crea tu Cuenta en MyPets !",
                   style: Theme
                       .of(context)
                       .textTheme
