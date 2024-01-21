@@ -84,7 +84,7 @@ class _QRScannerScreenState extends State<busqueda> {
     try {
       final url =
           'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&estado=A'
-          '&codigo=$code';
+          '&codigo=$code ';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> masc = json.decode(response.body);
