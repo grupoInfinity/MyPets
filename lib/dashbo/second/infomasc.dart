@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
@@ -30,5 +33,32 @@ class infomasc extends StatelessWidget {
         ),
       ),
     );
+  }
+  Future<void> searchM(String code) async {
+    try {
+      final url =
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=$code';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> masc = json.decode(response.body);
+        if (masc['status'] == 1) {
+          /*Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => infomasc(onClose: onClose, code: code)),
+          );*/
+        } else {
+          //alerta(context, "Codigo no valido o inactivo");
+        }
+      }
+      else {
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 }

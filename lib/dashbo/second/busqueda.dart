@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:mypets_app/dashbo/second/infomasc.dart';
+import 'package:mypets_app/contanst/app_contanst.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class busqueda extends StatefulWidget {
   final String usr;
@@ -13,7 +19,9 @@ class busqueda extends StatefulWidget {
 
 class _QRScannerScreenState extends State<busqueda> {
   final String usr;
+
   _QRScannerScreenState({required this.usr});
+
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String qrText = "";
@@ -31,8 +39,7 @@ class _QRScannerScreenState extends State<busqueda> {
                     subpage = false;
                   });
                 },
-                code:qrText
-              )
+                code: qrText)
             : Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -73,6 +80,34 @@ class _QRScannerScreenState extends State<busqueda> {
               ));
   }
 
+  Future<void> searchM(VoidCallback onClose,BuildContext context, String code) async {
+    try {
+      final url =
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=$code';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> masc = json.decode(response.body);
+        if (masc['status'] == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => infomasc(onClose: onClose, code: code)),
+          );
+        } else {
+          alerta(context, "Codigo no valido o inactivo");
+        }
+      }
+      else {
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
@@ -86,8 +121,8 @@ class _QRScannerScreenState extends State<busqueda> {
         });
 
         if (qrText.isNotEmpty) {
-            subpage=true;
-            resultScreenOpened = false;
+          subpage = true;
+          resultScreenOpened = false;
           /*Navigator.push(
             context,
             MaterialPageRoute(
@@ -110,8 +145,8 @@ class _QRScannerScreenState extends State<busqueda> {
     });
 
     if (qrText.isNotEmpty) {
-        subpage=true;
-        resultScreenOpened = false;
+      subpage = true;
+      resultScreenOpened = false;
       /*Navigator.push(
         context,
         MaterialPageRoute(
@@ -123,5 +158,33 @@ class _QRScannerScreenState extends State<busqueda> {
         });
       });*/
     }
+  }
+  void alerta(BuildContext context, String mensaje) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Información Importante",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            mensaje,
+            style: TextStyle(fontSize: 18.0),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();// Cerrar la alerta
+              },
+              child: Text(
+                "OK",
+                style: TextStyle(fontSize: 18.0, color: Colors.blue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
