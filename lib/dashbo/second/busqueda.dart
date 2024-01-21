@@ -48,7 +48,8 @@ class _QRScannerScreenState extends State<busqueda> {
                       flex: 3,
                       child: QRView(
                         key: qrKey,
-                        onQRViewCreated:(controller) => _onQRViewCreated(controller, context),
+                        onQRViewCreated: (controller) =>
+                            _onQRViewCreated(controller, context),
                       ),
                     ),
                     Expanded(
@@ -92,11 +93,12 @@ class _QRScannerScreenState extends State<busqueda> {
           subpage = true;
           resultScreenOpened = false;
         } else {
-          alerta(context, "Codigo no valido o inactivo");
-
+          alerta(context, "Código no válido o inactivo", () {
+            // Llamada a _resetScanner después de cerrar el cuadro de diálogo
+            _resetScanner();
+          });
         }
-      }
-      else {
+      } else {
         Fluttertoast.showToast(
           msg: "Error en la respuesta: ${response.statusCode}",
           toastLength: Toast.LENGTH_SHORT,
@@ -108,7 +110,7 @@ class _QRScannerScreenState extends State<busqueda> {
     }
   }
 
-  void _onQRViewCreated(QRViewController controller,BuildContext context) {
+  void _onQRViewCreated(QRViewController controller, BuildContext context) {
     setState(() {
       this.controller = controller;
     });
@@ -123,10 +125,26 @@ class _QRScannerScreenState extends State<busqueda> {
         if (qrText.isNotEmpty) {
           /*subpage = true;
           resultScreenOpened = false;*/
-          searchM(context,qrText);
+          searchM(context, qrText);
         }
       }
     });
+  }
+
+  void _resetScanner() {
+    setState(() {
+      resultScreenOpened = false;
+      qrText = "";
+    });
+    if (controller != null) {
+      controller!.resumeCamera();
+    }
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 
   void _openQRScanner() {
@@ -150,7 +168,8 @@ class _QRScannerScreenState extends State<busqueda> {
       });*/
     }
   }
-  void alerta(BuildContext context, String mensaje) {
+
+  void alerta(BuildContext context, String mensaje, VoidCallback? callback) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -166,7 +185,10 @@ class _QRScannerScreenState extends State<busqueda> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();// Cerrar la alerta
+                Navigator.of(context).pop();
+                if (callback != null) {
+                  callback();
+                } // Cerrar la alerta
               },
               child: Text(
                 "OK",
