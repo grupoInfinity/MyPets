@@ -48,7 +48,7 @@ class _QRScannerScreenState extends State<busqueda> {
                       flex: 3,
                       child: QRView(
                         key: qrKey,
-                        onQRViewCreated: _onQRViewCreated,
+                        onQRViewCreated:(controller) => _onQRViewCreated(controller, context),
                       ),
                     ),
                     Expanded(
@@ -80,20 +80,20 @@ class _QRScannerScreenState extends State<busqueda> {
               ));
   }
 
-  Future<void> searchM(VoidCallback onClose,BuildContext context, String code) async {
+  Future<void> searchM(BuildContext context, String code) async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=$code';
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&estado=A'
+          '&codigo=$code';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> masc = json.decode(response.body);
         if (masc['status'] == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => infomasc(onClose: onClose, code: code)),
-          );
+          subpage = true;
+          resultScreenOpened = false;
         } else {
           alerta(context, "Codigo no valido o inactivo");
+
         }
       }
       else {
@@ -108,7 +108,7 @@ class _QRScannerScreenState extends State<busqueda> {
     }
   }
 
-  void _onQRViewCreated(QRViewController controller) {
+  void _onQRViewCreated(QRViewController controller,BuildContext context) {
     setState(() {
       this.controller = controller;
     });
@@ -121,18 +121,9 @@ class _QRScannerScreenState extends State<busqueda> {
         });
 
         if (qrText.isNotEmpty) {
-          subpage = true;
-          resultScreenOpened = false;
-          /*Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResultScreen(result: qrText, usr: usr),
-            ),
-          ).then((_) {
-            setState(() {
-              resultScreenOpened = false;
-            });
-          });*/
+          /*subpage = true;
+          resultScreenOpened = false;*/
+          searchM(context,qrText);
         }
       }
     });
