@@ -228,7 +228,7 @@ class _RegistroPState extends State<sRegistroP> {
       if (usr.isEmpty) {
         usr = ".¡¡?";
       }
-      final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
           'sec/sec_usuario.php?accion=C&usr=$usr';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -257,7 +257,7 @@ class _RegistroPState extends State<sRegistroP> {
   Future<void> insertUs(BuildContext context,Usuario usuario) async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=I&usr=${usuario.usr}'
+          'http://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php?accion=I&usr=${usuario.usr}'
           '&clave=${usuario.clave}&nombre=${usuario.nombre}&apellido=${usuario.apellido}'
           '&tel=${usuario.tel}&email=${usuario.email}&estado=A&user=${usuario.usuario}';
       final response = await http.get(Uri.parse(url));

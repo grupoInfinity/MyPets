@@ -155,7 +155,7 @@ class cambiarC extends StatelessWidget {
 
   Future<void> uClave(BuildContext context,String usr,String clave) async {
     try {
-      final url = 'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U' +
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U' +
           '&usorig=$usr&user=$usr&clave=$clave';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

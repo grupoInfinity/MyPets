@@ -115,7 +115,7 @@ class verifPin extends StatelessWidget {
 
 Future<void> vPin(BuildContext context,String usr,String pin) async {
     try {
-      final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
           'sec/sec_usuario.php?accion=C&usr=$usr&pin=$pin';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

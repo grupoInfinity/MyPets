@@ -84,7 +84,7 @@ class _QRScannerScreenState extends State<busqueda> {
   Future<void> searchM(BuildContext context, String code) async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&estado=A'
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&estado=A'
           '&codigo=$code ';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

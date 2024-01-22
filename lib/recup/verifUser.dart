@@ -17,7 +17,7 @@ class verifUser extends StatelessWidget {
 
   Future<void> logear(BuildContext context, String usr) async {
     try {
-      final url = 'http://192.168.1.11/MyPets_Admin/servicios/'
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
           'sec/sec_usuario.php?accion=C&usr=$usr&estado=A';
       final response = await http.get(Uri.parse(url));
       //logger.d('Solicitando datos a: $url');
@@ -30,12 +30,12 @@ class verifUser extends StatelessWidget {
           if (infoList.isNotEmpty) {
             usuario = infoList[0]['usr'];
             final url2 =
-                'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U' +
+                'http://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U' +
                     '&usorig=$usuario&user=$usuario';
             final response2 = await http.get(Uri.parse(url2));
             if (response2.statusCode == 200) {
               final url3 =
-                  'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_usuario.php?'
+                  'http://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php?'
                   'accion=C&usr=$usuario';
               final response3 = await http.get(Uri.parse(url3));
               if (response3.statusCode == 200) {
@@ -44,7 +44,7 @@ class verifUser extends StatelessWidget {
                   List<dynamic> infoList2 = user2['info'];
                   if (infoList2.isNotEmpty) {
                     final url4 =
-                        'http://192.168.1.11/MyPets_Admin/servicios/PHPMailer.php?user=' +
+                        'http://ginfinity.xyz/MyPets_Admin/servicios/PHPMailer.php?user=' +
                             infoList2[0]['usr'] +'&pin=' +infoList2[0]['pin'] +
                             '&email=' +infoList2[0]['email'];
                     final response4 = await http.get(Uri.parse(url4));
