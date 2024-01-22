@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../contanst/app_contanst.dart';
-
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
   final String code;
@@ -28,8 +27,8 @@ class _TuPantalla extends StatefulWidget {
 }
 
 class _TuPantallaState extends State<_TuPantalla> {
-  Mascota mascota =Mascota();
-  Vacuna vacuna = Vacuna();
+  Mascota mascota = Mascota(vacunas: []);
+
   @override
   void initState() {
     super.initState();
@@ -39,19 +38,23 @@ class _TuPantallaState extends State<_TuPantalla> {
   Future<void> cargarDatos() async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> mascData = json.decode(response.body);
         if (mascData['status'] == 1) {
           setState(() {
             mascota = Mascota.fromJson(mascData['info'][0]['mascota']);
-            vacuna = Vacuna.fromJson(mascData['info'][0]['vacuna']);
+            print("Número de vacunas: ${mascota.vacunas.length}");
+            print("Respuesta JSON: $mascData");
           });
         } else {
           //alerta(context, "Codigo no valido o inactivo");
         }
       } else {
+        // Error en la respuesta
+        // Puedes manejar el error de la forma que prefieras
+        // Aquí estoy usando Fluttertoast para mostrar un mensaje
         Fluttertoast.showToast(
           msg: "Error en la respuesta: ${response.statusCode}",
           toastLength: Toast.LENGTH_SHORT,
@@ -89,6 +92,10 @@ class _TuPantallaState extends State<_TuPantalla> {
             padding: const EdgeInsets.all(TSizes.defaultspace),
             child: Column(
               children: [
+                Text(
+                  "Informacion",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
                 Container(
                   height: 300,
                   width: 350,
@@ -99,17 +106,28 @@ class _TuPantallaState extends State<_TuPantalla> {
                     ),
                   ),
                 ),
-                SizedBox(height: AppBar().preferredSize.height),
-                Text(
-                  "Ingrese el PIN",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: TSizes.spacebtwSections),
                 Form(
                   child: Column(
                     children: [
+                      Text('Codigo: ${mascota.codigo}'),
                       Text('Nombre de la mascota: ${mascota.nmasc}'),
-                      Text('Nombre de la vacuna: ${vacuna.nombrevacuna}'),
+                      Text('Fecha de nacimiento: ${mascota.nacim}'),
+                      Text('Nombre de la mascota: ${mascota.depto}'),
+                      Text('Nombre de la mascota: ${mascota.muni}'),
+                      Text('Nombre de la mascota: ${mascota.nmasc}'),
+                      Text('Nombre de la mascota: ${mascota.nmasc}'),
+
+                      // Mostrar las vacunas en CardView
+                      Column(
+                        children: mascota.vacunas.map((vacuna) {
+                          return Card(
+                            child: ListTile(
+                              title: Text('Nombre de la vacuna: ${vacuna.nombrevacuna}'),
+                              subtitle: Text('Fecha de la vacuna: ${vacuna.fechaCreacion ?? ""}'),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ],
                   ),
                 ),
@@ -140,6 +158,8 @@ class Mascota {
   String? foto;
   String? codigo;
   String? estado;
+  List<Vacuna> vacunas;
+
   Mascota({
     this.idmasc,
     this.idtpmasc,
@@ -158,6 +178,7 @@ class Mascota {
     this.foto,
     this.codigo,
     this.estado,
+    required this.vacunas,
   });
 
   Mascota.fromJson(Map<String?, dynamic> json)
@@ -177,7 +198,10 @@ class Mascota {
         nacim = json['nacim'],
         foto = json['foto'],
         codigo = json['codigo'],
-        estado = json['estado'];
+        estado = json['estado'],
+        vacunas = (json['vacunas'] as List<dynamic>? ?? [])
+            .map((v) => Vacuna.fromJson(v))
+            .toList();
 }
 
 class Vacuna {
@@ -186,6 +210,7 @@ class Vacuna {
   String? idtipovacuna;
   String? nombrevacuna;
   String? fechaCreacion;
+
   Vacuna({
     this.idvacuna,
     this.idmascota,
