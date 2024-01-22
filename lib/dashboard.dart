@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mypets_app/dashbo/second/busqueda.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:mypets_app/dashbo/third/cuenta.dart';
 
 class dashboard extends StatelessWidget {
   final String usr;
@@ -9,7 +10,7 @@ class dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(usr: usr,),
+      home: MyHomePage(usr: usr),
     );
   }
 }
@@ -19,7 +20,7 @@ class MyHomePage extends StatefulWidget {
 
   MyHomePage({required this.usr});
   @override
-  _MyHomePageState createState() => _MyHomePageState(usr:usr);
+  _MyHomePageState createState() => _MyHomePageState(usr: usr);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -27,15 +28,14 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState({required this.usr});
 
   late List<Widget> _children;
+
   @override
   void initState() {
     super.initState();
     // Inicializar _screens en initState para evitar problemas con StatefulWidget
     _children = [
-    busqueda(usr: usr)
-      //,
-      //ScreenTwo(),
-      //ScreenThree(),
+      busqueda(usr: usr),
+      CuentaP(),
     ];
   }
 
