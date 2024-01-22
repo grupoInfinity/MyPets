@@ -80,6 +80,8 @@ class _RegistroPState extends State<sRegistroP> {
                               decoration: const InputDecoration(
                                 labelText: "Nombres",
                                 labelStyle: TextStyle(color: Colors.white),
+                                   focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),),
                                 prefixIcon:
                                     Icon(Iconsax.user, color: Colors.white),
                               ),
@@ -99,6 +101,8 @@ class _RegistroPState extends State<sRegistroP> {
                               decoration: const InputDecoration(
                                   labelStyle: TextStyle(color: Colors.white),
                                   labelText: "Apellidos",
+                                   focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),),
                                   prefixIcon:
                                       Icon(Iconsax.user, color: Colors.white)),
                               validator: (value) {
@@ -116,6 +120,8 @@ class _RegistroPState extends State<sRegistroP> {
                         controller: txtUser,
                         decoration: const InputDecoration(
                             labelText: "Usuario",
+                               focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),),
                             labelStyle: TextStyle(color: Colors.white),
                             prefixIcon:
                                 Icon(Iconsax.user1, color: Colors.white)),
@@ -139,6 +145,8 @@ class _RegistroPState extends State<sRegistroP> {
                         decoration: const InputDecoration(
                             labelText: "Correo Electrónico",
                             labelStyle: TextStyle(color: Colors.white),
+                               focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),),
                             prefixIcon: Icon(Icons.email, color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -158,6 +166,8 @@ class _RegistroPState extends State<sRegistroP> {
                         decoration: const InputDecoration(
                             labelText: "Teléfono",
                             labelStyle: TextStyle(color: Colors.white),
+                               focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),),
                             prefixIcon:
                                 Icon(Iconsax.activity, color: Colors.white)),
                         validator: (value) {
@@ -172,8 +182,12 @@ class _RegistroPState extends State<sRegistroP> {
                         obscureText: true,
                         decoration: const InputDecoration(
                             labelText: "Contraseña",
+                               focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),),
+          
                             labelStyle: TextStyle(color: Colors.white),
                             prefixIcon: Icon(Iconsax.password_check,
+                            
                                 color: Colors.white),
                             suffixIcon:
                                 Icon(Iconsax.eye_slash, color: Colors.white)),
@@ -184,10 +198,16 @@ class _RegistroPState extends State<sRegistroP> {
                           return null; // La validación pasó
                         },
                       ),
-                      const SizedBox(height: TSizes.spacebtwSections),
+                      const SizedBox(height: 15),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
+                          style:  ElevatedButton.styleFrom(
+                            primary: Colors.blue,
+                            onPrimary: Colors.white,
+                            fixedSize: Size(0, 50)
+
+                          ),
                           onPressed: () {
                             print("Botón presionado");
 
