@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../contanst/app_contanst.dart';
+
+
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
   final String code;
@@ -20,6 +22,7 @@ class infomasc extends StatelessWidget {
 
 class _TuPantalla extends StatefulWidget {
   final String code;
+
   _TuPantalla({required this.code});
 
   @override
@@ -40,32 +43,36 @@ class _TuPantallaState extends State<_TuPantalla> {
       final url =
           'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
+      print(response.body);
+
       if (response.statusCode == 200) {
-        Map<String, dynamic> mascData = json.decode(response.body);
+        // Parse the response JSON
+        final jsonResponse = json.decode(response.body);
 
-        print("Respuesta completa del servidor: $mascData"); // Agregado
-        if (mascData['status'] == 1) {
+        // Print the number of vaccines before assigning to mascota
+        print('Número de vacunas antes de asignar a mascota: ${jsonResponse['info']?[0]['vacuna']?.length}');
+        print('Número de vacunas antes de asignar a mascota: ${jsonResponse['info']?[0]['vacuna']}');
+
+        // Check the status in the response
+        if (jsonResponse['status'] == 1) {
+          // Update the state with the Mascota data
           setState(() {
-            mascota = Mascota.fromJson(mascData['info'][0]['mascota']);
-            print("Número de vacunas: ${mascota.vacuna.length}");
-            print("Respuesta JSON: $mascData");
-
+            mascota = Mascota.fromJson(jsonResponse['info'][0]['mascota']);
           });
+
+          // Print the number of vaccines after assigning to mascota
+          print('Número de vacunas después de asignar a mascota: ${mascota.vacuna.length}');
         } else {
-          //alerta(context, "Codigo no valido o inactivo");
+          // Handle the case where the status is not 1 (error)
+          print("Error in API response: ${jsonResponse['status']}");
         }
       } else {
-        // Error en la respuesta
-        // Puedes manejar el error de la forma que prefieras
-        // Aquí estoy usando Fluttertoast para mostrar un mensaje
-        Fluttertoast.showToast(
-          msg: "Error en la respuesta: ${response.statusCode}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-        );
+        // Handle HTTP errors here, e.g., show an error message
+        print("HTTP Error: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error nig: $e");
+      print("Error: $e");
+      // Handle errors here, e.g., show an error message
     }
   }
 
@@ -123,10 +130,13 @@ class _TuPantallaState extends State<_TuPantalla> {
                       // Mostrar las vacunas en CardView
                       Column(
                         children: mascota.vacuna.map((vacuna) {
+                          print(mascota.vacuna);
                           return Card(
                             child: ListTile(
-                              title: Text('Nombre de la vacuna: ${vacuna.nombrevacuna}'),
-                              subtitle: Text('Fecha de la vacuna: ${vacuna.fechaCreacion ?? ""}'),
+                              title: Text(
+                                  'Nombre de la vacuna: ${vacuna.nombrevacuna}'),
+                              subtitle: Text(
+                                  'Fecha de la vacuna: ${vacuna.fechaCreacion ?? ""}'),
                             ),
                           );
                         }).toList(),
@@ -144,44 +154,15 @@ class _TuPantallaState extends State<_TuPantalla> {
 }
 
 class Mascota {
-  String? idmasc;
-  String? idtpmasc;
-  String? idmuni;
-  String? iddepto;
-  String? depto;
-  String? muni;
-  String? dueno;
-  String? mail;
-  String? telefono;
-  String? nmasc;
-  String? tipomasc;
-  String? direccion;
-  String? estadodir;
-  String? nacim;
-  String? foto;
-  String? codigo;
-  String? estado;
-  List<Vacuna> vacuna;
+  String? idmasc;String? idtpmasc;String? idmuni;String? iddepto;String? depto;
+  String? muni;String? dueno;String? mail;String? telefono;String? nmasc;
+  String? tipomasc;String? direccion;String? estadodir;String? nacim;String? foto;
+  String? codigo;String? estado;List<Vacuna> vacuna;
 
   Mascota({
-    this.idmasc,
-    this.idtpmasc,
-    this.idmuni,
-    this.iddepto,
-    this.depto,
-    this.muni,
-    this.dueno,
-    this.mail,
-    this.telefono,
-    this.nmasc,
-    this.tipomasc,
-    this.direccion,
-    this.estadodir,
-    this.nacim,
-    this.foto,
-    this.codigo,
-    this.estado,
-    required this.vacuna,
+    this.idmasc, this.idtpmasc, this.idmuni, this.iddepto, this.depto, this.muni,
+    this.dueno, this.mail, this.telefono, this.nmasc, this.tipomasc, this.direccion,
+    this.estadodir, this.nacim, this.foto, this.codigo, this.estado, required this.vacuna,
   });
 
   Mascota.fromJson(Map<String, dynamic> json)
@@ -202,24 +183,16 @@ class Mascota {
         foto = json['foto'],
         codigo = json['codigo'],
         estado = json['estado'],
-        vacuna = ((json['info']?[0]['mascota']?['vacuna'] as List<dynamic>?) ?? [])
+        vacuna = ((json['info']?[0]['vacuna'] as List<dynamic>?) ?? [])
             .map((v) => Vacuna.fromJson(v))
             .toList();
 }
 
 class Vacuna {
-  String? idvacuna;
-  String? idmascota;
-  String? idtipovacuna;
-  String? nombrevacuna;
-  String? fechaCreacion;
+  String? idvacuna;String? idmascota;String? idtipovacuna;String? nombrevacuna;String? fechaCreacion;
 
   Vacuna({
-    this.idvacuna,
-    this.idmascota,
-    this.idtipovacuna,
-    this.nombrevacuna,
-    this.fechaCreacion,
+    this.idvacuna, this.idmascota, this.idtipovacuna, this.nombrevacuna, this.fechaCreacion,
   });
 
   Vacuna.fromJson(Map<String, dynamic> json)
