@@ -7,6 +7,12 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../contanst/app_contanst.dart';
 
+class Vacuna {
+  String nombrevacuna;
+  String fechaCreacion;
+
+  Vacuna(this.nombrevacuna, this.fechaCreacion,);
+}
 
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
@@ -30,38 +36,32 @@ class _TuPantalla extends StatefulWidget {
 }
 
 class _TuPantallaState extends State<_TuPantalla> {
-  Mascota mascota = Mascota(vacuna: []);
+  Mascota mascota = Mascota(/*vacuna: []*/);
+  List<Vacuna> items = [];
 
   @override
   void initState() {
     super.initState();
     cargarDatos();
+    fetchData();
   }
 
   Future<void> cargarDatos() async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget
+          .code}';
       final response = await http.get(Uri.parse(url));
-      print(response.body);
 
       if (response.statusCode == 200) {
-        // Parse the response JSON
         final jsonResponse = json.decode(response.body);
-
-        // Print the number of vaccines before assigning to mascota
-        print('Número de vacunas antes de asignar a mascota: ${jsonResponse['info']?[0]['vacuna']?.length}');
-        print('Número de vacunas antes de asignar a mascota: ${jsonResponse['info']?[0]['vacuna']}');
-
-        // Check the status in the response
         if (jsonResponse['status'] == 1) {
-          // Update the state with the Mascota data
+          final mascotaInfo = jsonResponse['info']?[0]['mascota'];
           setState(() {
-            mascota = Mascota.fromJson(jsonResponse['info'][0]['mascota']);
+            mascota = Mascota.fromJson(mascotaInfo);
           });
-
-          // Print the number of vaccines after assigning to mascota
-          print('Número de vacunas después de asignar a mascota: ${mascota.vacuna.length}');
+          /*print('Número de vacunas después de asignar a mascota: ${mascota.vacuna.length}');
+            print('Detalles de la vacuna después de asignar a mascota: ${mascota.vacuna}');*/
         } else {
           // Handle the case where the status is not 1 (error)
           print("Error in API response: ${jsonResponse['status']}");
@@ -76,6 +76,89 @@ class _TuPantallaState extends State<_TuPantalla> {
     }
   }
 
+  Future<void> fetchData() async {
+    try {
+      final url = 'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        // Verificar si la clave 'info' existe y es una lista
+        if (jsonResponse.containsKey('info') && jsonResponse['info'] is List) {
+          List<dynamic> results = jsonResponse['info'];
+
+          items.clear();
+
+          for (var result in results) {
+            String nombreVacuna = result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
+            String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
+
+            Vacuna newItem = Vacuna(nombreVacuna, fecha);
+
+            if (!items.contains(newItem)) {
+              items.add(newItem);
+            }
+          }
+          setState(() {});
+        } else {
+          // Manejar el caso donde 'info' no es una lista
+          print('La clave "info" no es una lista en la respuesta JSON.');
+        }
+      } else {
+        // Manejar la respuesta de error si es necesario
+      }
+    } catch (e) {
+      print("Error: $e");
+      // Manejar excepciones
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Buscador de mascotas'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Nombre de la mascota: ${mascota.nmasc}'),
+                Text('Fecha de nacimiento: ${mascota.nacim}'),
+                Text('Nombre de la mascota: ${mascota.depto}'),
+                Text('Nombre de la mascota: ${mascota.muni}'),
+                Text('Nombre de la mascota: ${mascota.nmasc}'),
+                Text('Nombre de la mascota: ${mascota.nmasc}'),
+                // Puedes agregar más detalles según sea necesario
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: Card(
+                    child: ListTile(
+                      title: Text(items[index].nombrevacuna),
+                      subtitle: Text(items[index].fechaCreacion),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /*
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,17 +212,23 @@ class _TuPantallaState extends State<_TuPantalla> {
 
                       // Mostrar las vacunas en CardView
                       Column(
-                        children: mascota.vacuna.map((vacuna) {
-                          print(mascota.vacuna);
-                          return Card(
-                            child: ListTile(
-                              title: Text(
-                                  'Nombre de la vacuna: ${vacuna.nombrevacuna}'),
-                              subtitle: Text(
-                                  'Fecha de la vacuna: ${vacuna.fechaCreacion ?? ""}'),
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  child: Card(
+                                    child: ListTile(
+                                      title: Text(items[index].nombrevacuna),
+                                      subtitle: Text(items[index].fechaCreacion),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        ]
                       ),
                     ],
                   ),
@@ -150,19 +239,51 @@ class _TuPantallaState extends State<_TuPantalla> {
         ),
       ),
     );
-  }
+  }*/
 }
 
+
+
 class Mascota {
-  String? idmasc;String? idtpmasc;String? idmuni;String? iddepto;String? depto;
-  String? muni;String? dueno;String? mail;String? telefono;String? nmasc;
-  String? tipomasc;String? direccion;String? estadodir;String? nacim;String? foto;
-  String? codigo;String? estado;List<Vacuna> vacuna;
+  String? idmasc;
+  String? idtpmasc;
+  String? idmuni;
+  String? iddepto;
+  String? depto;
+  String? muni;
+  String? dueno;
+  String? mail;
+  String? telefono;
+  String? nmasc;
+  String? tipomasc;
+  String? direccion;
+  String? estadodir;
+  String? nacim;
+  String? foto;
+  String? codigo;
+  String? estado;
+
+  //List<Vacuna> vacuna;
 
   Mascota({
-    this.idmasc, this.idtpmasc, this.idmuni, this.iddepto, this.depto, this.muni,
-    this.dueno, this.mail, this.telefono, this.nmasc, this.tipomasc, this.direccion,
-    this.estadodir, this.nacim, this.foto, this.codigo, this.estado, required this.vacuna,
+    this.idmasc,
+    this.idtpmasc,
+    this.idmuni,
+    this.iddepto,
+    this.depto,
+    this.muni,
+    this.dueno,
+    this.mail,
+    this.telefono,
+    this.nmasc,
+    this.tipomasc,
+    this.direccion,
+    this.estadodir,
+    this.nacim,
+    this.foto,
+    this.codigo,
+    this.estado,
+    //required this.vacuna,
   });
 
   Mascota.fromJson(Map<String, dynamic> json)
@@ -182,23 +303,13 @@ class Mascota {
         nacim = json['nacim'],
         foto = json['foto'],
         codigo = json['codigo'],
-        estado = json['estado'],
-        vacuna = ((json['info']?[0]['vacuna'] as List<dynamic>?) ?? [])
-            .map((v) => Vacuna.fromJson(v))
-            .toList();
+        estado = json['estado'];
+/*,
+        vacuna = (json['info']?[0]['mascota']?['vacuna'] as List<dynamic>?)
+                ?.map((v) => Vacuna.fromJson(v))
+                .toList() ??
+            [];*/
 }
 
-class Vacuna {
-  String? idvacuna;String? idmascota;String? idtipovacuna;String? nombrevacuna;String? fechaCreacion;
 
-  Vacuna({
-    this.idvacuna, this.idmascota, this.idtipovacuna, this.nombrevacuna, this.fechaCreacion,
-  });
 
-  Vacuna.fromJson(Map<String, dynamic> json)
-      : idvacuna = json['idvacuna'],
-        idmascota = json['idmascota'],
-        idtipovacuna = json['idtipovacuna'],
-        nombrevacuna = json['nombrevacuna'],
-        fechaCreacion = json['fecha_creacion'] ?? "";
-}
