@@ -11,7 +11,10 @@ class Vacuna {
   String nombrevacuna;
   String fechaCreacion;
 
-  Vacuna(this.nombrevacuna, this.fechaCreacion,);
+  Vacuna(
+    this.nombrevacuna,
+    this.fechaCreacion,
+  );
 }
 
 class infomasc extends StatelessWidget {
@@ -49,8 +52,7 @@ class _TuPantallaState extends State<_TuPantalla> {
   Future<void> cargarDatos() async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget
-          .code}';
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -78,7 +80,8 @@ class _TuPantallaState extends State<_TuPantalla> {
 
   Future<void> fetchData() async {
     try {
-      final url = 'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
+      final url =
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -91,7 +94,8 @@ class _TuPantallaState extends State<_TuPantalla> {
           items.clear();
 
           for (var result in results) {
-            String nombreVacuna = result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
+            String nombreVacuna =
+                result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
             String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
 
             Vacuna newItem = Vacuna(nombreVacuna, fecha);
@@ -114,32 +118,39 @@ class _TuPantallaState extends State<_TuPantalla> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Buscador de mascotas'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Nombre de la mascota: ${mascota.nmasc}'),
-                Text('Fecha de nacimiento: ${mascota.nacim}'),
-                Text('Nombre de la mascota: ${mascota.depto}'),
-                Text('Nombre de la mascota: ${mascota.muni}'),
-                Text('Nombre de la mascota: ${mascota.nmasc}'),
-                Text('Nombre de la mascota: ${mascota.nmasc}'),
-                // Puedes agregar más detalles según sea necesario
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Nombre de la mascota: ${mascota.nmasc}'),
+                  Text('Fecha de nacimiento: ${mascota.nacim}'),
+                  Text('Nombre de la mascota: ${mascota.depto}'),
+                  Text('Nombre de la mascota: ${mascota.muni}'),
+                  Text('Nombre de la mascota: ${mascota.nmasc}'),
+                  Text('Nombre de la mascota: ${mascota.nmasc}'),
+                  // Puedes agregar más detalles según sea necesario
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
+            mascota.foto != null
+                ? Image.memory(
+                    base64Decode(mascota.foto!),
+                    fit: BoxFit.cover,
+                    height: 200,
+                  )
+                : Container(),
+            ListView.builder(
+              shrinkWrap: true,
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
@@ -152,13 +163,13 @@ class _TuPantallaState extends State<_TuPantalla> {
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  /*
+/*
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -242,8 +253,6 @@ class _TuPantallaState extends State<_TuPantalla> {
   }*/
 }
 
-
-
 class Mascota {
   String? idmasc;
   String? idtpmasc;
@@ -304,12 +313,4 @@ class Mascota {
         foto = json['foto'],
         codigo = json['codigo'],
         estado = json['estado'];
-/*,
-        vacuna = (json['info']?[0]['mascota']?['vacuna'] as List<dynamic>?)
-                ?.map((v) => Vacuna.fromJson(v))
-                .toList() ??
-            [];*/
 }
-
-
-
