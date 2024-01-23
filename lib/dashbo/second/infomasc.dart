@@ -27,7 +27,7 @@ class _TuPantalla extends StatefulWidget {
 }
 
 class _TuPantallaState extends State<_TuPantalla> {
-  Mascota mascota = Mascota(vacunas: []);
+  Mascota mascota = Mascota(vacuna: []);
 
   @override
   void initState() {
@@ -38,15 +38,18 @@ class _TuPantallaState extends State<_TuPantalla> {
   Future<void> cargarDatos() async {
     try {
       final url =
-          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> mascData = json.decode(response.body);
+
+        print("Respuesta completa del servidor: $mascData"); // Agregado
         if (mascData['status'] == 1) {
           setState(() {
             mascota = Mascota.fromJson(mascData['info'][0]['mascota']);
-            print("Número de vacunas: ${mascota.vacunas.length}");
+            print("Número de vacunas: ${mascota.vacuna.length}");
             print("Respuesta JSON: $mascData");
+
           });
         } else {
           //alerta(context, "Codigo no valido o inactivo");
@@ -62,7 +65,7 @@ class _TuPantallaState extends State<_TuPantalla> {
         );
       }
     } catch (e) {
-      print("Error: $e");
+      print("Error nig: $e");
     }
   }
 
@@ -119,7 +122,7 @@ class _TuPantallaState extends State<_TuPantalla> {
 
                       // Mostrar las vacunas en CardView
                       Column(
-                        children: mascota.vacunas.map((vacuna) {
+                        children: mascota.vacuna.map((vacuna) {
                           return Card(
                             child: ListTile(
                               title: Text('Nombre de la vacuna: ${vacuna.nombrevacuna}'),
@@ -158,7 +161,7 @@ class Mascota {
   String? foto;
   String? codigo;
   String? estado;
-  List<Vacuna> vacunas;
+  List<Vacuna> vacuna;
 
   Mascota({
     this.idmasc,
@@ -178,10 +181,10 @@ class Mascota {
     this.foto,
     this.codigo,
     this.estado,
-    required this.vacunas,
+    required this.vacuna,
   });
 
-  Mascota.fromJson(Map<String?, dynamic> json)
+  Mascota.fromJson(Map<String, dynamic> json)
       : idmasc = json['idmasc'],
         idtpmasc = json['idtpmasc'],
         idmuni = json['idmuni'],
@@ -199,7 +202,7 @@ class Mascota {
         foto = json['foto'],
         codigo = json['codigo'],
         estado = json['estado'],
-        vacunas = (json['vacunas'] as List<dynamic>? ?? [])
+        vacuna = ((json['info']?[0]['mascota']?['vacuna'] as List<dynamic>?) ?? [])
             .map((v) => Vacuna.fromJson(v))
             .toList();
 }
@@ -219,10 +222,10 @@ class Vacuna {
     this.fechaCreacion,
   });
 
-  Vacuna.fromJson(Map<String?, dynamic> json)
+  Vacuna.fromJson(Map<String, dynamic> json)
       : idvacuna = json['idvacuna'],
         idmascota = json['idmascota'],
         idtipovacuna = json['idtipovacuna'],
         nombrevacuna = json['nombrevacuna'],
-        fechaCreacion = json['fecha_creacion'];
+        fechaCreacion = json['fecha_creacion'] ?? "";
 }
