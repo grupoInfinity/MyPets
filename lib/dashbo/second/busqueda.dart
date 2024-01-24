@@ -100,14 +100,21 @@ class _QRScannerScreenState extends State<busqueda> {
     super.dispose();
   }
 
-  void _openQRScanner(BuildContext context) {
+  void _openQRScanner(BuildContext context) async {
     setState(() {
       qrText = textEditingController.text;
       resultScreenOpened = true;
     });
 
     if (qrText.isNotEmpty) {
-      searchM(context, qrText);
+      await searchM(context, qrText);  // Esperar a que searchM termine
+      if (subpage) {
+        // Solo establecer subpage a true si la búsqueda fue exitosa
+        setState(() {
+          subpage = true;
+          resultScreenOpened = false;
+        });
+      }
     }
   }
 
@@ -115,13 +122,13 @@ class _QRScannerScreenState extends State<busqueda> {
     try {
       final url =
           'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&estado=A'
-          '&codigo=$code ';
+          '&codigo=$code';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Map<String, dynamic> masc = json.decode(response.body);
         if (masc['status'] == 1) {
+          // subpage se establecerá a true solo si la búsqueda fue exitosa
           subpage = true;
-          resultScreenOpened = false;
         } else {
           alerta(context, "Código no válido o inactivo", () {
             // Llamada a _resetScanner después de cerrar el cuadro de diálogo
