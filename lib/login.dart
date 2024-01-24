@@ -72,9 +72,9 @@ class login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-        decoration: BoxDecoration(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
           gradient: LinearGradient(
             stops: [0.0, 1.0],
             colors: [
@@ -85,6 +85,7 @@ class login extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
+      child: SingleChildScrollView(    
         child: Column(
           children: <Widget>[
             Container(
@@ -177,6 +178,7 @@ class login extends StatelessWidget {
                                   Container(
                                     padding: EdgeInsets.all(8.0),
                                     child: TextField(
+                                       obscureText: true,
                                       controller: txtClave,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
@@ -188,7 +190,7 @@ class login extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 30),
+                            SizedBox(height: 40),
                             Container(
                               height: 60,
                               decoration: BoxDecoration(
@@ -221,7 +223,7 @@ class login extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 15),
+                            SizedBox(height: 25),
                             GestureDetector(
                               onTap: () {
                                 // Navegar a la nueva pantalla cuando se toca el texto
@@ -231,7 +233,9 @@ class login extends StatelessWidget {
                                     builder: (context) => verifUser(),
                                   ),
                                 );
+                                
                               },
+                             
                               child: Text(
                                 "¿Se te olvidó la contraseña?",
                                 style: TextStyle(color: Colors.white, fontFamily: 'Abel'),

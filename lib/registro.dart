@@ -177,6 +177,7 @@ class _RegistroPState extends State<sRegistroP> {
                           return null; // La validación pasó
                         },
                       ),
+                       const SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
                         controller: txtContra,
                         obscureText: true,
@@ -198,7 +199,7 @@ class _RegistroPState extends State<sRegistroP> {
                           return null; // La validación pasó
                         },
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 30),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
