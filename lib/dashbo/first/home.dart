@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:mypets_app/dashbo/first/addmascota.dart';
 
 class home extends StatefulWidget {
+
   final String usr;
+
 
   home({required this.usr});
 
@@ -34,9 +37,9 @@ class _homeState extends State<home> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-  onPressed: () {
-    
-  },
+ onPressed: () {
+  Navigator.pushNamed(context, '/addM');
+                                  },
   backgroundColor: const Color.fromARGB(255, 51, 163, 255),
   child: Icon(Icons.add),
 ),

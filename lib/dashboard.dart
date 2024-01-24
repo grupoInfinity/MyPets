@@ -19,6 +19,7 @@ class dashboard extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final String usr;
 
+
   MyHomePage({required this.usr});
   @override
   _MyHomePageState createState() => _MyHomePageState(usr: usr);
@@ -37,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _children = [
       home(usr: usr),
       busqueda(usr: usr),
-      CuentaP(usr: usr,),
+      CuentaP(usr: usr),
     ];
   }
 
