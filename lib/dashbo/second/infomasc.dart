@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -10,10 +12,12 @@ class Vacuna {
     this.nombrevacuna,this.fechaCreacion,
   );
 }
+
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
   final String code;
   infomasc({required this.onClose, required this.code});
+
   @override
   Widget build(BuildContext context) {
     return _TuPantalla(code: code,onClose: onClose,);
@@ -37,9 +41,23 @@ class _TuPantallaState extends State<_TuPantalla> {
     cargarDatos();
     fetchData();
   }
+  Uint8List tryDecodeBase64(String base64String) {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      print("Error decodificando base64: $e");
+      // Puedes devolver una imagen de error o cualquier valor predeterminado
+      return Uint8List.fromList([]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (mascota.estadodir == 'I') {
+      print( mascota.estadodir);
+      mascota.direccion = 'Pendiente';
+      // Realizar acciones según sea necesario
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Informacion'),
@@ -54,7 +72,7 @@ class _TuPantallaState extends State<_TuPantalla> {
           children: [
             mascota.foto != null
                 ? Image.memory(
-              base64Decode(mascota.foto!),
+              tryDecodeBase64(mascota.foto!),
               fit: BoxFit.cover,
               height: 200,
             )
@@ -66,12 +84,14 @@ class _TuPantallaState extends State<_TuPantalla> {
                 children: [
                   Text('Nombre de la mascota: ${mascota.nmasc}'),
                   Text('Fecha de nacimiento: ${mascota.nacim}'),
-                  Text('Nombre de la mascota: ${mascota.depto}'),
-                  Text('Nombre de la mascota: ${mascota.muni}'),
-                  Text('Nombre de la mascota: ${mascota.direccion}'),
-                  Text('Nombre de la mascota: ${mascota.telefono}'),
-                  Text('Nombre de la mascota: ${mascota.mail}'),
-                  Text('Nombre de la mascota: ${mascota.codigo}'),
+                  Text('Tipo: ${mascota.tipomasc}'),
+                  Text('Departamento: ${mascota.depto}'),
+                  Text('Municipio: ${mascota.muni}'),
+                  Text('Direccion: ${mascota.direccion}'),
+                  Text('Telefono: ${mascota.telefono}'),
+                  Text('Email: ${mascota.mail}'),
+                  Text('Codigo: ${mascota.codigo}'),
+                  SizedBox(height: 30),
                   // Puedes agregar más detalles según sea necesario
                 ],
               ),
@@ -99,7 +119,7 @@ class _TuPantallaState extends State<_TuPantalla> {
   Future<void> cargarDatos() async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
@@ -122,7 +142,7 @@ class _TuPantallaState extends State<_TuPantalla> {
   Future<void> fetchData() async {
     try {
       final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -171,6 +191,7 @@ class Mascota {
   String? codigo;
   String? estado;
 
+
   //List<Vacuna> vacuna;
 
   Mascota({
@@ -193,6 +214,8 @@ class Mascota {
     this.estado,
     //required this.vacuna,
   });
+
+
 
   Mascota.fromJson(Map<String, dynamic> json)
       : idmasc = json['idmasc'],
