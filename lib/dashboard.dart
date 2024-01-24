@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Inicializar _screens en initState para evitar problemas con StatefulWidget
     _children = [
-      home(),
+      home(usr: usr),
       busqueda(usr: usr),
       CuentaP(),
     ];

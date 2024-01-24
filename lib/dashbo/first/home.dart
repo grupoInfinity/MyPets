@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class home extends StatefulWidget {
-  const home({ Key? key }) : super(key: key);
+  final String usr;
+
+  home({required this.usr});
 
   @override
   _homeState createState() => _homeState();
@@ -38,10 +40,10 @@ class _homeState extends State<home> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text('Bienvenido', style: TextStyle(
-          color: Colors.black,
-        ),),
-      ),
+        title: Text('Bienvenido: ${widget.usr}', style: TextStyle(
+  color: Colors.black,
+)),
+    ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
