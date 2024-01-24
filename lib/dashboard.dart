@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _children = [
       home(usr: usr),
       busqueda(usr: usr),
-      CuentaP(),
+      CuentaP(usr: usr,),
     ];
   }
 

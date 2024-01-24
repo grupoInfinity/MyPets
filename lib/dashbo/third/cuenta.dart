@@ -3,7 +3,8 @@ import 'package:mypets_app/contanst/app_contanst.dart';
 import 'package:mypets_app/Components/Text_box.dart';
 
 class CuentaP extends StatefulWidget {
-  const CuentaP({Key? key}) : super(key: key);
+  final String usr;
+  CuentaP({required this.usr}); 
 
   @override
   State<CuentaP> createState() => _CuentaPState();

@@ -122,7 +122,7 @@ class login extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(40.0),
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 30),

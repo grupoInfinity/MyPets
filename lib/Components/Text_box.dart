@@ -33,7 +33,7 @@ class MyTextBox extends StatelessWidget {
             Text(sectionName, style:  TextStyle(color: Colors.grey[500]),),
 
             //Boton Para Editar
-            IconButton(onPressed: (){}, 
+            IconButton(onPressed: onPressed, 
             icon: Icon(Icons.settings, color:  Colors.grey[400],),
             ),
           ],

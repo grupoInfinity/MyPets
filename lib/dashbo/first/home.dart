@@ -33,10 +33,13 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _selectedIndex.length > 0 ? FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.arrow_forward_ios),
-      ) : null,
+      floatingActionButton: FloatingActionButton(
+  onPressed: () {
+    
+  },
+  backgroundColor: const Color.fromARGB(255, 51, 163, 255),
+  child: Icon(Icons.add),
+),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
