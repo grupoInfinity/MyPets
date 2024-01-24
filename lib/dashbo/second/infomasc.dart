@@ -1,47 +1,36 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
-
 import '../../contanst/app_contanst.dart';
-
 class Vacuna {
-  String nombrevacuna;
-  String fechaCreacion;
-
+  String nombrevacuna;String fechaCreacion;
   Vacuna(
-    this.nombrevacuna,
-    this.fechaCreacion,
+    this.nombrevacuna,this.fechaCreacion,
   );
 }
-
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
   final String code;
-
   infomasc({required this.onClose, required this.code});
-
   @override
   Widget build(BuildContext context) {
-    return _TuPantalla(code: code);
+    return _TuPantalla(code: code,onClose: onClose,);
   }
 }
 
 class _TuPantalla extends StatefulWidget {
   final String code;
-
-  _TuPantalla({required this.code});
-
+  final VoidCallback onClose;
+  _TuPantalla({required this.code,required this.onClose});
   @override
   _TuPantallaState createState() => _TuPantallaState();
 }
-
 class _TuPantallaState extends State<_TuPantalla> {
+
   Mascota mascota = Mascota(/*vacuna: []*/);
   List<Vacuna> items = [];
-
   @override
   void initState() {
     super.initState();
@@ -49,84 +38,27 @@ class _TuPantallaState extends State<_TuPantalla> {
     fetchData();
   }
 
-  Future<void> cargarDatos() async {
-    try {
-      final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        if (jsonResponse['status'] == 1) {
-          final mascotaInfo = jsonResponse['info']?[0]['mascota'];
-          setState(() {
-            mascota = Mascota.fromJson(mascotaInfo);
-          });
-          /*print('Número de vacunas después de asignar a mascota: ${mascota.vacuna.length}');
-            print('Detalles de la vacuna después de asignar a mascota: ${mascota.vacuna}');*/
-        } else {
-          // Handle the case where the status is not 1 (error)
-          print("Error in API response: ${jsonResponse['status']}");
-        }
-      } else {
-        // Handle HTTP errors here, e.g., show an error message
-        print("HTTP Error: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error: $e");
-      // Handle errors here, e.g., show an error message
-    }
-  }
-
-  Future<void> fetchData() async {
-    try {
-      final url =
-          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
-        // Verificar si la clave 'info' existe y es una lista
-        if (jsonResponse.containsKey('info') && jsonResponse['info'] is List) {
-          List<dynamic> results = jsonResponse['info'];
-
-          items.clear();
-
-          for (var result in results) {
-            String nombreVacuna =
-                result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
-            String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
-
-            Vacuna newItem = Vacuna(nombreVacuna, fecha);
-
-            if (!items.contains(newItem)) {
-              items.add(newItem);
-            }
-          }
-          setState(() {});
-        } else {
-          // Manejar el caso donde 'info' no es una lista
-          print('La clave "info" no es una lista en la respuesta JSON.');
-        }
-      } else {
-        // Manejar la respuesta de error si es necesario
-      }
-    } catch (e) {
-      print("Error: $e");
-      // Manejar excepciones
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buscador de mascotas'),
+        title: Text('Informacion'),
+        // Agregar el botón en la parte superior izquierda
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed:widget.onClose,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            mascota.foto != null
+                ? Image.memory(
+              base64Decode(mascota.foto!),
+              fit: BoxFit.cover,
+              height: 200,
+            )
+                : Container(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -136,19 +68,15 @@ class _TuPantallaState extends State<_TuPantalla> {
                   Text('Fecha de nacimiento: ${mascota.nacim}'),
                   Text('Nombre de la mascota: ${mascota.depto}'),
                   Text('Nombre de la mascota: ${mascota.muni}'),
-                  Text('Nombre de la mascota: ${mascota.nmasc}'),
-                  Text('Nombre de la mascota: ${mascota.nmasc}'),
+                  Text('Nombre de la mascota: ${mascota.direccion}'),
+                  Text('Nombre de la mascota: ${mascota.telefono}'),
+                  Text('Nombre de la mascota: ${mascota.mail}'),
+                  Text('Nombre de la mascota: ${mascota.codigo}'),
                   // Puedes agregar más detalles según sea necesario
                 ],
               ),
             ),
-            mascota.foto != null
-                ? Image.memory(
-                    base64Decode(mascota.foto!),
-                    fit: BoxFit.cover,
-                    height: 200,
-                  )
-                : Container(),
+
             ListView.builder(
               shrinkWrap: true,
               itemCount: items.length,
@@ -168,89 +96,60 @@ class _TuPantallaState extends State<_TuPantalla> {
       ),
     );
   }
+  Future<void> cargarDatos() async {
+    try {
+      final url =
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['status'] == 1) {
+          final mascotaInfo = jsonResponse['info']?[0]['mascota'];
+          setState(() {
+            mascota = Mascota.fromJson(mascotaInfo);
+          });
+        } else {
+          print("Error in API response: ${jsonResponse['status']}");
+        }
+      } else {
+        print("HTTP Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            stops: [0.0, 1.0],
-            colors: [
-              Color.fromRGBO(18, 69, 140, 1.0),
-              Color.fromRGBO(110, 130, 158, 1.0),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(TSizes.defaultspace),
-            child: Column(
-              children: [
-                Text(
-                  "Informacion",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                Container(
-                  height: 300,
-                  width: 350,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('android/assets/images/Logo3.png'),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                Form(
-                  child: Column(
-                    children: [
-                      Text('Codigo: ${mascota.codigo}'),
-                      Text('Nombre de la mascota: ${mascota.nmasc}'),
-                      Text('Fecha de nacimiento: ${mascota.nacim}'),
-                      Text('Nombre de la mascota: ${mascota.depto}'),
-                      Text('Nombre de la mascota: ${mascota.muni}'),
-                      Text('Nombre de la mascota: ${mascota.nmasc}'),
-                      Text('Nombre de la mascota: ${mascota.nmasc}'),
+  Future<void> fetchData() async {
+    try {
+      final url =
+          'http://192.168.1.11/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        if (jsonResponse.containsKey('info') && jsonResponse['info'] is List) {
+          List<dynamic> results = jsonResponse['info'];
+          items.clear();
+          for (var result in results) {
+            String nombreVacuna =
+                result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
+            String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
+            Vacuna newItem = Vacuna(nombreVacuna, fecha);
+            if (!items.contains(newItem)) {
+              items.add(newItem);
+            }
+          }
+          setState(() {});
+        } else {
+          print('La clave "info" no es una lista en la respuesta JSON.');
+        }
+      } else {
+      }
+    } catch (e) {
+      print("Error: $e");
+      // Manejar excepciones
+    }
+  }
 
-                      // Mostrar las vacunas en CardView
-                      Column(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: items.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  child: Card(
-                                    child: ListTile(
-                                      title: Text(items[index].nombrevacuna),
-                                      subtitle: Text(items[index].fechaCreacion),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ]
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }*/
 }
 
 class Mascota {
