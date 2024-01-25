@@ -34,55 +34,53 @@ class _QRScannerScreenState extends State<busqueda> {
     return Scaffold(
       body: subpage
           ? infomasc(
-          onClose: () {
-            setState(() {
-              subpage = false;
-            });
-          },
-          code: qrText)
+              onClose: () {
+                setState(() {
+                  subpage = false;
+                });
+              },
+              code: qrText)
           : Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: QRView(
-                key: qrKey,
-                onQRViewCreated: (controller) =>
-                    _onQRViewCreated(controller, context),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 50),
-                    Text('Resultado: $qrText'),
-                    SizedBox(height: 10),
-                    TextField(
-                      controller: textEditingController,
-                      decoration: InputDecoration(
-                        hintText: 'Introduce un código QR manualmente',
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: QRView(
+                      key: qrKey,
+                      onQRViewCreated: (controller) =>
+                          _onQRViewCreated(controller, context),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 60),
+                          TextField(
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              hintText: 'Introduce un código QR manualmente',
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              _openQRScanner(context);
+                            },
+                            child: Text('Buscar'),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        _openQRScanner(context);
-                      },
-                      child: Text('Buscar'),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
-}
+  }
 
   void _resetScanner() {
     setState(() {
@@ -101,19 +99,25 @@ class _QRScannerScreenState extends State<busqueda> {
   }
 
   void _openQRScanner(BuildContext context) async {
-    setState(() {
-      qrText = textEditingController.text;
-      resultScreenOpened = true;
-    });
+    String enteredCode = textEditingController.text;
 
-    if (qrText.isNotEmpty) {
-      await searchM(context, qrText);  // Esperar a que searchM termine
+    if (enteredCode.isNotEmpty) {
+      setState(() {
+        qrText = enteredCode;
+        resultScreenOpened = true;
+      });
+
+      await searchM(context, qrText); // Esperar a que searchM termine
+
       if (subpage) {
         // Solo establecer subpage a true si la búsqueda fue exitosa
         setState(() {
           subpage = true;
           resultScreenOpened = false;
         });
+      } else {
+        // If searchM was not successful, reset scanner
+        _resetScanner();
       }
     }
   }
@@ -159,15 +163,21 @@ class _QRScannerScreenState extends State<busqueda> {
           resultScreenOpened = true;
         });
 
-        if (qrText.isNotEmpty) {
-          /*subpage = true;
-          resultScreenOpened = false;*/
-          searchM(context, qrText);
+        searchM(context, qrText); // Esperar a que searchM termine
+
+        if (subpage) {
+          // Solo establecer subpage a true si la búsqueda fue exitosa
+          setState(() {
+            subpage = true;
+            resultScreenOpened = false;
+          });
+        } else {
+          // If searchM was not successful, reset scanner
+          _resetScanner();
         }
       }
     });
   }
-
 
   void alerta(BuildContext context, String mensaje, VoidCallback? callback) {
     showDialog(
