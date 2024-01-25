@@ -20,7 +20,7 @@ class _CuentaPState extends State<CuentaP> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.white,
         title: Text("Editar " + field),
         content: TextField(
           controller: textController,

@@ -12,7 +12,6 @@ void main(){
      '/login':(context) => login(),
      '/main': (context) => Principal(),
      '/registro': (context) => RegistroP(),
-     '/addM': (context) => addMascota(),
     },
   ));
 }

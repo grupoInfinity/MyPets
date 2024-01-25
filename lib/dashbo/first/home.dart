@@ -38,7 +38,8 @@ class _homeState extends State<home> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
  onPressed: () {
-  Navigator.pushNamed(context, '/addM');
+Navigator.push(context, MaterialPageRoute(builder:(context) => AddMascota()),
+);
                                   },
   backgroundColor: const Color.fromARGB(255, 51, 163, 255),
   child: Icon(Icons.add),
