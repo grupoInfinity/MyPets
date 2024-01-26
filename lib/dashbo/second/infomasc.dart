@@ -59,7 +59,9 @@ class _TuPantallaState extends State<_TuPantalla> {
       // Realizar acciones según sea necesario
     }
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 51, 163, 255),
       appBar: AppBar(
+         backgroundColor: const Color.fromARGB(255, 19, 86, 202),
         title: Text('Informacion'),
         // Agregar el botón en la parte superior izquierda
         leading: IconButton(
@@ -70,6 +72,7 @@ class _TuPantallaState extends State<_TuPantalla> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+             const SizedBox(height: TSizes.spacebtwSections),
             mascota.foto != null
                 ? Image.memory(
               tryDecodeBase64(mascota.foto!),
@@ -82,14 +85,23 @@ class _TuPantallaState extends State<_TuPantalla> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                   const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Nombre de la mascota: ${mascota.nmasc}'),
+                   const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Fecha de nacimiento: ${mascota.nacim}'),
+                   const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Tipo: ${mascota.tipomasc}'),
+                  const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Departamento: ${mascota.depto}'),
+                   const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Municipio: ${mascota.muni}'),
+                  const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Direccion: ${mascota.direccion}'),
+                  const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Telefono: ${mascota.telefono}'),
+                  const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Email: ${mascota.mail}'),
+                   const SizedBox(height: TSizes.spacebtwInputFields),
                   Text('Codigo: ${mascota.codigo}'),
                   SizedBox(height: 30),
                   // Puedes agregar más detalles según sea necesario
