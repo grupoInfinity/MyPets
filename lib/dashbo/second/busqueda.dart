@@ -8,6 +8,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../first/addmascota.dart';
+
 class busqueda extends StatefulWidget {
   final String usr;
 
@@ -28,10 +30,19 @@ class _QRScannerScreenState extends State<busqueda> {
   bool resultScreenOpened = false;
   TextEditingController textEditingController = TextEditingController();
   bool subpage = false;
+  bool subpage2 = false;
+  bool resultScreenOpened2 = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          subpage = true;
+        },
+        backgroundColor: const Color.fromARGB(255, 51, 163, 255),
+        child: Icon(Icons.add),
+      ),*/
       body: subpage
           ? infomasc(
               onClose: () {
@@ -40,7 +51,15 @@ class _QRScannerScreenState extends State<busqueda> {
                 });
               },
               code: qrText)
-          : Center(
+          : /*subpage
+          ? AddMascota(
+          onClose: () {
+            setState(() {
+              subpage = false;
+            });
+          },
+          usr: widget.usr)
+          : */Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

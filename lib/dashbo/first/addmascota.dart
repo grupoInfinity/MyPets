@@ -38,7 +38,7 @@ class sbpage extends State<AddMascota> {
     String base64Image = base64Encode(imageBytes);
     return base64Image;
   }
-  late List<Departamento> departamentos;
+  late List<Departamento> departamentos= [];
   late List<Municipio> municipios;
   int selectedDepartamentoId = 0;
   //bool activado = false;
@@ -50,6 +50,7 @@ class sbpage extends State<AddMascota> {
   @override
   void initState() {
     super.initState();
+    departamentos = [];
     loadDepartamentos();
   }
 
@@ -60,8 +61,13 @@ class sbpage extends State<AddMascota> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 19, 86, 202),
+        title: Text('Registro de mascota'),
+        // Agregar el botón en la parte superior izquierda
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed:widget.onClose,
+        ),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

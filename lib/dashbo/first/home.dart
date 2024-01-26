@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mypets_app/dashbo/first/addmascota.dart';
 
 class Home extends StatefulWidget {
   final String usr;
@@ -65,7 +66,9 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          subpage = true;
+        },
         backgroundColor: const Color.fromARGB(255, 51, 163, 255),
         child: Icon(Icons.add),
       ),
@@ -77,7 +80,15 @@ class _HomeState extends State<Home> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Container(
+      body:subpage
+          ? AddMascota(
+          onClose: () {
+            setState(() {
+              subpage = false;
+            });
+          },
+          usr: widget.usr)
+          :  Container(
         width: double.infinity,
         height: double.infinity,
         child: CarouselSlider(
