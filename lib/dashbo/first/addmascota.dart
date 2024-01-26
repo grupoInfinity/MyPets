@@ -39,7 +39,7 @@ class sbpage extends State<AddMascota> {
     return base64Image;
   }
   late List<Departamento> departamentos= [];
-  late List<Municipio> municipios;
+  late List<Municipio> municipios= [];
   int selectedDepartamentoId = 0;
   //bool activado = false;
   String activado ="";
@@ -51,6 +51,7 @@ class sbpage extends State<AddMascota> {
   void initState() {
     super.initState();
     departamentos = [];
+    municipios = [];
     loadDepartamentos();
   }
 

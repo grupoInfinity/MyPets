@@ -67,6 +67,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          print(subpage);
           subpage = true;
         },
         backgroundColor: const Color.fromARGB(255, 51, 163, 255),
