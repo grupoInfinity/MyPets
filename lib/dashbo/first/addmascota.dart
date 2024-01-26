@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:slidable_button/slidable_button.dart';
 
 class AddMascota extends StatefulWidget {
   final VoidCallback onClose;
@@ -40,6 +41,11 @@ class sbpage extends State<AddMascota> {
   late List<Departamento> departamentos;
   late List<Municipio> municipios;
   int selectedDepartamentoId = 0;
+  //bool activado = false;
+  String activado ="";
+  TextEditingController txtCodigo = TextEditingController();
+  TextEditingController txtNomb = TextEditingController();
+  TextEditingController txtDir = TextEditingController();
 
   @override
   void initState() {
@@ -118,6 +124,7 @@ class sbpage extends State<AddMascota> {
                         },
                       ),
                       TextFormField(
+                        controller: txtNomb,
                         decoration: const InputDecoration(
                           labelText: "Nombre de la mascota",
                           labelStyle: TextStyle(color: Colors.white),
@@ -129,8 +136,9 @@ class sbpage extends State<AddMascota> {
                       ),
                       SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
+                        controller: txtCodigo,
                         decoration: const InputDecoration(
-                          labelText: "Campo 2",
+                          labelText: "Codigo",
                           labelStyle: TextStyle(color: Colors.white),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
@@ -140,14 +148,44 @@ class sbpage extends State<AddMascota> {
                       ),
                       const SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
+                        controller: txtDir,
                         decoration: const InputDecoration(
-                          labelText: "Campo 3",
+                          labelText: "Direccion ",
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
                           ),
                           labelStyle: TextStyle(color: Colors.white),
                           prefixIcon: Icon(Iconsax.user1, color: Colors.white),
                         ),
+                      ),
+                      //Text('Estado: ${activado ? 'Activo' : 'Inactivo'}'),
+                      SizedBox(height: 20),
+                      HorizontalSlidableButton(
+                        width: MediaQuery.of(context).size.width / 3,
+                        buttonWidth: 60.0,
+                        //color: Theme.of(context).accentColor.withOpacity(0.5),
+                        buttonColor: Theme.of(context).primaryColor,
+                        dismissible: false,
+                        label: Center(child: Text('Slide Me')),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Left'),
+                              Text('Right'),
+                            ],
+                          ),
+                        ),
+                        onChanged: (position) {
+                          setState(() {
+                            if (position == SlidableButtonPosition.start) {
+                              activado = 'I';
+                            } else {
+                              activado = 'A';
+                            }
+                          });
+                        },
                       ),
                       const SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
