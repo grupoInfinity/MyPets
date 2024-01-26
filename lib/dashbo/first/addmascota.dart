@@ -10,13 +10,13 @@ import 'package:slidable_button/slidable_button.dart';
 class AddMascota extends StatefulWidget {
   final VoidCallback onClose;
   final String usr;
-  AddMascota({required this.onClose,required this.usr});
+  AddMascota({required this.onClose, required this.usr});
 
   @override
-  sbpage createState() => sbpage();
+  _AddMascotaState createState() => _AddMascotaState();
 }
 
-class sbpage extends State<AddMascota> {
+class _AddMascotaState extends State<AddMascota> {
 
   File? _image;
   Future<void> _getImageFromCamera() async {
@@ -118,13 +118,13 @@ class sbpage extends State<AddMascota> {
                       ),
                       SizedBox(height: 20),
                       DropdownButton<String>(
-                        value: '',
-                        items: municipios.map((municipio) {
+                        value:  '',
+                        items: municipios?.map((municipio) {
                           return DropdownMenuItem<String>(
-                            value: municipio.nombre,
+                            value: "${municipio.nombre} (${municipio.departamentoId})",
                             child: Text(municipio.nombre),
                           );
-                        }).toList(),
+                        }).toList() ?? [],
                         onChanged: (value) {
                           // Hacer algo con el municipio seleccionado
                           print('Municipio seleccionado: $value');
@@ -270,7 +270,11 @@ class sbpage extends State<AddMascota> {
   Future<void> loadMunicipios(int departamentoId) async {
     try {
       municipios = await getMunicipios(departamentoId);
-      setState(() {});
+      print('Departamentos: $departamentos');
+      print('Municipios cargados: $municipios');
+      setState(() {
+
+      });
     } catch (e) {
       print('Error loading municipios: $e');
     }
@@ -280,8 +284,10 @@ class sbpage extends State<AddMascota> {
     await http.get(Uri.parse('https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_depto.php?accion=C&estado=A'));
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((json) => Departamento.fromJson(json)).toList();
+      Map<String, dynamic> data = json.decode(response.body);
+      List<dynamic> departamentosData = data['info'];
+
+      return departamentosData.map((json) => Departamento.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load departamentos');
     }
@@ -289,14 +295,22 @@ class sbpage extends State<AddMascota> {
 
   Future<List<Municipio>> getMunicipios(int departamentoId) async {
     final response = await
-    http.get(Uri.parse('https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
+    http.get(Uri.parse('http://192.168.1.11/MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
 
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      List<dynamic> municipiosData = data['info'];
+
+      return municipiosData.map((json) => Municipio.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load municipios');
+    }/*
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       return data.map((json) => Municipio.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load municipios');
-    }
+    }*/
   }
 }
 
@@ -309,7 +323,7 @@ class Departamento {
 
   // Método para convertir un mapa a un objeto Departamento
   factory Departamento.fromJson(Map<String, dynamic> json) {
-    return Departamento(id: json['id'], nombre: json['descripcion']);
+    return Departamento(id: int.parse(json['id']), nombre: json['descripcion']);
   }
 }
 
@@ -321,7 +335,14 @@ class Municipio {
   Municipio({required this.id, required this.nombre, required this.departamentoId});
 
   // Método para convertir un mapa a un objeto Municipio
+
   factory Municipio.fromJson(Map<String, dynamic> json) {
-    return Municipio(id: json['id']['id'], nombre: json['descripcion'], departamentoId: json['id']['id_depto']);
+    int id = int.parse(json['id']['id']);
+    print("ID: $id");
+    return Municipio(
+      id: id,
+      nombre: json['descripcion'],
+      departamentoId: int.parse(json['id']['id_depto']),
+    );
   }
 }

@@ -38,7 +38,7 @@ class _QRScannerScreenState extends State<busqueda> {
     return Scaffold(
       /*floatingActionButton: FloatingActionButton(
         onPressed: () {
-          subpage = true;
+          subpage2 = true;
         },
         backgroundColor: const Color.fromARGB(255, 51, 163, 255),
         child: Icon(Icons.add),
@@ -51,11 +51,11 @@ class _QRScannerScreenState extends State<busqueda> {
                 });
               },
               code: qrText)
-          : /*subpage
+          :/* subpage2
           ? AddMascota(
           onClose: () {
             setState(() {
-              subpage = false;
+              subpage2 = false;
             });
           },
           usr: widget.usr)
