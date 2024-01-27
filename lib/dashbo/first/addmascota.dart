@@ -24,7 +24,9 @@ class _AddMascotaState extends State<AddMascota> {
   File? _image;
   late List<Departamento> departamentos = [];
   late List<Municipio> municipios = [];
+  late List<Tipomascota> tipomasc = [];
   int selectedDepartamentoId = 0;
+  int selectedtipomascId = 1;
   int currentIndex = 0;
   String activado = "";
   TextEditingController txtCodigo = TextEditingController();
@@ -36,8 +38,10 @@ class _AddMascotaState extends State<AddMascota> {
   @override
   void initState() {
     super.initState();
+    tipomasc = [];
     departamentos = [];
     municipios = [];
+    loadTipomasc();
     loadDepartamentos();
   }
 
@@ -78,6 +82,151 @@ class _AddMascotaState extends State<AddMascota> {
                     Form(
                       child: Column(
                         children: [
+                          SizedBox(height: 50),
+                          Text(
+                            'Tipo de mascota',
+                            style: TextStyle(fontSize: 20,color: Colors.white),
+                          ),
+                          DropdownButton<int>(
+                            value: selectedtipomascId,
+                            items: tipomasc.map((tipomasc) {
+                              return DropdownMenuItem<int>(
+                                value: tipomasc.id,
+                                child: Text(tipomasc.nombre,style: TextStyle(color: Colors.lightBlue),),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedtipomascId = value!;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                              color: Colors.lightBlue, // Cambia el color según tus preferencias
+                            ),
+                          ),
+
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: txtNomb,
+                            decoration: const InputDecoration(
+                              labelText: "Nombre de la mascota",
+                              labelStyle: TextStyle(color: Colors.white),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              prefixIcon:
+                              Icon(Iconsax.user, color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(height: TSizes.spacebtwInputFields),
+                          TextFormField(
+                            controller: txtCodigo,
+                            decoration: const InputDecoration(
+                              labelText: "Codigo",
+                              labelStyle: TextStyle(color: Colors.white),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              prefixIcon:
+                              Icon(Iconsax.user, color: Colors.white),
+                            ),
+                          ),
+                          //const SizedBox(height: TSizes.spacebtwInputFields),
+                          SizedBox(height: 20),
+                          Text(
+                              'Direccion',
+                              style: TextStyle(fontSize: 20,color: Colors.white),
+                            ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: DropdownButton<int>(
+                                  value: selectedDepartamentoId,
+                                  items: departamentos.map((departamento) {
+                                    return DropdownMenuItem<int>(
+                                      value: departamento.id,
+                                      child: Text(departamento.nombre,style: TextStyle(color: Colors.lightBlue),),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedDepartamentoId = value!;
+                                      loadMunicipios(selectedDepartamentoId);
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                                    color: Colors.white, // Cambia el color según tus preferencias
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: TSizes.spacebtwInputFields),
+                             /* Expanded(
+                                child:*/DropdownButton<String>(
+                                  value: municipios != null && municipios.isNotEmpty
+                                      ? "${municipios[0].nombre} (${municipios[0].departamentoId})"
+                                      : '',
+                                  items: municipios
+                                      ?.map((municipio) {
+                                    return DropdownMenuItem<String>(
+                                      value:
+                                      "${municipio.nombre} (${municipio.departamentoId})",
+                                      child: Text(municipio.nombre,style: TextStyle(color: Colors.lightBlue),),
+                                    );
+                                  })
+                                      .toSet()
+                                      .toList() ??
+                                      [],
+                                  onChanged: (value) {
+                                    print('Municipio seleccionado: $value');
+                                  },
+                                icon: Icon(
+                                  Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                                  color: Colors.white, // Cambia el color según tus preferencias
+                                ),
+                                ),
+                              //),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: txtDir,
+                            decoration: const InputDecoration(
+                              labelText: "Residencia ",
+                             focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              labelStyle: TextStyle(color: Colors.white),
+                              prefixIcon:
+                              Icon(Iconsax.home, color: Colors.white),
+                            ),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(height: 20),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child:ElevatedButton(
+                                  onPressed: () => _selectDate(context),
+                                  child: Text('Nacimiento'),
+                                ),
+                              ),
+                              const SizedBox(width: TSizes.spacebtwInputFields),
+                              Expanded(
+                                child: Text(
+                                  '${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
+                                  style: TextStyle(
+                                      fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          /*
+                          SizedBox(height: 20),
                           Text(
                             'Selected Date:',
                             style: TextStyle(fontSize: 20),
@@ -107,84 +256,9 @@ class _AddMascotaState extends State<AddMascota> {
                           ElevatedButton(
                             onPressed: _getImageFromGallery,
                             child: Text('Pick an image from gallery'),
-                          ),
-                          SizedBox(height: 20.0),
-                          DropdownButton<int>(
-                            value: selectedDepartamentoId,
-                            items: departamentos.map((departamento) {
-                              return DropdownMenuItem<int>(
-                                value: departamento.id,
-                                child: Text(departamento.nombre),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedDepartamentoId = value!;
-                                loadMunicipios(selectedDepartamentoId);
-                              });
-                            },
-                          ),
-                          SizedBox(height: 20),
-                          DropdownButton<String>(
-                            value: municipios != null && municipios.isNotEmpty
-                                ? "${municipios[0].nombre} (${municipios[0].departamentoId})"
-                                : '',
-                            items: municipios
-                                    ?.map((municipio) {
-                                      return DropdownMenuItem<String>(
-                                        value:
-                                            "${municipio.nombre} (${municipio.departamentoId})",
-                                        child: Text(municipio.nombre),
-                                      );
-                                    })
-                                    .toSet()
-                                    .toList() ??
-                                [],
-                            onChanged: (value) {
-                              // Hacer algo con el municipio seleccionado
-                              print('Municipio seleccionado: $value');
-                            },
-                          ),
-                          TextFormField(
-                            controller: txtNomb,
-                            decoration: const InputDecoration(
-                              labelText: "Nombre de la mascota",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon:
-                                  Icon(Iconsax.user, color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            controller: txtCodigo,
-                            decoration: const InputDecoration(
-                              labelText: "Codigo",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon:
-                                  Icon(Iconsax.user, color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            controller: txtDir,
-                            decoration: const InputDecoration(
-                              labelText: "Direccion ",
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              labelStyle: TextStyle(color: Colors.white),
-                              prefixIcon:
-                                  Icon(Iconsax.user1, color: Colors.white),
-                            ),
-                          ),
-                          //Text('Estado: ${activado ? 'Activo' : 'Inactivo'}'),
-                          SizedBox(height: 20),
+                          ),*/
+
+
                           /*MySwitch(
                             title: 'Estado',
                             activeColor: Colors.green,
@@ -196,45 +270,6 @@ class _AddMascotaState extends State<AddMascota> {
                             activeColor: Colors.green,
                             inactiveThumbColor: Colors.red,
                           ),*/
-                          const SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            expands: false,
-                            decoration: const InputDecoration(
-                              labelText: "Campo 4",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon:
-                                  Icon(Icons.email, color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            expands: false,
-                            decoration: const InputDecoration(
-                              labelText: "Campo 5",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon:
-                                  Icon(Iconsax.activity, color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              labelText: "Campo 6",
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              labelStyle: TextStyle(color: Colors.white),
-                              prefixIcon: Icon(Iconsax.password_check,
-                                  color: Colors.white),
-                            ),
-                          ),
                           const SizedBox(height: 30),
                           SizedBox(
                             width: double.infinity,
@@ -333,6 +368,14 @@ class _AddMascotaState extends State<AddMascota> {
     }
   }
 
+  Future<void> loadTipomasc() async {
+    try {
+      tipomasc = await getTipomasc();
+      setState(() {});
+    } catch (e) {
+      print('Error loading municipios: $e');
+    }
+  }
   Future<void> loadDepartamentos() async {
     try {
       departamentos = await getDepartamentos();
@@ -380,6 +423,18 @@ class _AddMascotaState extends State<AddMascota> {
       throw Exception('Failed to load municipios');
     }
   }
+  Future<List<Tipomascota>> getTipomasc() async {
+    final response = await http.get(Uri.parse(
+        'https://ginfinity.xyz//MyPets_Admin/servicios/ctg/ctg_tipomascota.php?accion=C&estado=A'));
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      List<dynamic> tpmascData = data['info'];
+
+      return tpmascData.map((json) => Tipomascota.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load tipo mascota');
+    }
+  }
 }
 
 class Departamento {
@@ -399,6 +454,17 @@ class Municipio {
         nombre: json['descripcion'],
         departamentoId: int.parse(json['id']['id_depto'])
         );
+  }
+}
+class Tipomascota {
+  final int id;final String nombre;
+  Tipomascota({required this.id, required this.nombre});
+  factory Tipomascota.fromJson(Map<String, dynamic> json) {
+    print(json['id']+' '+json['descripcion']);
+    return Tipomascota(
+        id: int.parse(json['id']),
+        nombre: json['descripcion'],
+    );
   }
 }
 /*
