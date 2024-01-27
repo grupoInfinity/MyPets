@@ -66,21 +66,32 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: !subpage
+          ? FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            subpage = true;
+          });
+        },
+        backgroundColor: Color.fromARGB(255, 51, 163, 255),
+        child: Icon(Icons.add),
+      ): null, // Set to null to hide the FloatingActionButton on the second page
+
+     /* floatingActionButton: FloatingActionButton(
         onPressed: () {
           subpage = true;
         },
         backgroundColor: const Color.fromARGB(255, 51, 163, 255),
         child: Icon(Icons.add),
-      ),
-      appBar: AppBar(
+      ),*/
+      /*appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Text(
           'Bienvenido: ${widget.usr}',
           style: TextStyle(color: Colors.black),
         ),
-      ),
+      ),*/
       body: subpage
           ? AddMascota(
               onClose: () {
@@ -90,8 +101,10 @@ class _HomeState extends State<Home> {
               },
               usr: widget.usr)
           : Container(
+
               width: double.infinity,
               height: double.infinity,
+
               child: CarouselSlider(
                 carouselController: _carouselController,
                 options: CarouselOptions(

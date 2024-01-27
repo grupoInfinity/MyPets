@@ -80,8 +80,9 @@ class _RegistroPState extends State<sRegistroP> {
                               decoration: const InputDecoration(
                                 labelText: "Nombres",
                                 labelStyle: TextStyle(color: Colors.white),
-                                   focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
                                 prefixIcon:
                                     Icon(Iconsax.user, color: Colors.white),
                               ),
@@ -101,8 +102,9 @@ class _RegistroPState extends State<sRegistroP> {
                               decoration: const InputDecoration(
                                   labelStyle: TextStyle(color: Colors.white),
                                   labelText: "Apellidos",
-                                   focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black),
+                                  ),
                                   prefixIcon:
                                       Icon(Iconsax.user, color: Colors.white)),
                               validator: (value) {
@@ -120,8 +122,9 @@ class _RegistroPState extends State<sRegistroP> {
                         controller: txtUser,
                         decoration: const InputDecoration(
                             labelText: "Usuario",
-                               focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             labelStyle: TextStyle(color: Colors.white),
                             prefixIcon:
                                 Icon(Iconsax.user1, color: Colors.white)),
@@ -145,8 +148,9 @@ class _RegistroPState extends State<sRegistroP> {
                         decoration: const InputDecoration(
                             labelText: "Correo Electrónico",
                             labelStyle: TextStyle(color: Colors.white),
-                               focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             prefixIcon: Icon(Icons.email, color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -166,8 +170,9 @@ class _RegistroPState extends State<sRegistroP> {
                         decoration: const InputDecoration(
                             labelText: "Teléfono",
                             labelStyle: TextStyle(color: Colors.white),
-                               focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             prefixIcon:
                                 Icon(Iconsax.activity, color: Colors.white)),
                         validator: (value) {
@@ -177,18 +182,17 @@ class _RegistroPState extends State<sRegistroP> {
                           return null; // La validación pasó
                         },
                       ),
-                       const SizedBox(height: TSizes.spacebtwInputFields),
+                      const SizedBox(height: TSizes.spacebtwInputFields),
                       TextFormField(
                         controller: txtContra,
                         obscureText: true,
                         decoration: const InputDecoration(
                             labelText: "Contraseña",
-                               focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),),
-          
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
                             labelStyle: TextStyle(color: Colors.white),
                             prefixIcon: Icon(Iconsax.password_check,
-                            
                                 color: Colors.white),
                             suffixIcon:
                                 Icon(Iconsax.eye_slash, color: Colors.white)),
@@ -203,12 +207,10 @@ class _RegistroPState extends State<sRegistroP> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          style:  ElevatedButton.styleFrom(
-                            primary: Colors.blue,
-                            onPrimary: Colors.white,
-                            fixedSize: Size(0, 50)
-
-                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              onPrimary: Colors.white,
+                              fixedSize: Size(0, 50)),
                           onPressed: () {
                             print("Botón presionado");
 
@@ -220,10 +222,11 @@ class _RegistroPState extends State<sRegistroP> {
                                 apellido: txtApell.text,
                                 tel: txtTel.text,
                                 email: txtEmail.text,
-                                usuario: txtUser.text, // o utiliza el valor deseado para el campo usuario
+                                usuario: txtUser
+                                    .text, // o utiliza el valor deseado para el campo usuario
                               );
-                              insertUs(context,nuevoUsuario);
-                              } else {
+                              insertUs(context, nuevoUsuario);
+                            } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('Formulario invali. ni')),
@@ -275,7 +278,7 @@ class _RegistroPState extends State<sRegistroP> {
     }
   }
 
-  Future<void> insertUs(BuildContext context,Usuario usuario) async {
+  Future<void> insertUs(BuildContext context, Usuario usuario) async {
     try {
       final url =
           'http://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php?accion=I&usr=${usuario.usr}'
@@ -285,12 +288,13 @@ class _RegistroPState extends State<sRegistroP> {
       if (response.statusCode == 200) {
         Map<String, dynamic> user = json.decode(response.body);
         if (user['status'] == 1) {
-          final url2 ='http://192.168.1.11/MyPets_Admin/servicios/sec/sec_rol_usuario.php?accion=I'
-          '&usr=${usuario.usr}&rol=${2}&user=${usuario.usr}';
+          final url2 =
+              'http://192.168.1.11/MyPets_Admin/servicios/sec/sec_rol_usuario.php?accion=I'
+              '&usr=${usuario.usr}&rol=${2}&user=${usuario.usr}';
           final response2 = await http.get(Uri.parse(url2));
           if (response2.statusCode == 200) {
             Navigator.push(
-              context ,
+              context,
               MaterialPageRoute(builder: (context) => login()),
             );
           }
