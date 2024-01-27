@@ -17,7 +17,22 @@ class AddMascota extends StatefulWidget {
 }
 
 class _AddMascotaState extends State<AddMascota> {
+  DateTime selectedDate = DateTime.now();
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
   File? _image;
   Future<void> _getImageFromCamera() async {
     final pickedFile =await ImagePicker().pickImage(source: ImageSource.camera);
@@ -43,6 +58,7 @@ class _AddMascotaState extends State<AddMascota> {
   int selectedDepartamentoId = 0;
   //bool activado = false;
   String activado ="";
+
   TextEditingController txtCodigo = TextEditingController();
   TextEditingController txtNomb = TextEditingController();
   TextEditingController txtDir = TextEditingController();
@@ -101,6 +117,36 @@ class _AddMascotaState extends State<AddMascota> {
                 Form(
                   child: Column(
                     children: [
+                      Text(
+                        'Selected Date:',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => _selectDate(context),
+                        child: Text('Select Date'),
+                      ),
+                      _image == null
+                          ? Text('No image selected.')
+                          : Image.file(
+                        _image!,
+                        height: 300.0,
+                      ),
+                      SizedBox(height: 20.0),
+                      ElevatedButton(
+                        onPressed: _getImageFromCamera,
+                        child: Text('Take a picture'),
+                      ),
+                      ElevatedButton(
+                        onPressed: _getImageFromGallery,
+                        child: Text('Pick an image from gallery'),
+                      ),
+                      SizedBox(height: 20.0),
                       DropdownButton<int>(
                         value: selectedDepartamentoId,
                         items: departamentos.map((departamento) {
