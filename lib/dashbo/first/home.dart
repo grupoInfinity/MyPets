@@ -32,7 +32,8 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchMascotas() async {
     try {
-      final url = 'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C'; // Reemplaza con la URL de tu endpoint
+      final url =
+          'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C'; // Reemplaza con la URL de tu endpoint
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
@@ -67,7 +68,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(subpage);
           subpage = true;
         },
         backgroundColor: const Color.fromARGB(255, 51, 163, 255),
@@ -81,112 +81,113 @@ class _HomeState extends State<Home> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body:subpage
+      body: subpage
           ? AddMascota(
-          onClose: () {
-            setState(() {
-              subpage = false;
-            });
-          },
-          usr: widget.usr)
-          :  Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: CarouselSlider(
-          carouselController: _carouselController,
-          options: CarouselOptions(
-            height: 430.0,
-            aspectRatio: 16 / 9,
-            viewportFraction: 0.70,
-            enlargeCenterPage: true,
-            pageSnapping: true,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _current = index;
-              });
-            },
-          ),
-          items: _mascotas.map((mascota) {
-            return Builder(
-              builder: (BuildContext context) {
-                return GestureDetector(
-                  onTap: () {
+              onClose: () {
+                setState(() {
+                  subpage = false;
+                });
+              },
+              usr: widget.usr)
+          : Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: CarouselSlider(
+                carouselController: _carouselController,
+                options: CarouselOptions(
+                  height: 430.0,
+                  aspectRatio: 16 / 9,
+                  viewportFraction: 0.70,
+                  enlargeCenterPage: true,
+                  pageSnapping: true,
+                  onPageChanged: (index, reason) {
                     setState(() {
-                      if (_selectedIndex == mascota) {
-                        _selectedIndex = {};
-                      } else {
-                        _selectedIndex = mascota;
-                      }
+                      _current = index;
                     });
                   },
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: _selectedIndex == mascota
-                          ? Border.all(color: Colors.blue.shade500, width: 3)
-                          : null,
-                      boxShadow: _selectedIndex == mascota
-                          ? [
-                              BoxShadow(
-                                color: Colors.blue.shade100,
-                                blurRadius: 30,
-                                offset: Offset(0, 10),
-                              ),
-                            ]
-                          : [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                blurRadius: 20,
-                                offset: Offset(0, 5),
-                              ),
-                            ],
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 320,
-                            margin: EdgeInsets.only(top: 10),
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: mascota['foto'] != null
-                                ? Image.memory(
-                                    tryDecodeBase64(mascota['foto']),
-                                    fit: BoxFit.cover,
-                                  )
-                                : Placeholder(), // Placeholder si no hay imagen disponible
+                ),
+                items: _mascotas.map((mascota) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (_selectedIndex == mascota) {
+                              _selectedIndex = {};
+                            } else {
+                              _selectedIndex = mascota;
+                            }
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: _selectedIndex == mascota
+                                ? Border.all(
+                                    color: Colors.blue.shade500, width: 3)
+                                : null,
+                            boxShadow: _selectedIndex == mascota
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.blue.shade100,
+                                      blurRadius: 30,
+                                      offset: Offset(0, 10),
+                                    ),
+                                  ]
+                                : [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      blurRadius: 20,
+                                      offset: Offset(0, 5),
+                                    ),
+                                  ],
                           ),
-                          SizedBox(height: 20),
-                          Text(
-                            mascota['nmasc'], // Nombre de la mascota
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 320,
+                                  margin: EdgeInsets.only(top: 10),
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: mascota['foto'] != null
+                                      ? Image.memory(
+                                          tryDecodeBase64(mascota['foto']),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Placeholder(), // Placeholder si no hay imagen disponible
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  mascota['nmasc'], // Nombre de la mascota
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  mascota['tipomasc'], // Tipo de mascota
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(height: 20),
-                          Text(
-                            mascota['tipomasc'], // Tipo de mascota
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }).toList(),
-        ),
-      ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
     );
   }
 }

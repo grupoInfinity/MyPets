@@ -118,13 +118,14 @@ class _AddMascotaState extends State<AddMascota> {
                       ),
                       SizedBox(height: 20),
                       DropdownButton<String>(
-                        value:  '',
+                        value:  municipios != null && municipios.isNotEmpty
+                            ? "${municipios[0].nombre} (${municipios[0].departamentoId})" : '',
                         items: municipios?.map((municipio) {
                           return DropdownMenuItem<String>(
                             value: "${municipio.nombre} (${municipio.departamentoId})",
                             child: Text(municipio.nombre),
                           );
-                        }).toList() ?? [],
+                        }).toSet().toList() ?? [],
                         onChanged: (value) {
                           // Hacer algo con el municipio seleccionado
                           print('Municipio seleccionado: $value');
@@ -295,8 +296,10 @@ class _AddMascotaState extends State<AddMascota> {
 
   Future<List<Municipio>> getMunicipios(int departamentoId) async {
     final response = await
-    http.get(Uri.parse('http://192.168.1.11/MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
-
+    http.get(Uri.parse('http://ginfinity.xyz//MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
+    /*final response = await
+    http.get(Uri.parse('http://192.168.1.11//MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
+*/
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> municipiosData = data['info'];
@@ -337,12 +340,15 @@ class Municipio {
   // Método para convertir un mapa a un objeto Municipio
 
   factory Municipio.fromJson(Map<String, dynamic> json) {
-    int id = int.parse(json['id']['id']);
-    print("ID: $id");
+   /* int id = int.parse(json/*['id']*/['id']);
+    print("ID: $id");*/
     return Municipio(
-      id: id,
+      id: int.parse(json['id']['id']),
       nombre: json['descripcion'],
-      departamentoId: int.parse(json['id']['id_depto']),
+      departamentoId: int.parse(json['id']['id_depto'])
+      /*id: int.parse(json['id']),
+      nombre: json['descripcion'],
+      departamentoId: int.parse(json/*['id']*/['id_depto']),*/
     );
   }
 }
