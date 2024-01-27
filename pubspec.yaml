@@ -33,6 +33,7 @@ dev_dependencies:
   flutter_date_pickers: ^0.4.2
   flutter_lints: ^2.0.0
   slidable_button: ^3.0.0+1
+  photo_view: ^0.14.0
 
 
 flutter:
