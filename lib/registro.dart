@@ -229,7 +229,7 @@ class _RegistroPState extends State<sRegistroP> {
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('Formulario invali. ni')),
+                                    content: Text('Campos invalidos')),
                               );
                             }
                           },

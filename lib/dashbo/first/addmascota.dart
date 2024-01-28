@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:slidable_button/slidable_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
 
 
@@ -25,8 +25,9 @@ class _AddMascotaState extends State<AddMascota> {
   late List<Departamento> departamentos = [];
   late List<Municipio> municipios = [];
   late List<Tipomascota> tipomasc = [];
-  int selectedDepartamentoId = 0;
+  int selectedDepartamentoId = 1;
   int selectedtipomascId = 1;
+  int selectedtmuniId = 1;
   int currentIndex = 0;
   String activado = "";
   TextEditingController txtCodigo = TextEditingController();
@@ -80,6 +81,7 @@ class _AddMascotaState extends State<AddMascota> {
 
                     const SizedBox(height: TSizes.spacebtwSections),
                     Form(
+                      key: _formKey,
                       child: Column(
                         children: [
                           SizedBox(height: 50),
@@ -118,6 +120,12 @@ class _AddMascotaState extends State<AddMascota> {
                               prefixIcon:
                               Icon(Iconsax.user, color: Colors.white),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Complete el campo';
+                              }
+                              return null; // La validación pasó
+                            },
                           ),
                           SizedBox(height: TSizes.spacebtwInputFields),
                           TextFormField(
@@ -131,6 +139,12 @@ class _AddMascotaState extends State<AddMascota> {
                               prefixIcon:
                               Icon(Iconsax.user, color: Colors.white),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Complete el campo';
+                              }
+                              return null; // La validación pasó
+                            },
                           ),
                           //const SizedBox(height: TSizes.spacebtwInputFields),
                           SizedBox(height: 20),
@@ -164,22 +178,18 @@ class _AddMascotaState extends State<AddMascota> {
                               ),
                               const SizedBox(width: TSizes.spacebtwInputFields),
                              /* Expanded(
-                                child:*/DropdownButton<String>(
+                                child:*/DropdownButton<int>(
                                   value: municipios != null && municipios.isNotEmpty
-                                      ? "${municipios[0].nombre} (${municipios[0].departamentoId})"
-                                      : '',
-                                  items: municipios
-                                      ?.map((municipio) {
-                                    return DropdownMenuItem<String>(
-                                      value:
-                                      "${municipio.nombre} (${municipio.departamentoId})",
+                                      ? municipios[0].id//"${municipios[0].nombre} (${municipios[0].id})"
+                                      : 1 ,//selectedtmuniId,
+                                  items: municipios?.map((municipio) {
+                                    return DropdownMenuItem<int>(
+                                      value:/*municipio.id,*/'${municipio.nombre} (${municipio.id})',
                                       child: Text(municipio.nombre,style: TextStyle(color: Colors.lightBlue),),
                                     );
-                                  })
-                                      .toSet()
-                                      .toList() ??
-                                      [],
+                                  }).toSet().toList() ??[],
                                   onChanged: (value) {
+                                    selectedtmuniId=value!;
                                     print('Municipio seleccionado: $value');
                                   },
                                 icon: Icon(
@@ -203,6 +213,12 @@ class _AddMascotaState extends State<AddMascota> {
                               Icon(Iconsax.home, color: Colors.white),
                             ),
                             style: TextStyle(color: Colors.white),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Complete el campo';
+                              }
+                              return null; // La validación pasó
+                            },
                           ),
                           SizedBox(height: 20),
 
@@ -271,7 +287,26 @@ class _AddMascotaState extends State<AddMascota> {
                                 onPrimary: Colors.white,
                                 fixedSize: Size(0, 50),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()&&_image!=null) {
+                                  Mascota nuevoMasc = Mascota(
+                                    usr: widget.usr,
+                                    tpmascota: selectedtipomascId,
+                                    nombre: txtNomb.text,
+                                    codigo : txtCodigo.text,
+                                    municipio: selectedtmuniId,
+                                    dir:txtDir.text,
+                                    nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                                    img: _image
+                                  );
+                                  insertMasc(context, nuevoMasc);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Campos invalidos')),
+                                  );
+                                }
+                              },
                               child: Text("Agregar Mascota"),
                             ),
                           ),
@@ -284,6 +319,49 @@ class _AddMascotaState extends State<AddMascota> {
             ),
           ),
         ));
+  }
+  Future<void> insertMasc(BuildContext context, Mascota usuario) async {
+    try {
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      if (usuario.img != null) {
+        var imageFile = File(usuario.img.toString());
+        var imageUpload = await http.MultipartFile.fromPath('fotor', imageFile.path);
+        request.files.add(imageUpload);
+      }
+
+      // Adjuntar otros datos al formulario Multipart
+      request.fields.addAll({
+        'accion': 'I',
+        'tpmascotar': usuario.tpmascota.toString(),
+        'duenor': usuario.usr,
+        'munir': usuario.municipio.toString(),
+        'direccionr': usuario.dir,
+        'estadodirr': 'I',
+        'nmascr': usuario.nombre,
+        'codigor': usuario.codigo,
+        'estador': 'A',
+        'userr': usuario.usr,
+        'nacimr': usuario.nacim,
+      });
+
+      // Enviar la solicitud
+      var response = await request.send();
+
+      // Verificar la respuesta
+      if (response.statusCode == 200) {
+        // Handle success response
+        widget.onClose();
+      } else {
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -301,8 +379,7 @@ class _AddMascotaState extends State<AddMascota> {
     }
   }
   Future<void> _getImageFromCamera() async {
-    final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedFile =await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
       _image = pickedFile != null ? File(pickedFile.path) : null;
     });
@@ -458,6 +535,17 @@ class Tipomascota {
         nombre: json['descripcion'],
     );
   }
+}
+
+class Mascota {
+  String usr;String codigo;int tpmascota;String nombre;int municipio;
+  String dir;/*String stdir;String estado;*/String nacim;File? img;
+
+  Mascota({
+    required this.usr,required this.codigo, required this.tpmascota, required this.nombre,
+    required this.municipio, required this.dir, /*required this.stdir,
+    required this.estado,*/ required this.nacim, required this.img,
+  });
 }
 /*
 class MySwitch extends StatefulWidget {
