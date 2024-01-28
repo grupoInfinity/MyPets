@@ -224,40 +224,32 @@ class _AddMascotaState extends State<AddMascota> {
                               ),
                             ],
                           ),
-
-                          /*
-                          SizedBox(height: 20),
-                          Text(
-                            'Selected Date:',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => _selectDate(context),
-                            child: Text('Select Date'),
-                          ),
-                          _image == null
-                              ? Text('No image selected.')
-                              : Image.file(
-                                  _image!,
-                                  height: 300.0,
-                                ),
                           SizedBox(height: 20.0),
-                          ElevatedButton(
-                            onPressed: _getImageFromCamera,
-                            child: Text('Take a picture'),
+                          _image == null
+                              ? Text('Imagen no seleccionada',style: TextStyle(
+                              fontSize: 15,color: Colors.white),)
+                              : Image.file(
+                            _image!,
+                            height: 300.0,
                           ),
-                          ElevatedButton(
-                            onPressed: _getImageFromGallery,
-                            child: Text('Pick an image from gallery'),
-                          ),*/
-
+                          SizedBox(height: 20.0),
+                          Row(
+                            children: [
+                              Expanded(
+                                child:ElevatedButton(
+                                  onPressed: _getImageFromCamera,
+                                  child: Text('Tomar foto'),
+                                ),
+                              ),
+                              const SizedBox(width: TSizes.spacebtwInputFields),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: _getImageFromGallery,
+                                  child: Text('Galeria'),
+                                ),
+                              ),
+                            ],
+                          ),
 
                           /*MySwitch(
                             title: 'Estado',
