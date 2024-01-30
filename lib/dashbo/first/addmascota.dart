@@ -33,8 +33,9 @@ class _AddMascotaState extends State<AddMascota> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double backgroundHeight = 0.0;
   int selectedDepartamentoId = 0;
+  //String selectedMunicipio = '';
   int selectedtipomascId = 1;
-  String selectedtmuniId = '';
+  int selectedtmuniId = 1;
 
   @override
   void initState() {
@@ -156,6 +157,7 @@ class _AddMascotaState extends State<AddMascota> {
                           Row(
                             children: [
                               Expanded(
+
                                 child: DropdownButton<int>(
                                   value: selectedDepartamentoId,
                                   items: departamentos.map((departamento) {
@@ -177,29 +179,7 @@ class _AddMascotaState extends State<AddMascota> {
                                 ),
                               ),
                               const SizedBox(width: TSizes.spacebtwInputFields),
-
-                              DropdownButton<String>(
-                                value: selectedtmuniId,
-                                items: municipios?.map((municipio) {
-                                  return DropdownMenuItem<String>(
-                                    value: "${municipio.nombre} (${municipio.departamentoId})",
-                                    child: Text(municipio.nombre),
-                                  );
-                                }).toSet().toList() ?? [],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedtmuniId = value ?? '';
-                                  });
-                                  print('Municipio seleccionado: $value');
-                                },
-                                icon: Icon(
-                                  Icons.arrow_drop_down, // Icono de flecha hacia abajo
-                                  color: Colors.white, // Cambia el color según tus preferencias
-                                ),
-                              ),
-                              //),
-                             /* Expanded(
-                                child:*//*DropdownButton<int>(
+                                DropdownButton<int>(
                                 value:  selectedtmuniId,/*municipios != null && municipios.isNotEmpty
                                     ?municipios[0].id
                                     : 0 ,*/
@@ -317,7 +297,7 @@ class _AddMascotaState extends State<AddMascota> {
                                     tpmascota: selectedtipomascId,
                                     nombre: txtNomb.text,
                                     codigo : txtCodigo.text,
-                                    municipio: selectedtmuniId,
+                                    municipio:1, //selectedtmuniId,
                                     dir:txtDir.text,
                                     nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                                     img: _image
@@ -561,7 +541,7 @@ class Tipomascota {
 }
 
 class Mascota {
-  String usr;String codigo;int tpmascota;String nombre;String municipio;
+  String usr;String codigo;int tpmascota;String nombre;int municipio;
   String dir;/*String stdir;String estado;*/String nacim;File? img;
 
   Mascota({
