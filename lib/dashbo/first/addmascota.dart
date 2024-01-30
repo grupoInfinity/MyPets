@@ -25,16 +25,16 @@ class _AddMascotaState extends State<AddMascota> {
   late List<Departamento> departamentos = [];
   late List<Municipio> municipios = [];
   late List<Tipomascota> tipomasc = [];
-  int selectedDepartamentoId = 1;
-  int selectedtipomascId = 1;
-  int selectedtmuniId = 1;
   int currentIndex = 0;
-  String activado = "";
+  String municp = "";
   TextEditingController txtCodigo = TextEditingController();
   TextEditingController txtNomb = TextEditingController();
   TextEditingController txtDir = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double backgroundHeight = 0.0;
+  int selectedDepartamentoId = 0;
+  int selectedtipomascId = 1;
+  String selectedtmuniId = '';
 
   @override
   void initState() {
@@ -177,27 +177,50 @@ class _AddMascotaState extends State<AddMascota> {
                                 ),
                               ),
                               const SizedBox(width: TSizes.spacebtwInputFields),
+
+                              DropdownButton<String>(
+                                value: selectedtmuniId,
+                                items: municipios?.map((municipio) {
+                                  return DropdownMenuItem<String>(
+                                    value: "${municipio.nombre} (${municipio.departamentoId})",
+                                    child: Text(municipio.nombre),
+                                  );
+                                }).toSet().toList() ?? [],
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedtmuniId = value ?? '';
+                                  });
+                                  print('Municipio seleccionado: $value');
+                                },
+                                icon: Icon(
+                                  Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                                  color: Colors.white, // Cambia el color según tus preferencias
+                                ),
+                              ),
+                              //),
                              /* Expanded(
-                                child:*/DropdownButton<int>(
-                                  value: municipios != null && municipios.isNotEmpty
-                                      ? municipios[0].id//"${municipios[0].nombre} (${municipios[0].id})"
-                                      : 1 ,//selectedtmuniId,
-                                  items: municipios?.map((municipio) {
-                                    return DropdownMenuItem<int>(
-                                      value:/*municipio.id,*/'${municipio.nombre} (${municipio.id})',
-                                      child: Text(municipio.nombre,style: TextStyle(color: Colors.lightBlue),),
-                                    );
-                                  }).toSet().toList() ??[],
-                                  onChanged: (value) {
-                                    selectedtmuniId=value!;
-                                    print('Municipio seleccionado: $value');
-                                  },
+                                child:*//*DropdownButton<int>(
+                                value:  selectedtmuniId,/*municipios != null && municipios.isNotEmpty
+                                    ?municipios[0].id
+                                    : 0 ,*/
+                                items: municipios?.map((municipio) {
+                                  return DropdownMenuItem<int>(
+                                    value: municipio.id,
+                                    child: Text(municipio.nombre, style: TextStyle(color: Colors.lightBlue)),
+                                  );
+                                }).toSet().toList() ?? [],
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedtmuniId = value ?? 0;
+                                  });
+                                  print(' seleccionado: $selectedtmuniId');
+                                },
                                 icon: Icon(
                                   Icons.arrow_drop_down, // Icono de flecha hacia abajo
                                   color: Colors.white, // Cambia el color según tus preferencias
                                 ),
                                 ),
-                              //),
+                              //),*/
                             ],
                           ),
                           SizedBox(height: 20),
@@ -538,7 +561,7 @@ class Tipomascota {
 }
 
 class Mascota {
-  String usr;String codigo;int tpmascota;String nombre;int municipio;
+  String usr;String codigo;int tpmascota;String nombre;String municipio;
   String dir;/*String stdir;String estado;*/String nacim;File? img;
 
   Mascota({
