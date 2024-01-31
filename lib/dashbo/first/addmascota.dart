@@ -35,7 +35,7 @@ class _AddMascotaState extends State<AddMascota> {
   int selectedDepartamentoId = 0;
   //String selectedMunicipio = '';
   int selectedtipomascId = 1;
-  int selectedtmuniId = 1;
+  int selectedtmuniId=1;
 
   @override
   void initState() {
@@ -170,6 +170,7 @@ class _AddMascotaState extends State<AddMascota> {
                                     setState(() {
                                       selectedDepartamentoId = value!;
                                       loadMunicipios(selectedDepartamentoId);
+                                      print(selectedDepartamentoId);
                                     });
                                   },
                                   icon: Icon(
@@ -179,27 +180,26 @@ class _AddMascotaState extends State<AddMascota> {
                                 ),
                               ),
                               const SizedBox(width: TSizes.spacebtwInputFields),
-                                DropdownButton<int>(
-                                value:  selectedtmuniId,/*municipios != null && municipios.isNotEmpty
-                                    ?municipios[0].id
-                                    : 0 ,*/
-                                items: municipios?.map((municipio) {
+                              DropdownButton<int>(
+                                value: selectedtmuniId,
+                                items: municipios?.toSet().map((municipio) {
                                   return DropdownMenuItem<int>(
                                     value: municipio.id,
                                     child: Text(municipio.nombre, style: TextStyle(color: Colors.lightBlue)),
                                   );
-                                }).toSet().toList() ?? [],
+                                }).toList() ?? [],
                                 onChanged: (value) {
                                   setState(() {
                                     selectedtmuniId = value ?? 0;
                                   });
-                                  print(' seleccionado: $selectedtmuniId');
+                                  int selectedPosition = municipios?.indexWhere((municipio) => municipio.id == selectedtmuniId) ?? -1;
+                                  print('Seleccionado: $selectedtmuniId, Posición: $selectedPosition');
                                 },
                                 icon: Icon(
                                   Icons.arrow_drop_down, // Icono de flecha hacia abajo
                                   color: Colors.white, // Cambia el color según tus preferencias
                                 ),
-                                ),
+                              ),
                               //),*/
                             ],
                           ),
@@ -463,7 +463,9 @@ class _AddMascotaState extends State<AddMascota> {
   Future<void> loadMunicipios(int departamentoId) async {
     try {
       municipios = await getMunicipios(departamentoId);
-      setState(() {});
+      setState(() {
+        selectedtmuniId = municipios[0].id;
+      });
     } catch (e) {
       print('Error loading municipios: $e');
     }
