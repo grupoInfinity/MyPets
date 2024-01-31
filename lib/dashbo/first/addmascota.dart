@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:dio/dio.dart';
 
 
 class AddMascota extends StatefulWidget {
@@ -32,7 +33,7 @@ class _AddMascotaState extends State<AddMascota> {
   TextEditingController txtDir = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double backgroundHeight = 0.0;
-  int selectedDepartamentoId = 0;
+  int selectedDepartamentoId = 1;
   //String selectedMunicipio = '';
   int selectedtipomascId = 1;
   int selectedtmuniId=1;
@@ -297,7 +298,7 @@ class _AddMascotaState extends State<AddMascota> {
                                     tpmascota: selectedtipomascId,
                                     nombre: txtNomb.text,
                                     codigo : txtCodigo.text,
-                                    municipio:1, //selectedtmuniId,
+                                    municipio:selectedtmuniId,
                                     dir:txtDir.text,
                                     nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                                     img: _image
@@ -325,16 +326,10 @@ class _AddMascotaState extends State<AddMascota> {
   }
   Future<void> insertMasc(BuildContext context, Mascota usuario) async {
     try {
-      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-      if (usuario.img != null) {
-        var imageFile = File(usuario.img.toString());
-        var imageUpload = await http.MultipartFile.fromPath('fotor', imageFile.path);
-        request.files.add(imageUpload);
-      }
+      final url = 'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
 
-      // Adjuntar otros datos al formulario Multipart
-      request.fields.addAll({
+      // Crear un objeto FormData
+      FormData formData = FormData.fromMap({
         'accion': 'I',
         'tpmascotar': usuario.tpmascota.toString(),
         'duenor': usuario.usr,
@@ -348,8 +343,31 @@ class _AddMascotaState extends State<AddMascota> {
         'nacimr': usuario.nacim,
       });
 
-      // Enviar la solicitud
-      var response = await request.send();
+      // Adjuntar imagen si está presente
+      if (usuario.img != null) {
+        var imageFile = File(usuario.img!.path);
+        if (imageFile.existsSync()) {
+          formData.files.add(MapEntry(
+            'fotor',
+            await MultipartFile.fromFile(
+              imageFile.path,
+              filename: 'fotor',
+            ),
+          ));
+        } else {
+          print("Error: File does not exist at path: ${imageFile.path}");
+          // Puedes manejar el error de otra manera si lo deseas
+          return;
+        }
+      }
+
+      // Crear una instancia de Dio y enviar la solicitud
+      Dio dio = Dio();
+      var response = await dio.post(url, data: formData);
+
+      // Imprimir detalles de la respuesta
+      print('Response data: ${response.data}');
+      print('Response headers: ${response.headers}');
 
       // Verificar la respuesta
       if (response.statusCode == 200) {
@@ -364,8 +382,11 @@ class _AddMascotaState extends State<AddMascota> {
       }
     } catch (e) {
       print("Error: $e");
+      // Puedes manejar el error de otra manera si lo deseas
     }
   }
+
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -385,6 +406,7 @@ class _AddMascotaState extends State<AddMascota> {
     final pickedFile =await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
       _image = pickedFile != null ? File(pickedFile.path) : null;
+
     });
   }
 
@@ -393,6 +415,7 @@ class _AddMascotaState extends State<AddMascota> {
     await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       _image = pickedFile != null ? File(pickedFile.path) : null;
+      print('print $_image');
     });
   }
 
