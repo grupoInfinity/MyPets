@@ -303,7 +303,10 @@ class _AddMascotaState extends State<AddMascota> {
                                     nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                                     img: _image
                                   );
-                                  insertMasc(context, nuevoMasc);
+                                  //insertMasc(/*context,*/ nuevoMasc,);
+                                  insertMasc(nuevoMasc, (response) {
+                                    print('Respuesta del servidor: $response');
+                                  });
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -324,11 +327,58 @@ class _AddMascotaState extends State<AddMascota> {
           ),
         ));
   }
-  Future<void> insertMasc(BuildContext context, Mascota usuario) async {
+  void insertMasc(Mascota usuario, Function callback) async {
+    try {
+      var url = 'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+
+      // Adjuntar imagen si está presente
+      if (usuario.img != null) {
+        var imageFile = File(usuario.img!.path);
+        if (imageFile.existsSync()) {
+          request.files.add(await http.MultipartFile.fromPath('fotor', imageFile.path));
+        } else {
+          print("Error: File does not exist at path: ${imageFile.path}");
+          return;
+        }
+      }
+      request.fields.addAll({
+        'accionr': 'I',
+        'tpmascotar': usuario.tpmascota.toString(),
+        'duenor': usuario.usr,
+        'munir': usuario.municipio.toString(),
+        'direccionr': usuario.dir,
+        'estadodirr': 'I',
+        'nmascr': usuario.nombre,
+        'codigor': usuario.codigo,
+        'estador': 'A',
+        'userr': usuario.usr,
+        'nacimr': usuario.nacim,
+      });
+
+      // Enviar la solicitud usando el cliente HTTP local
+      var response = await request.send();
+      // Leer la respuesta del servidor
+      var responseBody = await response.stream.bytesToString();
+      // Decodificar el JSON de la respuesta
+      var responseData = json.decode(responseBody);
+      // Llamar al callback con la respuesta
+      callback(responseData);
+      // Verificar la respuesta
+      if (response.statusCode == 200) {
+        // Handle success response
+        widget.onClose();
+      } else {
+        print("Error en la respuesta: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+  /*
+  void insertMasc(BuildContext context, Mascota usuario) async {
     try {
       final url = 'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
-
-      // Crear un objeto FormData
       FormData formData = FormData.fromMap({
         'accion': 'I',
         'tpmascotar': usuario.tpmascota.toString(),
@@ -385,7 +435,7 @@ class _AddMascotaState extends State<AddMascota> {
       // Puedes manejar el error de otra manera si lo deseas
     }
   }
-
+*/
 
 
   Future<void> _selectDate(BuildContext context) async {
