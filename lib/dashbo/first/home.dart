@@ -3,10 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mypets_app/dashbo/first/editmasc.dart';
+
+import 'addmascota.dart';
 
 class Home extends StatefulWidget {
   final String usr;
-
   Home({required this.usr});
 
   @override
@@ -17,6 +19,8 @@ class _HomeState extends State<Home> {
   int _current = 0;
   dynamic _selectedIndex = {};
   bool subpage = false;
+  bool subpage2 = false;
+  String codigo='';
 
   CarouselController _carouselController = CarouselController();
 
@@ -38,11 +42,13 @@ class _HomeState extends State<Home> {
         print('Respuesta de la API: ${response.body}');
 
         final jsonResponse = json.decode(response.body);
-        final List<dynamic>? infoList = jsonResponse['info']; // Obtener la lista 'info'
+        final List<dynamic>? infoList =
+            jsonResponse['info']; // Obtener la lista 'info'
         if (infoList != null && infoList.isNotEmpty) {
           setState(() {
-            _mascotas =
-                infoList.map((info) => info['mascota']).toList(); // Actualizar la lista de mascotas
+            _mascotas = infoList
+                .map((info) => info['mascota'])
+                .toList(); // Actualizar la lista de mascotas
           });
         }
       } else {
@@ -78,108 +84,139 @@ class _HomeState extends State<Home> {
               backgroundColor: Color.fromARGB(255, 51, 163, 255),
               child: Icon(Icons.add),
             )
-          : null, // Set to null to hide the FloatingActionButton on the second page
+          : null,
+      // Set to null to hide the FloatingActionButton on the second page
       body: subpage
-          ? Container()
-          : Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: CarouselSlider(
-                carouselController: _carouselController,
-                options: CarouselOptions(
-                  height: 430.0,
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.70,
-                  enlargeCenterPage: true,
-                  pageSnapping: true,
-                  onPageChanged: (index, reason) {
+          ? AddMascota(
+              onClose: () {
+                setState(() {
+                  subpage = false;
+                });
+              },
+              usr: widget.usr)
+          : subpage2
+              ? editmasc(
+                  onClose: () {
                     setState(() {
-                      _current = index;
+                      subpage2 = false;
                     });
                   },
-                ),
-                items: _mascotas.map((mascota) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (_selectedIndex == mascota) {
-                              _selectedIndex = {};
-                            } else {
-                              _selectedIndex = mascota;
-                            }
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: _selectedIndex == mascota
-                                ? Border.all(
-                                    color: Colors.blue.shade500, width: 3)
-                                : null,
-                            boxShadow: _selectedIndex == mascota
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.blue.shade100,
-                                      blurRadius: 30,
-                                      offset: Offset(0, 10),
+                  usr: widget.usr,code: codigo)
+              : Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: CarouselSlider(
+                    carouselController: _carouselController,
+                    options: CarouselOptions(
+                      height: 430.0,
+                      aspectRatio: 16 / 9,
+                      viewportFraction: 0.70,
+                      enlargeCenterPage: true,
+                      pageSnapping: true,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _current = index;
+                        });
+                      },
+                    ),
+                    items: _mascotas.map((mascota) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (_selectedIndex == mascota) {
+                                  _selectedIndex = {};
+                                } else {
+                                  _selectedIndex = mascota;
+                                }
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: _selectedIndex == mascota
+                                    ? Border.all(
+                                        color: Colors.blue.shade500, width: 3)
+                                    : null,
+                                boxShadow: _selectedIndex == mascota
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.blue.shade100,
+                                          blurRadius: 30,
+                                          offset: Offset(0, 10),
+                                        ),
+                                      ]
+                                    : [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          blurRadius: 20,
+                                          offset: Offset(0, 5),
+                                        ),
+                                      ],
+                              ),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          codigo=mascota['codigo'];
+                                          print(codigo);
+                                          subpage2 = true;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 320,
+                                        margin: EdgeInsets.only(top: 10),
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: mascota['foto'] != null
+                                            ? Image.memory(
+                                                tryDecodeBase64(
+                                                    mascota['foto']),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Placeholder(),
+                                        // Placeholder si no hay imagen disponible
+                                      ),
                                     ),
-                                  ]
-                                : [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 20,
-                                      offset: Offset(0, 5),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      mascota['nmasc'] ??
+                                          'Nombre no disponible',
+                                      // Nombre de la mascota
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      mascota['codigo'] ??
+                                          'Codigo vacio',
+                                      // Tipo de mascota
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade600,
+                                      ),
                                     ),
                                   ],
-                          ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 320,
-                                  margin: EdgeInsets.only(top: 10),
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: mascota['foto'] != null
-                                      ? Image.memory(
-                                          tryDecodeBase64(mascota['foto']),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Placeholder(), // Placeholder si no hay imagen disponible
                                 ),
-                                SizedBox(height: 20),
-                                Text(
-                                  mascota['nmasc'] ?? 'Nombre no disponible', // Nombre de la mascota
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                Text(
-                                  mascota['tipomasc'] ?? 'Tipo no disponible', // Tipo de mascota
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       );
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
+                    }).toList(),
+                  ),
+                ),
     );
   }
 }

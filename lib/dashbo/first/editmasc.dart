@@ -48,6 +48,7 @@ class _editmascState extends State<editmasc> {
     municipios = [];
     loadTipomasc();
     loadDepartamentos();
+    cargarDatos();
   }
 
   @override
@@ -333,6 +334,11 @@ class _editmascState extends State<editmasc> {
           final mascotaInfo = jsonResponse['info']?[0]['mascota'];
           setState(() {
             mascota = MascotaLoad.fromJson(mascotaInfo);
+            txtNomb.text=mascota.nmasc!;
+            txtDir.text=mascota.direccion!;
+            txtCodigo.text=mascota.codigo!;
+
+
           });
         } else {
           print("Error in API response: ${jsonResponse['status']}");
