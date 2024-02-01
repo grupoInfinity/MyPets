@@ -136,7 +136,7 @@ class _RegistroPState extends State<sRegistroP> {
                           if (value == null || value.isEmpty) {
                             return 'Complete el campo';
                           } else if (userExist) {
-                            return 'Usuario ya existe';
+                            return 'Ese usuario ya existe';
                           }
                           return null; // La validación pasó
                         },

@@ -33,9 +33,9 @@ class _editmascState extends State<editmasc> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double backgroundHeight = 0.0;
   int selectedDepartamentoId = 1;
-  //String selectedMunicipio = '';
   int selectedtipomascId = 1;
   int selectedtmuniId=1;
+  bool codeExist = false;
 
   @override
   void initState() {
@@ -269,18 +269,12 @@ class _editmascState extends State<editmasc> {
                               ),
                             ],
                           ),
-
                           MySwitch(
                             title: 'Estado',
                             activeColor: Colors.green,
                             inactiveThumbColor: Colors.red,
                           ),
                           SizedBox(height: 16),
-                          MySwitch(
-                            title: 'Estado direccion',
-                            activeColor: Colors.green,
-                            inactiveThumbColor: Colors.red,
-                          ),
                           const SizedBox(height: 30),
                           SizedBox(
                             width: double.infinity,
@@ -374,67 +368,6 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
-  /*
-  void insertMasc(BuildContext context, Mascota usuario) async {
-    try {
-      final url = 'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
-      FormData formData = FormData.fromMap({
-        'accion': 'I',
-        'tpmascotar': usuario.tpmascota.toString(),
-        'duenor': usuario.usr,
-        'munir': usuario.municipio.toString(),
-        'direccionr': usuario.dir,
-        'estadodirr': 'I',
-        'nmascr': usuario.nombre,
-        'codigor': usuario.codigo,
-        'estador': 'A',
-        'userr': usuario.usr,
-        'nacimr': usuario.nacim,
-      });
-
-      // Adjuntar imagen si está presente
-      if (usuario.img != null) {
-        var imageFile = File(usuario.img!.path);
-        if (imageFile.existsSync()) {
-          formData.files.add(MapEntry(
-            'fotor',
-            await MultipartFile.fromFile(
-              imageFile.path,
-              filename: 'fotor',
-            ),
-          ));
-        } else {
-          print("Error: File does not exist at path: ${imageFile.path}");
-          // Puedes manejar el error de otra manera si lo deseas
-          return;
-        }
-      }
-
-      // Crear una instancia de Dio y enviar la solicitud
-      Dio dio = Dio();
-      var response = await dio.post(url, data: formData);
-
-      // Imprimir detalles de la respuesta
-      print('Response data: ${response.data}');
-      print('Response headers: ${response.headers}');
-
-      // Verificar la respuesta
-      if (response.statusCode == 200) {
-        // Handle success response
-        widget.onClose();
-      } else {
-        Fluttertoast.showToast(
-          msg: "Error en la respuesta: ${response.statusCode}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-        );
-      }
-    } catch (e) {
-      print("Error: $e");
-      // Puedes manejar el error de otra manera si lo deseas
-    }
-  }
-*/
 
 
   Future<void> _selectDate(BuildContext context) async {
@@ -579,6 +512,36 @@ class _editmascState extends State<editmasc> {
       return tpmascData.map((json) => Tipomascota.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load tipo mascota');
+    }
+  }
+  Future<void> verifCode(String code) async {
+    try {
+      if (code.isEmpty) {
+        code = ".¡¡?";
+      }
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
+          'prc/prc_mascota.php?accion=C&codigo=$code';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> user = json.decode(response.body);
+        if (user['status'] == 1) {
+          setState(() {
+            codeExist = true;
+          });
+        } else {
+          setState(() {
+            codeExist = false;
+          });
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
     }
   }
 }
