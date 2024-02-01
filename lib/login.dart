@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mypets_app/dashboard.dart';
 import 'package:mypets_app/recup/verifUser.dart';
 
@@ -109,10 +109,10 @@ class login extends StatelessWidget {
                       padding: EdgeInsets.only(left: 7.0, top: 0.1),
                       child: Text(
                         "Inicio de Sesion",
-                        style: TextStyle(
-                          fontFamily: 'GemunuLibre',
-                          fontSize: 34,
+                        style: GoogleFonts.gemunuLibre(
+                           fontSize: 34
                         ),
+                        
                         textAlign: TextAlign.center,
                         softWrap: true,
                         maxLines: null,
