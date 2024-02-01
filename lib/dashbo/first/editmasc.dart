@@ -21,13 +21,14 @@ class editmasc extends StatefulWidget {
 }
 
 class _editmascState extends State<editmasc> {
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate;
+  //DateTime selectedDate = DateTime.now();
   File? _image;
   late List<Departamento> departamentos = [];
   late List<Municipio> municipios = [];
   late List<Tipomascota> tipomasc = [];
   int currentIndex = 0;
-  String municp = "";
+  String fechaEd = "";
   TextEditingController txtCodigo = TextEditingController();
   TextEditingController txtNomb = TextEditingController();
   TextEditingController txtDir = TextEditingController();
@@ -238,8 +239,7 @@ class _editmascState extends State<editmasc> {
                               ),
                               const SizedBox(width: TSizes.spacebtwInputFields),
                               Expanded(
-                                child: Text(
-                                  '${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
+                                child: Text(fechaEd,
                                   style: TextStyle(
                                       fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
                                 ),
@@ -337,8 +337,10 @@ class _editmascState extends State<editmasc> {
             txtNomb.text=mascota.nmasc!;
             txtDir.text=mascota.direccion!;
             txtCodigo.text=mascota.codigo!;
-
-
+            selectedtipomascId=int.parse(mascota.idtpmasc!);
+            selectedDepartamentoId=int.parse(mascota.iddepto!);
+            selectedtmuniId=int.parse(mascota.idmuni!);
+            selectedDate =DateTime.parse(mascota.nacim!);
           });
         } else {
           print("Error in API response: ${jsonResponse['status']}");
