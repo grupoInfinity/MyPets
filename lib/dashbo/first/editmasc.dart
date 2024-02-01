@@ -12,8 +12,9 @@ import 'package:photo_view/photo_view.dart';
 class editmasc extends StatefulWidget {
   final VoidCallback onClose;
   final String usr;
+  final String code;
 
-  editmasc({required this.onClose, required this.usr});
+  editmasc({required this.onClose, required this.code,required this.usr});
 
   @override
   _editmascState createState() => _editmascState();
@@ -36,6 +37,8 @@ class _editmascState extends State<editmasc> {
   int selectedtipomascId = 1;
   int selectedtmuniId=1;
   bool codeExist = false;
+  MascotaLoad mascota = MascotaLoad(/*vacuna: []*/);
+  List<Vacuna> items = [];
 
   @override
   void initState() {
@@ -108,7 +111,6 @@ class _editmascState extends State<editmasc> {
                               color: Colors.lightBlue, // Cambia el color según tus preferencias
                             ),
                           ),
-
                           SizedBox(height: 20),
                           TextFormField(
                             controller: txtNomb,
@@ -320,6 +322,59 @@ class _editmascState extends State<editmasc> {
           ),
         ));
   }
+  Future<void> cargarDatos() async {
+    try {
+      final url =
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['status'] == 1) {
+          final mascotaInfo = jsonResponse['info']?[0]['mascota'];
+          setState(() {
+            mascota = MascotaLoad.fromJson(mascotaInfo);
+          });
+        } else {
+          print("Error in API response: ${jsonResponse['status']}");
+        }
+      } else {
+        print("HTTP Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+/*
+  Future<void> cargarVacuna() async {
+    try {
+      final url =
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        if (jsonResponse.containsKey('info') && jsonResponse['info'] is List) {
+          List<dynamic> results = jsonResponse['info'];
+          items.clear();
+          for (var result in results) {
+            String nombreVacuna =
+                result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
+            String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
+            Vacuna newItem = Vacuna(nombreVacuna, fecha);
+            if (!items.contains(newItem)) {
+              items.add(newItem);
+            }
+          }
+          setState(() {});
+        } else {
+          print('La clave "info" no es una lista en la respuesta JSON.');
+        }
+      } else {
+      }
+    } catch (e) {
+      print("Error: $e");
+      // Manejar excepciones
+    }
+  }*/
   void insertMasc(Mascota usuario, Function callback) async {
     try {
       var url = 'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
@@ -348,18 +403,11 @@ class _editmascState extends State<editmasc> {
         'userr': usuario.usr,
         'nacimr': usuario.nacim,
       });
-
-      // Enviar la solicitud usando el cliente HTTP local
       var response = await request.send();
-      // Leer la respuesta del servidor
       var responseBody = await response.stream.bytesToString();
-      // Decodificar el JSON de la respuesta
       var responseData = json.decode(responseBody);
-      // Llamar al callback con la respuesta
       callback(responseData);
-      // Verificar la respuesta
       if (response.statusCode == 200) {
-        // Handle success response
         widget.onClose();
       } else {
         print("Error en la respuesta: ${response.statusCode}");
@@ -388,10 +436,8 @@ class _editmascState extends State<editmasc> {
     final pickedFile =await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
       _image = pickedFile != null ? File(pickedFile.path) : null;
-
     });
   }
-
   Future<void> _getImageFromGallery() async {
     final pickedFile =
     await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -399,12 +445,6 @@ class _editmascState extends State<editmasc> {
       _image = pickedFile != null ? File(pickedFile.path) : null;
       print('print $_image');
     });
-  }
-
-  String _convertImageToBase64(File image) {
-    List<int> imageBytes = image.readAsBytesSync();
-    String base64Image = base64Encode(imageBytes);
-    return base64Image;
   }
   void _openImageInFullScreen() {
     if (_image != null) {
@@ -444,6 +484,7 @@ class _editmascState extends State<editmasc> {
       );
     }
   }
+
 
   Future<void> loadTipomasc() async {
     try {
@@ -576,6 +617,25 @@ class Tipomascota {
     );
   }
 }
+class MascotaLoad {
+  String? idmasc;String? idtpmasc;String? idmuni;String? iddepto;String? depto;String? muni;
+  String? dueno;String? mail;String? telefono;String? nmasc;String? tipomasc;String? direccion;
+  String? estadodir;String? nacim;String? foto;String? codigo;String? estado;
+  //List<Vacuna> vacuna;
+  MascotaLoad({
+    this.idmasc, this.idtpmasc, this.idmuni, this.iddepto, this.depto, this.muni, this.dueno,
+    this.mail, this.telefono, this.nmasc, this.tipomasc, this.direccion, this.estadodir, this.nacim,
+    this.foto, this.codigo, this.estado,
+    //required this.vacuna,
+  });
+  MascotaLoad.fromJson(Map<String, dynamic> json)
+      : idmasc = json['idmasc'], idtpmasc = json['idtpmasc'], idmuni = json['idmuni'],
+        iddepto = json['iddepto'], depto = json['depto'], muni = json['muni'],
+        dueno = json['dueno'], mail = json['mail'], telefono = json['telefono'],
+        nmasc = json['nmasc'], tipomasc = json['tipomasc'], direccion = json['direccion'],
+        estadodir = json['estadodir'], nacim = json['nacim'], foto = json['foto'],
+        codigo = json['codigo'], estado = json['estado'];
+}
 
 class Mascota {
   String usr;String codigo;int tpmascota;String nombre;int municipio;
@@ -586,6 +646,12 @@ class Mascota {
     required this.municipio, required this.dir, /*required this.stdir,
     required this.estado,*/ required this.nacim, required this.img,
   });
+}
+class Vacuna {
+  String nombrevacuna;String fechaCreacion;
+  Vacuna(
+      this.nombrevacuna,this.fechaCreacion,
+      );
 }
 
 class MySwitch extends StatefulWidget {

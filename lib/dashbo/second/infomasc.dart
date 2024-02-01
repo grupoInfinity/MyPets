@@ -39,7 +39,7 @@ class _TuPantallaState extends State<_TuPantalla> {
   void initState() {
     super.initState();
     cargarDatos();
-    fetchData();
+    cargarVacuna();
   }
   Uint8List tryDecodeBase64(String base64String) {
     try {
@@ -151,7 +151,7 @@ class _TuPantallaState extends State<_TuPantalla> {
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> cargarVacuna() async {
     try {
       final url =
           'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=${widget.code}';
