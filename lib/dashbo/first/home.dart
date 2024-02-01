@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:mypets_app/dashbo/first/addmascota.dart';
 
 class Home extends StatefulWidget {
   final String usr;
@@ -33,14 +32,17 @@ class _HomeState extends State<Home> {
   Future<void> fetchMascotas() async {
     try {
       final url =
-          'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C'; // Reemplaza con la URL de tu endpoint
+          'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&dueno=${widget.usr}';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
+        print('Respuesta de la API: ${response.body}');
+
         final jsonResponse = json.decode(response.body);
-        final List<dynamic>? mascotasList = jsonResponse['info']?[0]['mascota'];
-        if (mascotasList != null) {
+        final List<dynamic>? infoList = jsonResponse['info']; // Obtener la lista 'info'
+        if (infoList != null && infoList.isNotEmpty) {
           setState(() {
-            _mascotas = mascotasList;
+            _mascotas =
+                infoList.map((info) => info['mascota']).toList(); // Actualizar la lista de mascotas
           });
         }
       } else {
@@ -68,43 +70,20 @@ class _HomeState extends State<Home> {
     return Scaffold(
       floatingActionButton: !subpage
           ? FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            subpage = true;
-          });
-        },
-        backgroundColor: Color.fromARGB(255, 51, 163, 255),
-        child: Icon(Icons.add),
-      ): null, // Set to null to hide the FloatingActionButton on the second page
-
-     /* floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          subpage = true;
-        },
-        backgroundColor: const Color.fromARGB(255, 51, 163, 255),
-        child: Icon(Icons.add),
-      ),*/
-      /*appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Bienvenido: ${widget.usr}',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),*/
-      body: subpage
-          ? AddMascota(
-              onClose: () {
+              onPressed: () {
                 setState(() {
-                  subpage = false;
+                  subpage = true;
                 });
               },
-              usr: widget.usr)
+              backgroundColor: Color.fromARGB(255, 51, 163, 255),
+              child: Icon(Icons.add),
+            )
+          : null, // Set to null to hide the FloatingActionButton on the second page
+      body: subpage
+          ? Container()
           : Container(
-
               width: double.infinity,
               height: double.infinity,
-
               child: CarouselSlider(
                 carouselController: _carouselController,
                 options: CarouselOptions(
@@ -177,7 +156,7 @@ class _HomeState extends State<Home> {
                                 ),
                                 SizedBox(height: 20),
                                 Text(
-                                  mascota['nmasc'], // Nombre de la mascota
+                                  mascota['nmasc'] ?? 'Nombre no disponible', // Nombre de la mascota
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -185,7 +164,7 @@ class _HomeState extends State<Home> {
                                 ),
                                 SizedBox(height: 20),
                                 Text(
-                                  mascota['tipomasc'], // Tipo de mascota
+                                  mascota['tipomasc'] ?? 'Tipo no disponible', // Tipo de mascota
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey.shade600,

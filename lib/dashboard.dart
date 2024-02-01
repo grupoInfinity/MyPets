@@ -11,7 +11,7 @@ class dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(usr: usr),
+      home: Home(usr: usr),
     );
   }
 }
@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Inicializar _screens en initState para evitar problemas con StatefulWidget
     _children = [
-      Home(usr: usr),
+      Home(usr : usr),
       busqueda(usr: usr),
       CuentaP(usr: usr),
     ];
