@@ -21,14 +21,6 @@ class editmasc extends StatefulWidget {
 }
 
 class _editmascState extends State<editmasc> {
-  /*final _mascotaController = StreamController<MascotaLoad>();
-  Stream<MascotaLoad> get mascotaStream => _mascotaController.stream;
-  @override
-  void dispose() {
-    _mascotaController.close(); // Asegúrate de cerrar el controlador cuando el widget se destruya
-    super.dispose();
-  }*/
-
   late DateTime selectedDate;
   //DateTime selectedDate = DateTime.now();
   File? _image;
@@ -55,8 +47,8 @@ class _editmascState extends State<editmasc> {
     tipomasc = [];
     departamentos = [];
     municipios = [];
-    loadTipomasc();
-    loadDepartamentos();
+    /*loadTipomasc();
+    loadDepartamentos();*/
     cargarDatos();
   }
 
@@ -74,275 +66,285 @@ class _editmascState extends State<editmasc> {
         ),
         body: GestureDetector(
           onTap: _openImageInFullScreen,
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                stops: [0.0, 1.0],
-                colors: [
-                  Color.fromRGBO(18, 69, 140, 1.0),
-                  Color.fromRGBO(110, 130, 158, 1.0),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultspace),
+          child:FutureBuilder(
+            future: cargarDatos(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // Muestra un indicador de carga mientras se están cargando los datos
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                // Aquí puedes construir el resto de tu interfaz después de cargar todos los datos
+                return TuContenidoWidget();
+              }
+            },
+          ),
+        ));
+  }
+  Widget TuContenidoWidget() {
+    // Construye aquí el contenido de tu página una vez que los datos estén cargados
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          stops: [0.0, 1.0],
+          colors: [
+            Color.fromRGBO(18, 69, 140, 1.0),
+            Color.fromRGBO(110, 130, 158, 1.0),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(TSizes.defaultspace),
+          child: Column(
+            children: [
+
+              const SizedBox(height: TSizes.spacebtwSections),
+              Form(
+                key: _formKey,
                 child: Column(
                   children: [
+                    SizedBox(height: 50),
+                    Text(
+                      'Tipo de mascota',
+                      style: TextStyle(fontSize: 20,color: Colors.white),
+                    ),
+                    DropdownButton<int>(
+                      value: selectedtipomascId,
+                      items: tipomasc.map((tipomasc) {
+                        return DropdownMenuItem<int>(
+                          value: tipomasc.id,
+                          child: Text(tipomasc.nombre,style: TextStyle(color: Colors.lightBlue),),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedtipomascId = value!;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                        color: Colors.lightBlue, // Cambia el color según tus preferencias
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: txtNomb,
+                      decoration: const InputDecoration(
+                        labelText: "Nombre de la mascota",
+                        labelStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        prefixIcon:
+                        Icon(Iconsax.user, color: Colors.white),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Complete el campo';
+                        }
+                        return null; // La validación pasó
+                      },
+                    ),
+                    SizedBox(height: TSizes.spacebtwInputFields),
+                    TextFormField(
+                      controller: txtCodigo,
+                      decoration: const InputDecoration(
+                        labelText: "Codigo",
+                        labelStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        prefixIcon:
+                        Icon(Iconsax.user, color: Colors.white),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Complete el campo';
+                        }
+                        return null; // La validación pasó
+                      },
+                    ),
+                    //const SizedBox(height: TSizes.spacebtwInputFields),
+                    SizedBox(height: 20),
+                    Text(
+                      'Direccion',
+                      style: TextStyle(fontSize: 20,color: Colors.white),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
 
-                    const SizedBox(height: TSizes.spacebtwSections),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 50),
-                          Text(
-                            'Tipo de mascota',
-                            style: TextStyle(fontSize: 20,color: Colors.white),
-                          ),
-                          DropdownButton<int>(
-                            value: selectedtipomascId,
-                            items: tipomasc.map((tipomasc) {
+                          child: DropdownButton<int>(
+                            value: selectedDepartamentoId,
+                            items: departamentos.map((departamento) {
                               return DropdownMenuItem<int>(
-                                value: tipomasc.id,
-                                child: Text(tipomasc.nombre,style: TextStyle(color: Colors.lightBlue),),
+                                value: departamento.id,
+                                child: Text(departamento.nombre,style: TextStyle(color: Colors.lightBlue),),
                               );
                             }).toList(),
                             onChanged: (value) {
                               setState(() {
-                                selectedtipomascId = value!;
+                                selectedDepartamentoId = value!;
+                                loadMunicipios(selectedDepartamentoId);
+                                print(selectedDepartamentoId);
                               });
                             },
                             icon: Icon(
                               Icons.arrow_drop_down, // Icono de flecha hacia abajo
-                              color: Colors.lightBlue, // Cambia el color según tus preferencias
+                              color: Colors.white, // Cambia el color según tus preferencias
                             ),
                           ),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            controller: txtNomb,
-                            decoration: const InputDecoration(
-                              labelText: "Nombre de la mascota",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon:
-                              Icon(Iconsax.user, color: Colors.white),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Complete el campo';
-                              }
-                              return null; // La validación pasó
-                            },
+                        ),
+                        const SizedBox(width: TSizes.spacebtwInputFields),
+                        DropdownButton<int>(
+                          value: selectedtmuniId,
+                          items: municipios?.toSet().map((municipio) {
+                            return DropdownMenuItem<int>(
+                              value: municipio.id,
+                              child: Text(municipio.nombre, style: TextStyle(color: Colors.lightBlue)),
+                            );
+                          }).toList() ?? [],
+                          onChanged: (value) {
+                            setState(() {
+                              selectedtmuniId = value ?? 0;
+                            });
+                            int selectedPosition = municipios?.indexWhere((municipio) => municipio.id == selectedtmuniId) ?? -1;
+                            print('Seleccionado: $selectedtmuniId, Posición: $selectedPosition');
+                          },
+                          icon: Icon(
+                            Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                            color: Colors.white, // Cambia el color según tus preferencias
                           ),
-                          SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            controller: txtCodigo,
-                            decoration: const InputDecoration(
-                              labelText: "Codigo",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon:
-                              Icon(Iconsax.user, color: Colors.white),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Complete el campo';
-                              }
-                              return null; // La validación pasó
-                            },
-                          ),
-                          //const SizedBox(height: TSizes.spacebtwInputFields),
-                          SizedBox(height: 20),
-                          Text(
-                            'Direccion',
-                            style: TextStyle(fontSize: 20,color: Colors.white),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
+                        ),
+                        //),*/
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: txtDir,
+                      decoration: const InputDecoration(
+                        labelText: "Residencia ",
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        labelStyle: TextStyle(color: Colors.white),
+                        prefixIcon:
+                        Icon(Iconsax.home, color: Colors.white),
+                      ),
+                      style: TextStyle(color: Colors.white),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Complete el campo';
+                        }
+                        return null; // La validación pasó
+                      },
+                    ),
+                    SizedBox(height: 20),
 
-                                child: DropdownButton<int>(
-                                  value: selectedDepartamentoId,
-                                  items: departamentos.map((departamento) {
-                                    return DropdownMenuItem<int>(
-                                      value: departamento.id,
-                                      child: Text(departamento.nombre,style: TextStyle(color: Colors.lightBlue),),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedDepartamentoId = value!;
-                                      loadMunicipios(selectedDepartamentoId);
-                                      print(selectedDepartamentoId);
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_drop_down, // Icono de flecha hacia abajo
-                                    color: Colors.white, // Cambia el color según tus preferencias
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: TSizes.spacebtwInputFields),
-                              DropdownButton<int>(
-                                value: selectedtmuniId,
-                                items: municipios?.toSet().map((municipio) {
-                                  return DropdownMenuItem<int>(
-                                    value: municipio.id,
-                                    child: Text(municipio.nombre, style: TextStyle(color: Colors.lightBlue)),
-                                  );
-                                }).toList() ?? [],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedtmuniId = value ?? 0;
-                                  });
-                                  int selectedPosition = municipios?.indexWhere((municipio) => municipio.id == selectedtmuniId) ?? -1;
-                                  print('Seleccionado: $selectedtmuniId, Posición: $selectedPosition');
-                                },
-                                icon: Icon(
-                                  Icons.arrow_drop_down, // Icono de flecha hacia abajo
-                                  color: Colors.white, // Cambia el color según tus preferencias
-                                ),
-                              ),
-                              //),*/
-                            ],
+                    Row(
+                      children: [
+                        Expanded(
+                          child:ElevatedButton(
+                            onPressed: () => _selectDate(context),
+                            child: Text('Nacimiento'),
                           ),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            controller: txtDir,
-                            decoration: const InputDecoration(
-                              labelText: "Residencia ",
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              labelStyle: TextStyle(color: Colors.white),
-                              prefixIcon:
-                              Icon(Iconsax.home, color: Colors.white),
-                            ),
-                            style: TextStyle(color: Colors.white),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Complete el campo';
-                              }
-                              return null; // La validación pasó
-                            },
+                        ),
+                        const SizedBox(width: TSizes.spacebtwInputFields),
+                        Expanded(
+                          child: Text(fechaEd,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
                           ),
-                          SizedBox(height: 20),
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child:ElevatedButton(
-                                  onPressed: () => _selectDate(context),
-                                  child: Text('Nacimiento'),
-                                ),
-                              ),
-                              const SizedBox(width: TSizes.spacebtwInputFields),
-                              Expanded(
-                                child: Text(fechaEd,
-                                  style: TextStyle(
-                                      fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
-                                ),
-                              ),
-                            ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.0),
+                    _image == null
+                        ? Text('Imagen no seleccionada',style: TextStyle(
+                        fontSize: 15,color: Colors.white),)
+                        : Image.file(
+                      _image!,
+                      height: 300.0,
+                    ),
+                    SizedBox(height: 20.0),
+                    Row(
+                      children: [
+                        Expanded(
+                          child:ElevatedButton(
+                            onPressed: _getImageFromCamera,
+                            child: Text('Tomar foto'),
                           ),
-                          SizedBox(height: 20.0),
-                          _image == null
-                              ? Text('Imagen no seleccionada',style: TextStyle(
-                              fontSize: 15,color: Colors.white),)
-                              : Image.file(
-                            _image!,
-                            height: 300.0,
+                        ),
+                        const SizedBox(width: TSizes.spacebtwInputFields),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _getImageFromGallery,
+                            child: Text('Galeria'),
                           ),
-                          SizedBox(height: 20.0),
-                          Row(
-                            children: [
-                              Expanded(
-                                child:ElevatedButton(
-                                  onPressed: _getImageFromCamera,
-                                  child: Text('Tomar foto'),
-                                ),
-                              ),
-                              const SizedBox(width: TSizes.spacebtwInputFields),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _getImageFromGallery,
-                                  child: Text('Galeria'),
-                                ),
-                              ),
-                            ],
-                          ),
-                          MySwitch(
-                            title: 'Estado',
-                            activeColor: Colors.green,
-                            inactiveThumbColor: Colors.red,
-                          ),
-                          SizedBox(height: 16),
-                          const SizedBox(height: 30),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue,
-                                onPrimary: Colors.white,
-                                fixedSize: Size(0, 50),
-                              ),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()&&_image!=null) {
-                                  Mascota nuevoMasc = Mascota(
-                                      usr: widget.usr,
-                                      tpmascota: selectedtipomascId,
-                                      nombre: txtNomb.text,
-                                      codigo : txtCodigo.text,
-                                      municipio:selectedtmuniId,
-                                      dir:txtDir.text,
-                                      nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
-                                      img: _image
-                                  );
-                                  //insertMasc(/*context,*/ nuevoMasc,);
-                                  insertMasc(nuevoMasc, (response) {
-                                    print('Respuesta del servidor: $response');
-                                  });
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Campos invalidos')),
-                                  );
-                                }
-                              },
-                              child: Text("Agregar Mascota"),
-                            ),
-                          ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    MySwitch(
+                      title: 'Estado',
+                      activeColor: Colors.green,
+                      inactiveThumbColor: Colors.red,
+                    ),
+                    SizedBox(height: 16),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue,
+                          onPrimary: Colors.white,
+                          fixedSize: Size(0, 50),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()&&_image!=null) {
+                            Mascota nuevoMasc = Mascota(
+                                usr: widget.usr,
+                                tpmascota: selectedtipomascId,
+                                nombre: txtNomb.text,
+                                codigo : txtCodigo.text,
+                                municipio:selectedtmuniId,
+                                dir:txtDir.text,
+                                nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                                img: _image
+                            );
+                            //insertMasc(/*context,*/ nuevoMasc,);
+                            insertMasc(nuevoMasc, (response) {
+                              print('Respuesta del servidor: $response');
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Campos invalidos')),
+                            );
+                          }
+                        },
+                        child: Text("Agregar Mascota"),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
-
-  /*txtNomb.text=mascotaInfo['nmasc'];
-            txtDir.text=mascotaInfo['direccion'];
-            txtCodigo.text=mascotaInfo['codigo'];
-            selectedtipomascId=int.parse(mascotaInfo['tipomasc']);
-            selectedDepartamentoId=int.parse(mascotaInfo['iddepto']);
-            selectedtmuniId=int.parse(mascotaInfo['idmuni']);
-            selectedDate =DateTime.parse(mascotaInfo['nacim']);
-            fechaEd=mascotaInfo['nacim'];
-            print('MUNI - $selectedDate');*/
   Future<void> cargarDatos() async {
     try {
+      await loadTipomasc();
+      await loadDepartamentos();
+      await loadMunicipios(1);
       final url =
           'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
@@ -352,14 +354,17 @@ class _editmascState extends State<editmasc> {
           final mascotaInfo = jsonResponse['info']?[0]['mascota'];
           setState(() {
             mascota = MascotaLoad.fromJson(mascotaInfo);
-            txtNomb.text=mascotaInfo['nmasc'];
-            txtDir.text=mascotaInfo['direccion'];
-            txtCodigo.text=mascotaInfo['codigo'];
-            selectedtipomascId=int.parse(mascotaInfo['tipomasc']);
-            selectedDepartamentoId=int.parse(mascotaInfo['iddepto']);
-            selectedtmuniId=int.parse(mascotaInfo['idmuni']);
-            selectedDate =DateTime.parse(mascotaInfo['nacim']);
-            fechaEd=mascotaInfo['nacim'];
+            txtNomb.text=mascota.nmasc!;
+            txtDir.text=mascota.direccion!;
+            txtCodigo.text=mascota.codigo!;
+            selectedtipomascId=int.parse(mascota.idtpmasc!);
+            selectedDepartamentoId=int.parse(mascota.iddepto!);
+            selectedtmuniId=int.parse(mascota.idmuni!);
+            selectedDate =DateTime.parse(mascota.nacim!);
+            print(selectedtmuniId);
+            //selectedDate =DateTime.parse(mascotaInfo['nacim']);
+            //fechaEd=mascotaInfo['nacim'];
+            //print(mascotaInfo['idmuni']);
           });
         } else {
           print("Error in API response: ${jsonResponse['status']}");
@@ -368,7 +373,7 @@ class _editmascState extends State<editmasc> {
         print("HTTP Error: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error: $e");
+      print("Error 3: $e");
     }
   }
 /*
@@ -516,7 +521,7 @@ class _editmascState extends State<editmasc> {
   Future<void> loadTipomasc() async {
     try {
       tipomasc = await getTipomasc();
-      setState(() {});
+      //setState(() {});
     } catch (e) {
       print('Error loading municipios: $e');
     }
@@ -582,7 +587,6 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load tipo mascota');
     }
   }
-
   Future<void> verifCode(String code) async {
     try {
       if (code.isEmpty) {
