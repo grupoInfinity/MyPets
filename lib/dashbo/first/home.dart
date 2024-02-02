@@ -179,7 +179,7 @@ class _HomeState extends State<Home> {
                                         ),
                                         child: mascota['foto'] != null
                                             ? Image.memory(
-                                                tryDecodeBase64(
+                                          base64Decode(
                                                     mascota['foto']),
                                                 fit: BoxFit.cover,
                                               )

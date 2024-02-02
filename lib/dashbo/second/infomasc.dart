@@ -41,15 +41,7 @@ class _TuPantallaState extends State<_TuPantalla> {
     cargarDatos();
     cargarVacuna();
   }
-  Uint8List tryDecodeBase64(String base64String) {
-    try {
-      return base64Decode(base64String);
-    } catch (e) {
-      print("Error decodificando base64: $e");
-      // Puedes devolver una imagen de error o cualquier valor predeterminado
-      return Uint8List.fromList([]);
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +67,7 @@ class _TuPantallaState extends State<_TuPantalla> {
              const SizedBox(height: TSizes.spacebtwSections),
             mascota.foto != null
                 ? Image.memory(
-              tryDecodeBase64(mascota.foto!),
+              base64Decode(mascota.foto!),
               fit: BoxFit.cover,
               height: 200,
             )
