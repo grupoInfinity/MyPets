@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mypets_app/contanst/app_contanst.dart';
 
 class Principal extends StatelessWidget {
@@ -62,16 +63,16 @@ class Principal extends StatelessWidget {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .9,
                         height: MediaQuery.of(context).size.height * .1,
-                        child: const Text(
-                          "MyPets: ¡Tu registro completo para tus fieles compañeros!",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
+                        child: Text(
+            "MyPets: ¡Tu registro completo para tus fieles compañeros!",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.abel(
+              color: const Color.fromRGBO(255, 255, 255, 1),
+              fontSize: 30,
                           ),
+                         ),
                         ),
-                      ),
+                      
                       SizedBox(height: 120,),
                       Container(
                         height: 100,

@@ -36,13 +36,7 @@ class _QRScannerScreenState extends State<busqueda> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          subpage2 = true;
-        },
-        backgroundColor: const Color.fromARGB(255, 51, 163, 255),
-        child: Icon(Icons.add),
-      ),*/
+      backgroundColor: Color.fromARGB(255, 46, 116, 214),
       body: subpage
           ? infomasc(
               onClose: () {
@@ -84,7 +78,7 @@ class _QRScannerScreenState extends State<busqueda> {
                               hintText: 'Introduce un código QR manualmente',
                             ),
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () {
                               _openQRScanner(context);

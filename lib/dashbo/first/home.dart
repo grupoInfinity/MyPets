@@ -74,6 +74,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 46, 116, 214),
       floatingActionButton: !subpage
           ? FloatingActionButton(
               onPressed: () {
@@ -170,8 +171,8 @@ class _HomeState extends State<Home> {
                                         });
                                       },
                                       child: Container(
-                                        height: 320,
-                                        margin: EdgeInsets.only(top: 10),
+                                        height: 310,
+                                        margin: EdgeInsets.only(top: 0),
                                         clipBehavior: Clip.hardEdge,
                                         decoration: BoxDecoration(
                                           borderRadius:

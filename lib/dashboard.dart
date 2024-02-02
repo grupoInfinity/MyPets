@@ -19,7 +19,6 @@ class dashboard extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final String usr;
 
-
   MyHomePage({required this.usr});
   @override
   _MyHomePageState createState() => _MyHomePageState(usr: usr);
@@ -36,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Inicializar _screens en initState para evitar problemas con StatefulWidget
     _children = [
-      Home(usr : usr),
+      Home(usr: usr),
       busqueda(usr: usr),
       CuentaP(usr: usr),
     ];
@@ -47,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 0, 170, 255), // Cambia el color de fondo aquí
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,

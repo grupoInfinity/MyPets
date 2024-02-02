@@ -49,67 +49,69 @@ class _CuentaPState extends State<CuentaP> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Cuenta")),
-        backgroundColor: const Color.fromARGB(255, 19, 86, 202),
+        backgroundColor: Color.fromARGB(255, 30, 100, 219),
       ),
       body: SafeArea(
-        child: Container(
-          color: const Color.fromARGB(255, 18, 69, 140), // Color de fondo
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 15.0),
-            child: Column(
-              children: [
-                const SizedBox(height: TSizes.spacebtwInputFields),
-                // Icono de Usuario
-                Icon(
-                  Icons.person,
-                  size: 72,
-                ),
-                const SizedBox(height: TSizes.defaultspace),
-                Padding(
-                  padding: const EdgeInsets.only(),
-                  child: Text(
-                    "Informacion de Usuario",
-                    style: TextStyle(color: Colors.grey[600], fontSize: 17),
+        child: SingleChildScrollView(
+          child: Container(
+            color: Color.fromARGB(255, 46, 116, 214), // Color de fondo
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: TSizes.spacebtwInputFields),
+                  // Icono de Usuario
+                  Icon(
+                    Icons.person,
+                    size: 72,
                   ),
-                ),
-                const SizedBox(height: TSizes.spacebtwInputFields),
+                  const SizedBox(height: TSizes.defaultspace),
+                  Padding(
+                    padding: const EdgeInsets.only(),
+                    child: Text(
+                      "Informacion de Usuario",
+                      style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 17),
+                    ),
+                  ),
+                  const SizedBox(height: TSizes.spacebtwInputFields),
 
-                // Usuario
-                MyTextBox(
-                  text: "Usuario",
-                  sectionName: "Usuario",
-                  onPressed: () => editField("Usuario", context),
-                ),
+                  // Usuario
+                  MyTextBox(
+                    text: "Usuario",
+                    sectionName: "Usuario",
+                    onPressed: () => editField("Usuario", context),
+                  ),
 
-                // Nombre
-                MyTextBox(
-                  text: "Nombre",
-                  sectionName: "Nombre",
-                  onPressed: () => editField("Nombre", context),
-                ),
+                  // Nombre
+                  MyTextBox(
+                    text: "Nombre",
+                    sectionName: "Nombre",
+                    onPressed: () => editField("Nombre", context),
+                  ),
 
-                // Apellido
-                MyTextBox(
-                  text: "Apellido",
-                  sectionName: "Apellido",
-                  onPressed: () => editField("Apellido", context),
-                ),
+                  // Apellido
+                  MyTextBox(
+                    text: "Apellido",
+                    sectionName: "Apellido",
+                    onPressed: () => editField("Apellido", context),
+                  ),
 
-                // Correo Electronico
-                MyTextBox(
-                  text: "Correo Electronico",
-                  sectionName: "Correo Electronico",
-                  onPressed: () => editField("Correo Electronico", context),
-                ),
+                  // Correo Electronico
+                  MyTextBox(
+                    text: "Correo Electronico",
+                    sectionName: "Correo Electronico",
+                    onPressed: () => editField("Correo Electronico", context),
+                  ),
 
-                // Contraseña
-                MyTextBox(
-                  text: "Contraseña",
-                  sectionName: "Contraseña",
-                  onPressed: () => editField("Contraseña", context),
-                ),
-                SizedBox(height: 20),
-              ],
+                  // Contraseña
+                  MyTextBox(
+                    text: "Contraseña",
+                    sectionName: "Contraseña",
+                    onPressed: () => editField("Contraseña", context),
+                  ),
+                  SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
         ),
