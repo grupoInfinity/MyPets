@@ -21,6 +21,14 @@ class editmasc extends StatefulWidget {
 }
 
 class _editmascState extends State<editmasc> {
+  /*final _mascotaController = StreamController<MascotaLoad>();
+  Stream<MascotaLoad> get mascotaStream => _mascotaController.stream;
+  @override
+  void dispose() {
+    _mascotaController.close(); // Asegúrate de cerrar el controlador cuando el widget se destruya
+    super.dispose();
+  }*/
+
   late DateTime selectedDate;
   //DateTime selectedDate = DateTime.now();
   File? _image;
@@ -323,6 +331,16 @@ class _editmascState extends State<editmasc> {
           ),
         ));
   }
+
+  /*txtNomb.text=mascotaInfo['nmasc'];
+            txtDir.text=mascotaInfo['direccion'];
+            txtCodigo.text=mascotaInfo['codigo'];
+            selectedtipomascId=int.parse(mascotaInfo['tipomasc']);
+            selectedDepartamentoId=int.parse(mascotaInfo['iddepto']);
+            selectedtmuniId=int.parse(mascotaInfo['idmuni']);
+            selectedDate =DateTime.parse(mascotaInfo['nacim']);
+            fechaEd=mascotaInfo['nacim'];
+            print('MUNI - $selectedDate');*/
   Future<void> cargarDatos() async {
     try {
       final url =
@@ -334,13 +352,14 @@ class _editmascState extends State<editmasc> {
           final mascotaInfo = jsonResponse['info']?[0]['mascota'];
           setState(() {
             mascota = MascotaLoad.fromJson(mascotaInfo);
-            txtNomb.text=mascota.nmasc!;
-            txtDir.text=mascota.direccion!;
-            txtCodigo.text=mascota.codigo!;
-            selectedtipomascId=int.parse(mascota.idtpmasc!);
-            selectedDepartamentoId=int.parse(mascota.iddepto!);
-            selectedtmuniId=int.parse(mascota.idmuni!);
-            selectedDate =DateTime.parse(mascota.nacim!);
+            txtNomb.text=mascotaInfo['nmasc'];
+            txtDir.text=mascotaInfo['direccion'];
+            txtCodigo.text=mascotaInfo['codigo'];
+            selectedtipomascId=int.parse(mascotaInfo['tipomasc']);
+            selectedDepartamentoId=int.parse(mascotaInfo['iddepto']);
+            selectedtmuniId=int.parse(mascotaInfo['idmuni']);
+            selectedDate =DateTime.parse(mascotaInfo['nacim']);
+            fechaEd=mascotaInfo['nacim'];
           });
         } else {
           print("Error in API response: ${jsonResponse['status']}");
@@ -563,6 +582,7 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load tipo mascota');
     }
   }
+
   Future<void> verifCode(String code) async {
     try {
       if (code.isEmpty) {
