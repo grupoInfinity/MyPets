@@ -71,11 +71,11 @@ class _editmascState extends State<editmasc> {
         ),
         body: GestureDetector(
           onTap: _openImageInFullScreen,
-          child:isLoading
-            ? Center(
-            child: CircularProgressIndicator(),
-    )
-        : TuContenidoWidget(),
+          child: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : TuContenidoWidget(),
         ));
   }
 
@@ -277,20 +277,31 @@ class _editmascState extends State<editmasc> {
                       ],
                     ),
                     SizedBox(height: 20.0),
-                    _image == null
+                    (_image == null && mascota.foto == null)
                         ? Text(
-                      'Imagen no seleccionada',
-                      style: TextStyle(fontSize: 15, color: Colors.white),
-                    )
-                        : ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0), // Puedes ajustar el valor según tus preferencias
-                      child: Image.memory(
-                        base64Decode(mascota.foto!),
-                        fit: BoxFit.cover,
-                        height: 200,
-                      ),
-                    )
-                    ,
+                            'Imagen no seleccionada',
+                            style: TextStyle(fontSize: 15, color: Colors.white),
+                          )
+                        : (_image != null)
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.file(
+                                  _image!,
+                                  height: 300.0,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: GestureDetector(
+                                  onTap: _openImageInFullScreen,
+                                  child: Image.memory(
+                                    base64Decode(mascota.foto!),
+                                    fit: BoxFit.cover,
+                                    height: 200,
+                                  ),
+                                ),
+                              ),
+
                     SizedBox(height: 20.0),
                     Row(
                       children: [
@@ -362,37 +373,37 @@ class _editmascState extends State<editmasc> {
 
   Future<void> cargarDatos() async {
     try {
-        await loadTipomasc();
-        await loadDepartamentos();
-        final url =
-            'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
-        final response = await http.get(Uri.parse(url));
-        if (response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          if (jsonResponse['status'] == 1) {
-            final mascotaInfo = jsonResponse['info']?[0]['mascota'];
-            setState(() {
-              mascota = MascotaLoad.fromJson(mascotaInfo);
-              txtNomb.text = mascota.nmasc!;
-              txtDir.text = mascota.direccion!;
-              txtCodigo.text = mascota.codigo!;
-              selectedtipomascId = int.parse(mascota.idtpmasc!);
-              selectedDepartamentoId = int.parse(mascota.iddepto!);
-              selectedtmuniId = int.parse(mascota.idmuni!);
-              selectedDate = DateTime.parse(mascota.nacim!);
-              print(selectedtmuniId);
-              isLoading = false;
-              //selectedDate =DateTime.parse(mascotaInfo['nacim']);
-              //fechaEd=mascotaInfo['nacim'];
-              //print(mascotaInfo['idmuni']);
-            });
-          } else {
-            print("Error in API response: ${jsonResponse['status']}");
-          }
+      await loadTipomasc();
+      await loadDepartamentos();
+      final url =
+          'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['status'] == 1) {
+          final mascotaInfo = jsonResponse['info']?[0]['mascota'];
+          setState(() {
+            mascota = MascotaLoad.fromJson(mascotaInfo);
+            txtNomb.text = mascota.nmasc!;
+            txtDir.text = mascota.direccion!;
+            txtCodigo.text = mascota.codigo!;
+            selectedtipomascId = int.parse(mascota.idtpmasc!);
+            selectedDepartamentoId = int.parse(mascota.iddepto!);
+            selectedtmuniId = int.parse(mascota.idmuni!);
+            selectedDate = DateTime.parse(mascota.nacim!);
+            print(selectedtmuniId);
+            isLoading = false;
+            //selectedDate =DateTime.parse(mascotaInfo['nacim']);
+            //fechaEd=mascotaInfo['nacim'];
+            //print(mascotaInfo['idmuni']);
+          });
         } else {
-          print("HTTP Error: ${response.statusCode}");
+          print("Error in API response: ${jsonResponse['status']}");
         }
-     // }
+      } else {
+        print("HTTP Error: ${response.statusCode}");
+      }
+      // }
     } catch (e) {
       print("Error 3: $e");
       setState(() {
@@ -401,14 +412,6 @@ class _editmascState extends State<editmasc> {
     }
   }
 
-  Uint8List tryDecodeBase64(String base64String) {
-    try {
-      return base64Decode(base64String);
-    } catch (e) {
-      print("Error decodificando base64: $e");
-      return Uint8List.fromList([]);
-    }
-  }
 /*
   Future<void> cargarVacuna() async {
     try {
@@ -516,13 +519,12 @@ class _editmascState extends State<editmasc> {
   }
 
   void _openImageInFullScreen() {
-    if (_image != null) {
+    if (_image != null || mascota.foto != null) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return GestureDetector(
             onTap: () {
-              // Cierra el diálogo al tocar el fondo negro
               Navigator.pop(context);
             },
             child: AnimatedContainer(
@@ -532,16 +534,17 @@ class _editmascState extends State<editmasc> {
               child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    // Esta función se ejecutará cuando toques la imagen en pantalla completa
-                    // Puedes realizar cualquier acción adicional aquí si es necesario
-                    Navigator.pop(
-                        context); // Cierra el diálogo al tocar la imagen
+                    Navigator.pop(context);
                   },
                   child: PhotoView(
                     backgroundDecoration: BoxDecoration(
-                      color: Colors.transparent, // Cambiado a transparente
+                      color: Colors.transparent,
                     ),
-                    imageProvider: FileImage(_image!),
+                    imageProvider: _image != null
+                        ? FileImage(_image!)
+                        : mascota.foto != null
+                        ? MemoryImage(base64Decode(mascota.foto!))
+                        : AssetImage('assets/imagen_no_disponible.jpg') as ImageProvider<Object>,
                     heroAttributes: PhotoViewHeroAttributes(tag: currentIndex),
                     minScale: PhotoViewComputedScale.contained,
                     maxScale: PhotoViewComputedScale.covered * 2,
