@@ -110,7 +110,7 @@ class login extends StatelessWidget {
                       child: Text(
                         "Inicio de Sesion",
                         style: GoogleFonts.gemunuLibre(
-                           fontSize: 34
+                           fontSize: 38
                         ),
                         
                         textAlign: TextAlign.center,

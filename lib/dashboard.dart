@@ -11,7 +11,7 @@ class dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(usr: usr),
+      home: MyHomePage(usr: usr),
     );
   }
 }
