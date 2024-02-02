@@ -61,16 +61,6 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Uint8List tryDecodeBase64(String base64String) {
-    try {
-      return base64Decode(base64String);
-    } catch (e) {
-      print("Error decodificando base64: $e");
-      // Puedes devolver una imagen de error o cualquier valor predeterminado
-      return Uint8List.fromList([]);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
