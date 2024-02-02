@@ -277,6 +277,29 @@ class _editmascState extends State<editmasc> {
                       ],
                     ),
                     SizedBox(height: 20.0),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Estado',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: TSizes.spacebtwInputFields),
+                        Expanded(
+                          child:MySwitch(
+                            //title: 'Estado',
+                            activeColor: Colors.green,
+                            inactiveThumbColor: Colors.red,
+                            status: mascota.estado!,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.0),
                     (_image == null && mascota.foto == null)
                         ? Text(
                             'Imagen no seleccionada',
@@ -320,12 +343,7 @@ class _editmascState extends State<editmasc> {
                         ),
                       ],
                     ),
-                    MySwitch(
-                      title: 'Estado',
-                      activeColor: Colors.green,
-                      inactiveThumbColor: Colors.red,
-                    ),
-                    SizedBox(height: 16),
+
                     const SizedBox(height: 30),
                     SizedBox(
                       width: double.infinity,
@@ -345,6 +363,7 @@ class _editmascState extends State<editmasc> {
                                 codigo: txtCodigo.text,
                                 municipio: selectedtmuniId,
                                 dir: txtDir.text,
+                                estado: 'A',
                                 nacim:
                                     '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                                 img: _image);
@@ -391,7 +410,8 @@ class _editmascState extends State<editmasc> {
             selectedDepartamentoId = int.parse(mascota.iddepto!);
             selectedtmuniId = int.parse(mascota.idmuni!);
             selectedDate = DateTime.parse(mascota.nacim!);
-            print(selectedtmuniId);
+            fechaEd=mascota.nacim!;
+            print(mascota.estado);
             isLoading = false;
             //selectedDate =DateTime.parse(mascotaInfo['nacim']);
             //fechaEd=mascotaInfo['nacim'];
@@ -773,7 +793,7 @@ class Mascota {
   String nombre;
   int municipio;
   String dir;
-
+  String estado;
   /*String stdir;String estado;*/
   String nacim;
   File? img;
@@ -785,8 +805,8 @@ class Mascota {
     required this.nombre,
     required this.municipio,
     required this.dir,
-    /*required this.stdir,
-    required this.estado,*/
+    /*required this.stdir,*/
+    required this.estado,
     required this.nacim,
     required this.img,
   });
@@ -801,43 +821,51 @@ class Vacuna {
     this.fechaCreacion,
   );
 }
-
 class MySwitch extends StatefulWidget {
-  final String title;
   final Color activeColor;
   final Color inactiveThumbColor;
+  final String status; // Nuevo parámetro para el estado inicial
 
   MySwitch({
-    required this.title,
     required this.activeColor,
     required this.inactiveThumbColor,
+    required this.status, // Actualizado el constructor
   });
 
   @override
   _MySwitchState createState() => _MySwitchState();
 }
-
 class _MySwitchState extends State<MySwitch> {
   bool _switchValue = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Utilizar el valor de status para determinar el estado inicial
+    _switchValue = widget.status.toLowerCase() == 'a'; // Cambiado a 'a' en lugar de 'A'
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(widget.title),
         Switch(
           value: _switchValue,
           onChanged: (value) {
             setState(() {
               _switchValue = value;
             });
+            if (_switchValue) {
+              print('Switch value changed to: A');
+            } else {
+              print('Switch value changed to: I');
+            }
           },
           activeColor: widget.activeColor,
           inactiveThumbColor: widget.inactiveThumbColor,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         SizedBox(height: 8),
-        Text('Valor: $_switchValue'),
       ],
     );
   }
