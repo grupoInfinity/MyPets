@@ -106,6 +106,50 @@ class _editmascState extends State<editmasc> {
                 child: Column(
                   children: [
                     SizedBox(height: 50),
+                    (_image == null && mascota.foto == null)
+                        ? Text(
+                      'Imagen no seleccionada',
+                      style: TextStyle(fontSize: 15, color: Colors.white),
+                    )
+                        : (_image != null)
+                        ? ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.file(
+                        _image!,
+                        height: 300.0,
+                      ),
+                    )
+                        : ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: GestureDetector(
+                        onTap: _openImageInFullScreen,
+                        child: Image.memory(
+                          base64Decode(mascota.foto!),
+                          fit: BoxFit.cover,
+                          height: 200,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _getImageFromCamera,
+                            child: Text('Tomar foto'),
+                          ),
+                        ),
+                        const SizedBox(width: TSizes.spacebtwInputFields),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _getImageFromGallery,
+                            child: Text('Galeria'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30.0),
                     Text(
                       'Tipo de mascota',
                       style: TextStyle(fontSize: 20, color: Colors.white),
@@ -224,13 +268,11 @@ class _editmascState extends State<editmasc> {
                                     (municipio) =>
                                         municipio.id == selectedtmuniId) ??
                                 -1;
-                            //print('Seleccionado: $selectedtmuniId, Posición: $selectedPosition');
                           },
                           icon: Icon(
                             Icons.arrow_drop_down,
-                            // Icono de flecha hacia abajo
                             color: Colors
-                                .white, // Cambia el color según tus preferencias
+                                .white,
                           ),
                         ),
                         //),*/
@@ -305,51 +347,7 @@ class _editmascState extends State<editmasc> {
                       ),
                     ),
                     SizedBox(height: 30.0),
-                    (_image == null && mascota.foto == null)
-                        ? Text(
-                            'Imagen no seleccionada',
-                            style: TextStyle(fontSize: 15, color: Colors.white),
-                          )
-                        : (_image != null)
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Image.file(
-                                  _image!,
-                                  height: 300.0,
-                                ),
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: GestureDetector(
-                                  onTap: _openImageInFullScreen,
-                                  child: Image.memory(
-                                    base64Decode(mascota.foto!),
-                                    fit: BoxFit.cover,
-                                    height: 200,
-                                  ),
-                                ),
-                              ),
 
-                    SizedBox(height: 20.0),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _getImageFromCamera,
-                            child: Text('Tomar foto'),
-                          ),
-                        ),
-                        const SizedBox(width: TSizes.spacebtwInputFields),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _getImageFromGallery,
-                            child: Text('Galeria'),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 30),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -384,6 +382,27 @@ class _editmascState extends State<editmasc> {
                         child: Text("Agregar Mascota"),
                       ),
                     ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            title: Text(items[index].nombrevacuna),
+                            subtitle: Text(items[index].fechaCreacion),
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                alerta(context, "¿Quiere eliminarlo?",items[index].id);
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
@@ -398,6 +417,7 @@ class _editmascState extends State<editmasc> {
     try {
       await loadTipomasc();
       await loadDepartamentos();
+      await cargarVacuna();
       final url =
           'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
@@ -417,9 +437,6 @@ class _editmascState extends State<editmasc> {
             fechaEd = DateFormat('dd-MM-yyyy').format(DateFormat('yyyy-MM-dd').parse(mascota.nacim!));
             print(fechaEd);
             isLoading = false;
-            //selectedDate =DateTime.parse(mascotaInfo['nacim']);
-            //fechaEd=mascotaInfo['nacim'];
-            //print(mascotaInfo['idmuni']);
           });
         } else {
           print("Error in API response: ${jsonResponse['status']}");
@@ -435,8 +452,6 @@ class _editmascState extends State<editmasc> {
       });
     }
   }
-
-/*
   Future<void> cargarVacuna() async {
     try {
       final url =
@@ -448,15 +463,15 @@ class _editmascState extends State<editmasc> {
           List<dynamic> results = jsonResponse['info'];
           items.clear();
           for (var result in results) {
-            String nombreVacuna =
-                result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
-            String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
-            Vacuna newItem = Vacuna(nombreVacuna, fecha);
+            int id = int.parse(result['id_vacuna'] ?? 'Id');
+            String nombreVacuna =result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
+            String fecha = result['fechacr'] ?? 'Fecha desconocida';
+            Vacuna newItem = Vacuna(nombreVacuna, fecha,id);
             if (!items.contains(newItem)) {
               items.add(newItem);
             }
           }
-          setState(() {});
+
         } else {
           print('La clave "info" no es una lista en la respuesta JSON.');
         }
@@ -466,7 +481,72 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
       // Manejar excepciones
     }
-  }*/
+  }
+  void alerta(BuildContext context, String mensaje,int idvac) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Información Importante",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            mensaje,
+            style: TextStyle(fontSize: 18.0),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await eliminarVac(context, idvac);
+                setState(() {
+                  items.removeWhere((vacuna) => vacuna.id == idvac);
+                });
+              },
+              child: Text(
+                "Aceptar",
+                style: TextStyle(fontSize: 18.0, color: Colors.blue),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+
+              },
+              child: Text(
+                "Cancelar",
+                style: TextStyle(fontSize: 18.0, color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<void> eliminarVac(BuildContext context,int idvac) async {
+    try {
+      final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
+          'prc/prc_vacuna.php?accion=D&id=$idvac';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> user = json.decode(response.body);
+        if (user['status'] == 1) {
+
+        } else {
+
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Error en la respuesta: ${response.statusCode}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
   void insertMasc(Mascota usuario, Function callback) async {
     try {
       var url =
@@ -686,6 +766,17 @@ class _editmascState extends State<editmasc> {
     }
   }
 }
+class Vacuna {
+  int id;
+  String nombrevacuna;
+  String fechaCreacion;
+
+  Vacuna(
+      this.nombrevacuna,
+      this.fechaCreacion,
+      this.id
+      );
+}
 
 class Departamento {
   final int id;
@@ -817,15 +908,6 @@ class Mascota {
   });
 }
 
-class Vacuna {
-  String nombrevacuna;
-  String fechaCreacion;
-
-  Vacuna(
-    this.nombrevacuna,
-    this.fechaCreacion,
-  );
-}
 class MySwitch extends StatefulWidget {
   final Color activeColor;
   final Color inactiveThumbColor;

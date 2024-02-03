@@ -6,12 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../contanst/app_contanst.dart';
-class Vacuna {
-  String nombrevacuna;String fechaCreacion;
-  Vacuna(
-    this.nombrevacuna,this.fechaCreacion,
-  );
-}
+
 
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
@@ -156,7 +151,7 @@ class _TuPantallaState extends State<_TuPantalla> {
           for (var result in results) {
             String nombreVacuna =
                 result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
-            String fecha = result['fecha_creacion'] ?? 'Fecha desconocida';
+            String fecha = result['fechacr'] ?? 'Fecha desconocida';
             Vacuna newItem = Vacuna(nombreVacuna, fecha);
             if (!items.contains(newItem)) {
               items.add(newItem);
@@ -174,6 +169,12 @@ class _TuPantallaState extends State<_TuPantalla> {
     }
   }
 
+}
+class Vacuna {
+  String nombrevacuna;String fechaCreacion;
+  Vacuna(
+      this.nombrevacuna,this.fechaCreacion,
+      );
 }
 
 class Mascota {
