@@ -30,6 +30,7 @@ class _editmascState extends State<editmasc> {
   late List<Departamento> departamentos = [];
   late List<Municipio> municipios = [];
   late List<Tipomascota> tipomasc = [];
+  late List<Tipomascota> tipovac = [];
   int currentIndex = 0;
   String fechaEd = "";
   TextEditingController txtCodigo = TextEditingController();
@@ -40,6 +41,7 @@ class _editmascState extends State<editmasc> {
   int selectedDepartamentoId = 1;
   int selectedtipomascId = 1;
   int selectedtmuniId = 1;
+  int selectedtipovacId= 1;
   bool codeExist = false;
   MascotaLoad mascota = MascotaLoad();
   List<Vacuna> items = [];
@@ -52,8 +54,7 @@ class _editmascState extends State<editmasc> {
     tipomasc = [];
     departamentos = [];
     municipios = [];
-    /*loadTipomasc();
-    loadDepartamentos();*/
+    tipovac = [];
     cargarDatos();
   }
 
@@ -382,6 +383,20 @@ class _editmascState extends State<editmasc> {
                         child: Text("Agregar Mascota"),
                       ),
                     ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue,
+                          onPrimary: Colors.white,
+                          fixedSize: Size(0, 50),
+                        ),
+                        onPressed: () {
+                          agregarVacuna(context);
+                        },
+                        child: Text("Agregar Mascota"),
+                      ),
+                    ),
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: items.length,
@@ -412,7 +427,60 @@ class _editmascState extends State<editmasc> {
       ),
     );
   }
-
+  void agregarVacuna(BuildContext context) {
+    Vacuna2? selectedVacuna;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Agregar Vacuna",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ),
+          content: Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                DropdownButton<int>(
+                  value: selectedtipovacId,
+                  items: tipomasc.map((tipomasc) {
+                    return DropdownMenuItem<int>(
+                      value: tipomasc.id,
+                      child: Text(
+                        tipomasc.nombre,
+                        style: TextStyle(color: Colors.lightBlue),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedtipovacId = value!;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.arrow_drop_down, // Icono de flecha hacia abajo
+                    color: Colors
+                        .lightBlue, // Cambia el color según tus preferencias
+                  ),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    if (selectedVacuna != null) {
+                      // Lógica para agregar la nueva vacuna
+                      print("Vacuna seleccionada: ${selectedVacuna!.nombre}");
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Agregar'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   Future<void> cargarDatos() async {
     try {
       await loadTipomasc();
@@ -467,6 +535,7 @@ class _editmascState extends State<editmasc> {
             String nombreVacuna =result['nombrevacuna'] ?? 'Nombre Vacuna Desconocido';
             String fecha = result['fechacr'] ?? 'Fecha desconocida';
             Vacuna newItem = Vacuna(nombreVacuna, fecha,id);
+            //Vacuna2 newItem2= Vacuna2(nombreVacuna, fecha,id);
             if (!items.contains(newItem)) {
               items.add(newItem);
             }
@@ -500,9 +569,7 @@ class _editmascState extends State<editmasc> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 await eliminarVac(context, idvac);
-                setState(() {
-                  items.removeWhere((vacuna) => vacuna.id == idvac);
-                });
+
               },
               child: Text(
                 "Aceptar",
@@ -532,7 +599,14 @@ class _editmascState extends State<editmasc> {
       if (response.statusCode == 200) {
         Map<String, dynamic> user = json.decode(response.body);
         if (user['status'] == 1) {
-
+          setState(() {
+            items.removeWhere((vacuna) => vacuna.id == idvac);
+          });
+          Fluttertoast.showToast(
+            msg: "Vacuna eliminada",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
         } else {
 
         }
@@ -668,7 +742,7 @@ class _editmascState extends State<editmasc> {
       tipomasc = await getTipomasc();
       //setState(() {});
     } catch (e) {
-      print('Error loading municipios: $e');
+      print('Error loading tipo masc: $e');
     }
   }
 
@@ -694,7 +768,27 @@ class _editmascState extends State<editmasc> {
       print('Error loading municipios: $e');
     }
   }
+  Future<void> loadTipovac() async {
+    try {
+      tipovac = (await getTipovac()).cast<Vacuna2>();
+      //setState(() {});
+    } catch (e) {
+      print('Error loading tipo vac: $e');
+    }
+  }
 
+  Future<List<Vacuna2>> getTipovac() async {
+    final response = await http.get(Uri.parse(
+        'https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_tipovacuna.php?accion=C&estado=A'));
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      List<dynamic> Vacuna = data['info'];
+
+      return Vacuna.map((json) => Vacuna2.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load tipo vacuna');
+    }
+  }
   Future<List<Departamento>> getDepartamentos() async {
     final response = await http.get(Uri.parse(
         'https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_depto.php?accion=C&estado=A'));
@@ -777,11 +871,19 @@ class Vacuna {
       this.id
       );
 }
+class Vacuna2 {
+  final int id;
+  final String nombre;
+  Vacuna2({required this.id, required this.nombre});
+
+  factory Vacuna2.fromJson(Map<String, dynamic> json) {
+    return Vacuna2(id: int.parse(json['id']), nombre: json['descripcion']);
+  }
+}
 
 class Departamento {
   final int id;
   final String nombre;
-
   Departamento({required this.id, required this.nombre});
 
   factory Departamento.fromJson(Map<String, dynamic> json) {
