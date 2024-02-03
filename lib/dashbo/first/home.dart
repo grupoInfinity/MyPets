@@ -9,6 +9,7 @@ import 'addmascota.dart';
 
 class Home extends StatefulWidget {
   final String usr;
+
   Home({required this.usr});
 
   @override
@@ -20,7 +21,7 @@ class _HomeState extends State<Home> {
   dynamic _selectedIndex = {};
   bool subpage = false;
   bool subpage2 = false;
-  String codigo='';
+  String codigo = '';
 
   CarouselController _carouselController = CarouselController();
 
@@ -64,7 +65,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: !subpage
+      floatingActionButton: !subpage&& !subpage2
           ? FloatingActionButton(
               onPressed: () {
                 setState(() {
@@ -74,7 +75,7 @@ class _HomeState extends State<Home> {
               backgroundColor: Color.fromARGB(255, 51, 163, 255),
               child: Icon(Icons.add),
             )
-          : null,
+          :null,
       // Set to null to hide the FloatingActionButton on the second page
       body: subpage
           ? AddMascota(
@@ -91,7 +92,8 @@ class _HomeState extends State<Home> {
                       subpage2 = false;
                     });
                   },
-                  usr: widget.usr,code: codigo)
+                  usr: widget.usr,
+                  code: codigo)
               : Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -154,7 +156,7 @@ class _HomeState extends State<Home> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          codigo=mascota['codigo'];
+                                          codigo = mascota['codigo'];
                                           print(codigo);
                                           subpage2 = true;
                                         });
@@ -169,8 +171,7 @@ class _HomeState extends State<Home> {
                                         ),
                                         child: mascota['foto'] != null
                                             ? Image.memory(
-                                          base64Decode(
-                                                    mascota['foto']),
+                                                base64Decode(mascota['foto']),
                                                 fit: BoxFit.cover,
                                               )
                                             : Placeholder(),
@@ -189,8 +190,7 @@ class _HomeState extends State<Home> {
                                     ),
                                     SizedBox(height: 20),
                                     Text(
-                                      mascota['codigo'] ??
-                                          'Codigo vacio',
+                                      mascota['codigo'] ?? 'Codigo vacio',
                                       // Tipo de mascota
                                       style: TextStyle(
                                         fontSize: 14,

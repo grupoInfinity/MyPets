@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:intl/intl.dart';
 
 class editmasc extends StatefulWidget {
   final VoidCallback onClose;
@@ -254,7 +255,7 @@ class _editmascState extends State<editmasc> {
                         return null; // La validación pasó
                       },
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
 
                     Row(
                       children: [
@@ -276,30 +277,34 @@ class _editmascState extends State<editmasc> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20.0),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Estado',
-                            style: TextStyle(
+                    SizedBox(height: 30.0),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // Centra los elementos de la fila
+                        children: [
+                          /*Expanded(
+                            child:*/ Text(
+                              'Estado',
+                              style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(width: TSizes.spacebtwInputFields),
-                        Expanded(
-                          child:MySwitch(
-                            //title: 'Estado',
-                            activeColor: Colors.green,
-                            inactiveThumbColor: Colors.red,
-                            status: mascota.estado!,
-                          ),
-                        ),
-                      ],
+                                color: Colors.white,
+                              ),
+                            ),
+                          //),
+                          const SizedBox(width: TSizes.spacebtwInputFields),
+                          /*Expanded(
+                            child:*/ MySwitch(
+                              //title: 'Estado',
+                              activeColor: Colors.green,
+                              inactiveThumbColor: Colors.red,
+                              status: mascota.estado!,
+                            ),
+                          //),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 20.0),
+                    SizedBox(height: 30.0),
                     (_image == null && mascota.foto == null)
                         ? Text(
                             'Imagen no seleccionada',
@@ -364,8 +369,7 @@ class _editmascState extends State<editmasc> {
                                 municipio: selectedtmuniId,
                                 dir: txtDir.text,
                                 estado: 'A',
-                                nacim:
-                                    '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                                nacim:'${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                                 img: _image);
                             //insertMasc(/*context,*/ nuevoMasc,);
                             insertMasc(nuevoMasc, (response) {
@@ -410,8 +414,8 @@ class _editmascState extends State<editmasc> {
             selectedDepartamentoId = int.parse(mascota.iddepto!);
             selectedtmuniId = int.parse(mascota.idmuni!);
             selectedDate = DateTime.parse(mascota.nacim!);
-            fechaEd=mascota.nacim!;
-            print(mascota.estado);
+            fechaEd = DateFormat('dd-MM-yyyy').format(DateFormat('yyyy-MM-dd').parse(mascota.nacim!));
+            print(fechaEd);
             isLoading = false;
             //selectedDate =DateTime.parse(mascotaInfo['nacim']);
             //fechaEd=mascotaInfo['nacim'];
@@ -517,6 +521,7 @@ class _editmascState extends State<editmasc> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        fechaEd='${selectedDate.day}-${selectedDate.month}-${selectedDate.year}';
       });
     }
   }
