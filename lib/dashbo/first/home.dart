@@ -22,6 +22,7 @@ class _HomeState extends State<Home> {
   bool subpage = false;
   bool subpage2 = false;
   String codigo = '';
+  String idmasc='';
 
   CarouselController _carouselController = CarouselController();
 
@@ -93,7 +94,8 @@ class _HomeState extends State<Home> {
                     });
                   },
                   usr: widget.usr,
-                  code: codigo)
+                  code: codigo,
+                  idmasc:idmasc)
               : Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -157,7 +159,7 @@ class _HomeState extends State<Home> {
                                       onTap: () {
                                         setState(() {
                                           codigo = mascota['codigo'];
-                                          print(codigo);
+                                          idmasc=mascota['idmasc'];
                                           subpage2 = true;
                                         });
                                       },

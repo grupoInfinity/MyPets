@@ -15,8 +15,8 @@ class editmasc extends StatefulWidget {
   final VoidCallback onClose;
   final String usr;
   final String code;
-
-  editmasc({required this.onClose, required this.code, required this.usr});
+  final String idmasc;
+  editmasc({required this.onClose, required this.code, required this.usr,required this.idmasc});
 
   @override
   _editmascState createState() => _editmascState();
