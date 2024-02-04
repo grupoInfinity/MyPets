@@ -30,7 +30,7 @@ class _editmascState extends State<editmasc> {
   late List<Departamento> departamentos = [];
   late List<Municipio> municipios = [];
   late List<Tipomascota> tipomasc = [];
-  late List<Tipomascota> tipovac = [];
+  late List<Vacuna2> tipovac = [];
   int currentIndex = 0;
   String fechaEd = "";
   TextEditingController txtCodigo = TextEditingController();
@@ -392,6 +392,7 @@ class _editmascState extends State<editmasc> {
                           fixedSize: Size(0, 50),
                         ),
                         onPressed: () {
+
                           agregarVacuna(context);
                         },
                         child: Text("Agregar Mascota"),
@@ -411,7 +412,9 @@ class _editmascState extends State<editmasc> {
                                 color: Colors.red,
                               ),
                               onPressed: () {
-                                alerta(context, "¿Quiere eliminarlo?",items[index].id);
+                                setState(() {
+                                  alerta(context, "¿Quiere eliminarlo?",items[index].id);
+                                });
                               },
                             ),
                           ),
@@ -427,65 +430,66 @@ class _editmascState extends State<editmasc> {
       ),
     );
   }
+
   void agregarVacuna(BuildContext context) {
-    Vacuna2? selectedVacuna;
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            "Agregar Vacuna",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          ),
-          content: Form(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                DropdownButton<int>(
-                  value: selectedtipovacId,
-                  items: tipomasc.map((tipomasc) {
-                    return DropdownMenuItem<int>(
-                      value: tipomasc.id,
-                      child: Text(
-                        tipomasc.nombre,
-                        style: TextStyle(color: Colors.lightBlue),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedtipovacId = value!;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.arrow_drop_down, // Icono de flecha hacia abajo
-                    color: Colors
-                        .lightBlue, // Cambia el color según tus preferencias
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(
+                "Agregar Vacuna",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  DropdownButton<int>(
+                    key: ValueKey(selectedtipovacId),
+                    value: selectedtipovacId,
+                    items: tipovac?.map((tipovac) {
+                      return DropdownMenuItem<int>(
+                        value: tipovac.id,
+                        child: Text(
+                          tipovac.nombre,
+                          style: TextStyle(color: Colors.lightBlue),
+                        ),
+                      );
+                    }).toList() ?? [],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedtipovacId = value!;
+                        print('Vacuna seleccionada $selectedtipovacId');
+                      });
+                    },
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.lightBlue,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    if (selectedVacuna != null) {
-                      // Lógica para agregar la nueva vacuna
-                      print("Vacuna seleccionada: ${selectedVacuna!.nombre}");
-                    }
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Agregar'),
-                ),
-              ],
-            ),
-          ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Agregar'),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
   }
+
   Future<void> cargarDatos() async {
     try {
       await loadTipomasc();
       await loadDepartamentos();
       await cargarVacuna();
+      await loadTipovac();
       final url =
           'http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php?accion=C&codigo=${widget.code}';
       final response = await http.get(Uri.parse(url));
@@ -679,7 +683,6 @@ class _editmascState extends State<editmasc> {
       });
     }
   }
-
   Future<void> _getImageFromCamera() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.camera);
@@ -687,7 +690,6 @@ class _editmascState extends State<editmasc> {
       _image = pickedFile != null ? File(pickedFile.path) : null;
     });
   }
-
   Future<void> _getImageFromGallery() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -696,7 +698,6 @@ class _editmascState extends State<editmasc> {
       print('print $_image');
     });
   }
-
   void _openImageInFullScreen() {
     if (_image != null || mascota.foto != null) {
       showDialog(
@@ -736,7 +737,6 @@ class _editmascState extends State<editmasc> {
       );
     }
   }
-
   Future<void> loadTipomasc() async {
     try {
       tipomasc = await getTipomasc();
@@ -745,7 +745,6 @@ class _editmascState extends State<editmasc> {
       print('Error loading tipo masc: $e');
     }
   }
-
   Future<void> loadDepartamentos() async {
     try {
       departamentos = await getDepartamentos();
@@ -770,7 +769,7 @@ class _editmascState extends State<editmasc> {
   }
   Future<void> loadTipovac() async {
     try {
-      tipovac = (await getTipovac()).cast<Vacuna2>();
+      tipovac = await getTipovac();
       //setState(() {});
     } catch (e) {
       print('Error loading tipo vac: $e');
