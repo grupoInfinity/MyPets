@@ -360,26 +360,26 @@ class _editmascState extends State<editmasc> {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue,
+                          primary: Colors.green,
                           onPrimary: Colors.white,
                           fixedSize: Size(0, 50),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate() &&
-                              _image != null) {
+                          if (_formKey.currentState!.validate() && _image != null) {
                             Mascota nuevoMasc = Mascota(
-                                usr: widget.usr,
-                                tpmascota: selectedtipomascId,
-                                nombre: txtNomb.text,
-                                codigo: txtCodigo.text,
-                                municipio: selectedtmuniId,
-                                dir: txtDir.text,
-                                estado: 'A',
-                                nacim:
-                                    '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
-                                img: _image);
-                            //insertMasc(/*context,*/ nuevoMasc,);
-                            insertMasc(nuevoMasc, (response) {
+                              id: widget.idmasc,
+                              usr: widget.usr,
+                              tpmascota: selectedtipomascId,
+                              nombre: txtNomb.text,
+                              codigo: txtCodigo.text,
+                              municipio: selectedtmuniId,
+                              dir: txtDir.text,
+                              estado: 'A',
+                              nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                              img: _image,
+                            );
+
+                            editMasc(nuevoMasc, (response) {
                               print('Respuesta del servidor: $response');
                             });
                           } else {
@@ -388,47 +388,74 @@ class _editmascState extends State<editmasc> {
                             );
                           }
                         },
-                        child: Text("Agregar Mascota"),
-                      ),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.blue,
-                          onPrimary: Colors.white,
-                          fixedSize: Size(0, 50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.check),  // Agrega el icono de "check" aquí
+                            const SizedBox(width: 8),  // Puedes ajustar el espacio según sea necesario
+                            Text("Confirmar cambios"),
+                          ],
                         ),
-                        onPressed: () {
-                          agregarVacuna(context);
-                        },
-                        child: Text("Agregar Mascota"),
                       ),
                     ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(items[index].nombrevacuna),
-                            subtitle: Text(items[index].fechaCreacion),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  alerta(context, "¿Quiere eliminarlo?",
-                                      items[index].id);
-                                });
-                              },
+                    SizedBox(height: 30.0),
+
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Vacunas',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
-                        );
-                      },
-                    )
+                          const SizedBox(width: TSizes.spacebtwInputFields),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              onPrimary: Colors.white,
+                            ),
+                            onPressed: () {
+                              agregarVacuna(context);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 200,  // Ajusta esta altura según sea necesario
+                      child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: ListTile(
+                              title: Text(items[index].nombrevacuna),
+                              subtitle: Text(items[index].fechaCreacion),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    alerta(context, "¿Quiere eliminarlo?", items[index].id);
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -493,7 +520,6 @@ class _editmascState extends State<editmasc> {
       },
     );
   }
-
   Future<void> insertVac(BuildContext context) async {
     try {
       final url =
@@ -510,18 +536,6 @@ class _editmascState extends State<editmasc> {
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
           );
-          /*final url2 ='http://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_vacuna.php?accion=C&codigo=';
-          final response2 = await http.get(Uri.parse(url2));
-          if (response2.statusCode == 200) {
-            Map<String, dynamic> user2 = json.decode(response2.body);
-            if (user2['status'] == 1) {
-              Fluttertoast.showToast(
-                msg: "Vacuna registrada",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-              );
-            }
-          }*/
         }
       } else {
         Fluttertoast.showToast(
@@ -534,7 +548,6 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
-
   Future<void> cargarDatos() async {
     try {
       await loadTipomasc();
@@ -576,7 +589,6 @@ class _editmascState extends State<editmasc> {
       });
     }
   }
-
   Future<void> cargarVacuna() async {
     try {
       final url =
@@ -607,7 +619,6 @@ class _editmascState extends State<editmasc> {
       // Manejar excepciones
     }
   }
-
   void alerta(BuildContext context, String mensaje, int idvac) {
     showDialog(
       context: context,
@@ -646,7 +657,6 @@ class _editmascState extends State<editmasc> {
       },
     );
   }
-
   Future<void> eliminarVac(BuildContext context, int idvac) async {
     try {
       final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
@@ -675,8 +685,7 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
-
-  void insertMasc(Mascota usuario, Function callback) async {
+  void editMasc(Mascota usuario, Function callback) async {
     try {
       var url =
           'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
@@ -693,15 +702,15 @@ class _editmascState extends State<editmasc> {
         }
       }
       request.fields.addAll({
-        'accionr': 'I',
+        'accionr': 'U',
+        'idr': usuario.id,
         'tpmascotar': usuario.tpmascota.toString(),
         'duenor': usuario.usr,
         'munir': usuario.municipio.toString(),
         'direccionr': usuario.dir,
-        'estadodirr': 'I',
         'nmascr': usuario.nombre,
         'codigor': usuario.codigo,
-        'estador': 'A',
+        'estador': usuario.estado,
         'userr': usuario.usr,
         'nacimr': usuario.nacim,
       });
@@ -710,7 +719,12 @@ class _editmascState extends State<editmasc> {
       var responseData = json.decode(responseBody);
       callback(responseData);
       if (response.statusCode == 200) {
-        widget.onClose();
+        Fluttertoast.showToast(
+          msg: "Informacion actualizada",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+        //widget.onClose();
       } else {
         print("Error en la respuesta: ${response.statusCode}");
       }
@@ -718,7 +732,6 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -743,7 +756,6 @@ class _editmascState extends State<editmasc> {
       _image = pickedFile != null ? File(pickedFile.path) : null;
     });
   }
-
   Future<void> _getImageFromGallery() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -752,7 +764,6 @@ class _editmascState extends State<editmasc> {
       print('print $_image');
     });
   }
-
   void _openImageInFullScreen() {
     if (_image != null || mascota.foto != null) {
       showDialog(
@@ -802,7 +813,6 @@ class _editmascState extends State<editmasc> {
       print('Error loading tipo masc: $e');
     }
   }
-
   Future<void> loadDepartamentos() async {
     try {
       departamentos = await getDepartamentos();
@@ -814,7 +824,6 @@ class _editmascState extends State<editmasc> {
       print('Error loading departamentos: $e');
     }
   }
-
   Future<void> loadMunicipios(int departamentoId) async {
     try {
       municipios = await getMunicipios(departamentoId);
@@ -825,7 +834,6 @@ class _editmascState extends State<editmasc> {
       print('Error loading municipios: $e');
     }
   }
-
   Future<void> loadTipovac() async {
     try {
       tipovac = await getTipovac();
@@ -834,7 +842,6 @@ class _editmascState extends State<editmasc> {
       print('Error loading tipo vac: $e');
     }
   }
-
   Future<List<Vacuna2>> getTipovac() async {
     String query1 =
         'https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_tipovacuna.php?accion=C&estado=A&idmasc=${widget.idmasc}';
@@ -848,7 +855,6 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load tipo vacuna');
     }
   }
-
   Future<List<Departamento>> getDepartamentos() async {
     final response = await http.get(Uri.parse(
         'https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_depto.php?accion=C&estado=A'));
@@ -862,7 +868,6 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load departamentos');
     }
   }
-
   Future<List<Municipio>> getMunicipios(int departamentoId) async {
     final response = await http.get(Uri.parse(
         'http://ginfinity.xyz//MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
@@ -875,7 +880,6 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load municipios');
     }
   }
-
   Future<List<Tipomascota>> getTipomasc() async {
     final response = await http.get(Uri.parse(
         'https://ginfinity.xyz//MyPets_Admin/servicios/ctg/ctg_tipomascota.php?accion=C&estado=A'));
@@ -888,7 +892,6 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load tipo mascota');
     }
   }
-
   Future<void> verifCode(String code) async {
     try {
       if (code.isEmpty) {
@@ -920,7 +923,6 @@ class _editmascState extends State<editmasc> {
     }
   }
 }
-
 class Vacuna {
   int id;
   String nombrevacuna;
@@ -928,7 +930,6 @@ class Vacuna {
 
   Vacuna(this.nombrevacuna, this.fechaCreacion, this.id);
 }
-
 class Vacuna2 {
   final int id;
   final String nombre;
@@ -939,7 +940,6 @@ class Vacuna2 {
     return Vacuna2(id: int.parse(json['id']), nombre: json['descripcion']);
   }
 }
-
 class Departamento {
   final int id;
   final String nombre;
@@ -950,7 +950,6 @@ class Departamento {
     return Departamento(id: int.parse(json['id']), nombre: json['descripcion']);
   }
 }
-
 class Municipio {
   final int id;
   final String nombre;
@@ -967,7 +966,6 @@ class Municipio {
         departamentoId: int.parse(json['id']['id_depto']));
   }
 }
-
 class Tipomascota {
   final int id;
   final String nombre;
@@ -982,7 +980,6 @@ class Tipomascota {
     );
   }
 }
-
 class MascotaLoad {
   String? idmasc;
   String? idtpmasc;
@@ -1045,6 +1042,7 @@ class MascotaLoad {
 }
 
 class Mascota {
+  String id;
   String usr;
   String codigo;
   int tpmascota;
@@ -1058,6 +1056,7 @@ class Mascota {
   File? img;
 
   Mascota({
+    required this.id,
     required this.usr,
     required this.codigo,
     required this.tpmascota,
