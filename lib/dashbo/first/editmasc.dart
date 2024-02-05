@@ -139,23 +139,47 @@ class _editmascState extends State<editmasc> {
                               ),
 
                     const SizedBox(height: 30),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _getImageFromCamera,
-                            child: Text('Tomar foto'),
+                    Center(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blueGrey,
+                                onPrimary: Colors.white,
+                              ),
+                              onPressed: _getImageFromCamera,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_a_photo_outlined),
+                                ],
+                              ),
+                            ),/*ElevatedButton(
+                              onPressed: _getImageFromCamera,
+                              child: Text('Tomar foto'),
+                            ),*/
                           ),
-                        ),
-                        const SizedBox(width: TSizes.spacebtwInputFields),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _getImageFromGallery,
-                            child: Text('Galeria'),
+                          const SizedBox(width: TSizes.spacebtwInputFields),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blueGrey,
+                                onPrimary: Colors.white,
+                              ),
+                              onPressed: _getImageFromGallery,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_photo_alternate_outlined),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+
                     SizedBox(height: 30.0),
                     Text(
                       'Tipo de mascota',
@@ -304,7 +328,6 @@ class _editmascState extends State<editmasc> {
                       },
                     ),
                     SizedBox(height: 30),
-
                     Row(
                       children: [
                         Expanded(
@@ -329,10 +352,7 @@ class _editmascState extends State<editmasc> {
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        // Centra los elementos de la fila
                         children: [
-                          /*Expanded(
-                            child:*/
                           Text(
                             'Estado',
                             style: TextStyle(
@@ -343,18 +363,12 @@ class _editmascState extends State<editmasc> {
                           ),
                           //),
                           const SizedBox(width: TSizes.spacebtwInputFields),
-                          /*Expanded(
-                            child:*/
-
                           MySwitch(
-                            //title: 'Estado',
                             activeColor: Colors.green,
                             inactiveThumbColor: Colors.red,
                             status: mascota.estado!,
                             onSwitchValueChanged: handleSwitchValueChanged,
                           ),
-
-                          //),
                         ],
                       ),
                     ),
@@ -369,7 +383,7 @@ class _editmascState extends State<editmasc> {
                           fixedSize: Size(0, 50),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate() && _image != null) {
+                          if (_formKey.currentState!.validate() ) {
                             Mascota nuevoMasc = Mascota(
                               id: widget.idmasc,
                               usr: widget.usr,
@@ -382,7 +396,6 @@ class _editmascState extends State<editmasc> {
                               nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                               img: _image,
                             );
-
                             editMasc(nuevoMasc, (response) {
                               print('Respuesta del servidor: $response');
                             });
@@ -469,7 +482,54 @@ class _editmascState extends State<editmasc> {
       ),
     );
   }
+  void editMasc(Mascota usuario, Function callback) async {
+    try {
+      var url =
+          'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
+      var request = http.MultipartRequest('POST', Uri.parse(url));
 
+      if (usuario.img != null) {
+        var imageFile = File(usuario.img!.path);
+        if (imageFile.existsSync()) {
+          request.files
+              .add(await http.MultipartFile.fromPath('fotor', imageFile.path));
+        } else {
+          print("Error: File does not exist at path: ${imageFile.path}");
+          return;
+        }
+      }
+
+      request.fields.addAll({
+        'accionr': 'U',
+        'idr': usuario.id,
+        'tpmascotar': usuario.tpmascota.toString(),
+        'duenor': usuario.usr,
+        'munir': usuario.municipio.toString(),
+        'direccionr': usuario.dir,
+        'nmascr': usuario.nombre,
+        'codigor': usuario.codigo,
+        'estador': usuario.estado,
+        'userr': usuario.usr,
+        'nacimr': usuario.nacim,
+      });
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      var responseData = json.decode(responseBody);
+      callback(responseData);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Informacion actualizada",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+        //widget.onClose();
+      } else {
+        print("Error en la respuesta: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
   void agregarVacuna(BuildContext context) {
     showDialog(
       context: context,
@@ -574,9 +634,7 @@ class _editmascState extends State<editmasc> {
             selectedDepartamentoId = int.parse(mascota.iddepto!);
             selectedtmuniId = int.parse(mascota.idmuni!);
             selectedDate = DateTime.parse(mascota.nacim!);
-            fechaEd = DateFormat('dd-MM-yyyy')
-                .format(DateFormat('yyyy-MM-dd').parse(mascota.nacim!));
-            print(fechaEd);
+            fechaEd = DateFormat('dd-MM-yyyy').format(DateFormat('yyyy-MM-dd').parse(mascota.nacim!));
             isLoading = false;
           });
         } else {
@@ -684,53 +742,6 @@ class _editmascState extends State<editmasc> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
         );
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
-  void editMasc(Mascota usuario, Function callback) async {
-    try {
-      var url =
-          'https://ginfinity.xyz/MyPets_Admin/servicios/prc/prc_mascota.php';
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-
-      if (usuario.img != null) {
-        var imageFile = File(usuario.img!.path);
-        if (imageFile.existsSync()) {
-          request.files
-              .add(await http.MultipartFile.fromPath('fotor', imageFile.path));
-        } else {
-          print("Error: File does not exist at path: ${imageFile.path}");
-          return;
-        }
-      }
-      request.fields.addAll({
-        'accionr': 'U',
-        'idr': usuario.id,
-        'tpmascotar': usuario.tpmascota.toString(),
-        'duenor': usuario.usr,
-        'munir': usuario.municipio.toString(),
-        'direccionr': usuario.dir,
-        'nmascr': usuario.nombre,
-        'codigor': usuario.codigo,
-        'estador': usuario.estado,
-        'userr': usuario.usr,
-        'nacimr': usuario.nacim,
-      });
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      var responseData = json.decode(responseBody);
-      callback(responseData);
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-          msg: "Informacion actualizada",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-        );
-        //widget.onClose();
-      } else {
-        print("Error en la respuesta: ${response.statusCode}");
       }
     } catch (e) {
       print("Error: $e");
@@ -926,7 +937,6 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
-
   void handleSwitchValueChanged(bool value) {
     if (value) {
       estadom='A';
