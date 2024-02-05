@@ -52,6 +52,7 @@ class _editmascState extends State<editmasc> {
   List<Vacuna> items = [];
   bool dataLoaded = false;
   bool isLoading = true;
+  String estadom='';
 
   @override
   void initState() {
@@ -344,12 +345,15 @@ class _editmascState extends State<editmasc> {
                           const SizedBox(width: TSizes.spacebtwInputFields),
                           /*Expanded(
                             child:*/
+
                           MySwitch(
                             //title: 'Estado',
                             activeColor: Colors.green,
                             inactiveThumbColor: Colors.red,
                             status: mascota.estado!,
+                            onSwitchValueChanged: handleSwitchValueChanged,
                           ),
+
                           //),
                         ],
                       ),
@@ -374,7 +378,7 @@ class _editmascState extends State<editmasc> {
                               codigo: txtCodigo.text,
                               municipio: selectedtmuniId,
                               dir: txtDir.text,
-                              estado: 'A',
+                              estado: estadom,
                               nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                               img: _image,
                             );
@@ -922,6 +926,14 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
+
+  void handleSwitchValueChanged(bool value) {
+    if (value) {
+      estadom='A';
+    } else {
+      estadom='I';
+    }
+  }
 }
 class Vacuna {
   int id;
@@ -1050,8 +1062,6 @@ class Mascota {
   int municipio;
   String dir;
   String estado;
-
-  /*String stdir;String estado;*/
   String nacim;
   File? img;
 
@@ -1069,16 +1079,19 @@ class Mascota {
     required this.img,
   });
 }
+typedef OnSwitchValueChanged = void Function(bool value);
 
 class MySwitch extends StatefulWidget {
   final Color activeColor;
   final Color inactiveThumbColor;
   final String status; // Nuevo parámetro para el estado inicial
+  final OnSwitchValueChanged? onSwitchValueChanged; // Agregado este parámetro
 
   MySwitch({
     required this.activeColor,
     required this.inactiveThumbColor,
-    required this.status, // Actualizado el constructor
+    required this.status,
+    this.onSwitchValueChanged, // Agregado este parámetro en el constructor
   });
 
   @override
@@ -1092,8 +1105,7 @@ class _MySwitchState extends State<MySwitch> {
   void initState() {
     super.initState();
     // Utilizar el valor de status para determinar el estado inicial
-    _switchValue =
-        widget.status.toLowerCase() == 'a'; // Cambiado a 'a' en lugar de 'A'
+    _switchValue = widget.status.toLowerCase() == 'a';
   }
 
   @override
@@ -1106,6 +1118,8 @@ class _MySwitchState extends State<MySwitch> {
             setState(() {
               _switchValue = value;
             });
+            // Llama a la función de devolución de llamada con el nuevo valor
+            widget.onSwitchValueChanged?.call(_switchValue);
             if (_switchValue) {
               print('Switch value changed to: A');
             } else {
@@ -1121,3 +1135,4 @@ class _MySwitchState extends State<MySwitch> {
     );
   }
 }
+
