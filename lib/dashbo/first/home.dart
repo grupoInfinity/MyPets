@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mypets_app/dashbo/first/editmasc.dart';
-
 import 'addmascota.dart';
 
 class Home extends StatefulWidget {
@@ -22,11 +21,13 @@ class _HomeState extends State<Home> {
   bool subpage = false;
   bool subpage2 = false;
   String codigo = '';
-  String idmasc='';
+  String idmasc = '';
 
   CarouselController _carouselController = CarouselController();
 
   List<dynamic> _mascotas = []; // Lista para almacenar las mascotas del usuario
+
+  bool _isLoading = true; // Estado de carga inicial
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class _HomeState extends State<Home> {
             _mascotas = infoList
                 .map((info) => info['mascota'])
                 .toList(); // Actualizar la lista de mascotas
+            _isLoading = false; // Marcar como carga completada
           });
         }
       } else {
@@ -66,7 +68,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: !subpage&& !subpage2
+      floatingActionButton: !subpage && !subpage2
           ? FloatingActionButton(
               onPressed: () {
                 setState(() {
@@ -76,139 +78,145 @@ class _HomeState extends State<Home> {
               backgroundColor: Color.fromARGB(255, 51, 163, 255),
               child: Icon(Icons.add),
             )
-          :null,
+          : null,
       // Set to null to hide the FloatingActionButton on the second page
-      body: subpage
-          ? AddMascota(
-              onClose: () {
-                setState(() {
-                  subpage = false;
-                });
-              },
-              usr: widget.usr)
-          : subpage2
-              ? editmasc(
+      body: _isLoading // Verifica si los datos están cargando
+          ? Center(
+              child: CircularProgressIndicator(), // Indicador de carga
+            )
+          : subpage
+              ? AddMascota(
                   onClose: () {
                     setState(() {
-                      subpage2 = false;
+                      subpage = false;
                     });
                   },
-                  usr: widget.usr,
-                  code: codigo,
-                  idmasc:idmasc)
-              : Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: CarouselSlider(
-                    carouselController: _carouselController,
-                    options: CarouselOptions(
-                      height: 430.0,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 0.70,
-                      enlargeCenterPage: true,
-                      pageSnapping: true,
-                      onPageChanged: (index, reason) {
+                  usr: widget.usr)
+              : subpage2
+                  ? editmasc(
+                      onClose: () {
                         setState(() {
-                          _current = index;
+                          subpage2 = false;
                         });
                       },
-                    ),
-                    items: _mascotas.map((mascota) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (_selectedIndex == mascota) {
-                                  _selectedIndex = {};
-                                } else {
-                                  _selectedIndex = mascota;
-                                }
-                              });
-                            },
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 300),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: _selectedIndex == mascota
-                                    ? Border.all(
-                                        color: Colors.blue.shade500, width: 3)
-                                    : null,
-                                boxShadow: _selectedIndex == mascota
-                                    ? [
-                                        BoxShadow(
-                                          color: Colors.blue.shade100,
-                                          blurRadius: 30,
-                                          offset: Offset(0, 10),
-                                        ),
-                                      ]
-                                    : [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          blurRadius: 20,
-                                          offset: Offset(0, 5),
-                                        ),
-                                      ],
-                              ),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          codigo = mascota['codigo'];
-                                          idmasc=mascota['idmasc'];
-                                          subpage2 = true;
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 320,
-                                        margin: EdgeInsets.only(top: 10),
-                                        clipBehavior: Clip.hardEdge,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: mascota['foto'] != null
+                      usr: widget.usr,
+                      code: codigo,
+                      idmasc: idmasc)
+                  : Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: CarouselSlider(
+                        carouselController: _carouselController,
+                        options: CarouselOptions(
+                          height: 430.0,
+                          aspectRatio: 16 / 9,
+                          viewportFraction: 0.70,
+                          enlargeCenterPage: true,
+                          pageSnapping: true,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          },
+                        ),
+                        items: _mascotas.map((mascota) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (_selectedIndex == mascota) {
+                                      _selectedIndex = {};
+                                    } else {
+                                      _selectedIndex = mascota;
+                                    }
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 300),
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: _selectedIndex == mascota
+                                        ? Border.all(
+                                            color: Colors.blue.shade500,
+                                            width: 3)
+                                        : null,
+                                    boxShadow: _selectedIndex == mascota
+                                        ? [
+                                            BoxShadow(
+                                              color: Colors.blue.shade100,
+                                              blurRadius: 30,
+                                              offset: Offset(0, 10),
+                                            ),
+                                          ]
+                                        : [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.2),
+                                              blurRadius: 20,
+                                              offset: Offset(0, 5),
+                                            ),
+                                          ],
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              codigo = mascota['codigo'];
+                                              idmasc = mascota['idmasc'];
+                                              subpage2 = true;
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 320,
+                                            margin: EdgeInsets.only(top: 10),
+                                            clipBehavior: Clip.hardEdge,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                               child: mascota['foto'] != null
                                             ? Image.memory(
                                                 base64Decode(mascota['foto']),
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Placeholder(),
-                                        // Placeholder si no hay imagen disponible
-                                      ),
+                                                fit: BoxFit.cover,)
+                                                       
+                                                : Placeholder(),
+                                            // Placeholder si no hay imagen disponible
+                                          ),
+                                        ),
+                                        SizedBox(height: 20),
+                                        Text(
+                                          mascota['nmasc'] ??
+                                              'Nombre no disponible',
+                                          // Nombre de la mascota
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 20),
+                                        Text(
+                                          mascota['codigo'] ?? 'Codigo vacio',
+                                          // Tipo de mascota
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(height: 20),
-                                    Text(
-                                      mascota['nmasc'] ??
-                                          'Nombre no disponible',
-                                      // Nombre de la mascota
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                    Text(
-                                      mascota['codigo'] ?? 'Codigo vacio',
-                                      // Tipo de mascota
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
+                        }).toList(),
+                      ),
+                    ),
     );
   }
 }
