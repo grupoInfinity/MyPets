@@ -35,6 +35,7 @@ class _AddMascotaState extends State<AddMascota> {
   int selectedtipomascId = 1;
   int selectedtmuniId = 1;
   bool codeExist = false;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -59,127 +60,101 @@ class _AddMascotaState extends State<AddMascota> {
             ),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back,color: Colors.white,),
             onPressed: widget.onClose,
           ),
         ),
         body: GestureDetector(
           onTap: _openImageInFullScreen,
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                stops: [0.0, 1.0],
-                colors: [
-                  Color.fromRGBO(18, 69, 140, 1.0),
-                  Color.fromRGBO(110, 130, 158, 1.0),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultspace),
-                child: Column(
-                  children: [
-                    const SizedBox(height: TSizes.spacebtwSections),
-                    Form(
-                      key: _formKey,
+          child: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      stops: [0.0, 1.0],
+                      colors: [
+                        Color.fromRGBO(18, 69, 140, 1.0),
+                        Color.fromRGBO(110, 130, 158, 1.0),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(TSizes.defaultspace),
                       child: Column(
                         children: [
-                          SizedBox(height: 50),
-                          Text(
-                            'Tipo de mascota',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),
-                          DropdownButton<int>(
-                            value: selectedtipomascId,
-                            items: tipomasc.map((tipomasc) {
-                              return DropdownMenuItem<int>(
-                                value: tipomasc.id,
-                                child: Text(
-                                  tipomasc.nombre,
-                                  style: TextStyle(color: Colors.lightBlue),
+                          const SizedBox(height: TSizes.spacebtwSections),
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                SizedBox(height: 80),
+                                _image == null
+                                    ? Text(
+                                  'Imagen no seleccionada',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.white),
+                                )
+                                    : Image.file(
+                                  _image!,
+                                  height: 300.0,
                                 ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedtipomascId = value!;
-                              });
-                            },
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              // Icono de flecha hacia abajo
-                              color: Colors
-                                  .lightBlue, // Cambia el color según tus preferencias
-                            ),
-                          ),
-
-                          SizedBox(height: 20),
-                          TextFormField(
-                            controller: txtNomb,
-                            decoration: const InputDecoration(
-                              labelText: "Nombre de la mascota",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              hintStyle: TextStyle(color: Colors.white),
-                              prefixIcon:
-                                  Icon(Iconsax.user, color: Colors.white),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Complete el campo';
-                              }
-                              return null; // La validación pasó
-                            },
-                          ),
-                          SizedBox(height: TSizes.spacebtwInputFields),
-                          TextFormField(
-                            controller: txtCodigo,
-                            decoration: const InputDecoration(
-                              labelText: "Codigo",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              hintStyle: TextStyle(color: Colors.white),
-                              prefixIcon:
-                                  Icon(Iconsax.user, color: Colors.white),
-                            ),
-                            onChanged: (value) {
-                              // Llama a tu función de verificación en la base de datos aquí
-                              verifCode(value);
-                            },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Complete el campo';
-                              } else if (codeExist) {
-                                return 'Ese codigo ya existe';
-                              }
-                              return null; // La validación pasó
-                            },
-                          ),
-                          //const SizedBox(height: TSizes.spacebtwInputFields),
-                          SizedBox(height: 20),
-                          Text(
-                            'Direccion',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: DropdownButton<int>(
-                                  value: selectedDepartamentoId,
-                                  items: departamentos.map((departamento) {
+                                SizedBox(height: 20.0),
+                                Center(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Colors.blueGrey,
+                                            onPrimary: Colors.white,
+                                          ),
+                                          onPressed: _getImageFromCamera,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.add_a_photo_outlined),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: TSizes.spacebtwInputFields),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Colors.blueGrey,
+                                            onPrimary: Colors.white,
+                                          ),
+                                          onPressed: _getImageFromGallery,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.add_photo_alternate_outlined),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 30.0),
+                                Text(
+                                  'Tipo de mascota',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
+                                DropdownButton<int>(
+                                  value: selectedtipomascId,
+                                  items: tipomasc.map((tipomasc) {
                                     return DropdownMenuItem<int>(
-                                      value: departamento.id,
+                                      value: tipomasc.id,
                                       child: Text(
-                                        departamento.nombre,
+                                        tipomasc.nombre,
                                         style:
                                             TextStyle(color: Colors.lightBlue),
                                       ),
@@ -187,177 +162,247 @@ class _AddMascotaState extends State<AddMascota> {
                                   }).toList(),
                                   onChanged: (value) {
                                     setState(() {
-                                      selectedDepartamentoId = value!;
-                                      loadMunicipios(selectedDepartamentoId);
-                                      print(selectedDepartamentoId);
+                                      selectedtipomascId = value!;
                                     });
                                   },
                                   icon: Icon(
                                     Icons.arrow_drop_down,
                                     // Icono de flecha hacia abajo
                                     color: Colors
-                                        .white, // Cambia el color según tus preferencias
+                                        .lightBlue, // Cambia el color según tus preferencias
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: TSizes.spacebtwInputFields),
-                              DropdownButton<int>(
-                                value: selectedtmuniId,
-                                items: municipios?.toSet().map((municipio) {
-                                      return DropdownMenuItem<int>(
-                                        value: municipio.id,
-                                        child: Text(municipio.nombre,
-                                            style: TextStyle(
-                                                color: Colors.lightBlue)),
-                                      );
-                                    }).toList() ??
-                                    [],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedtmuniId = value ?? 0;
-                                  });
-                                  int selectedPosition = municipios?.indexWhere(
-                                          (municipio) =>
-                                              municipio.id ==
-                                              selectedtmuniId) ??
-                                      -1;
-                                  print(
-                                      'Seleccionado: $selectedtmuniId, Posición: $selectedPosition');
-                                },
-                                icon: Icon(
-                                  Icons.arrow_drop_down,
-                                  // Icono de flecha hacia abajo
-                                  color: Colors
-                                      .white, // Cambia el color según tus preferencias
-                                ),
-                              ),
-                              //),*/
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            controller: txtDir,
-                            decoration: const InputDecoration(
-                              labelText: "Residencia ",
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              hintStyle: TextStyle(color: Colors.white),
-                              labelStyle: TextStyle(color: Colors.white),
-                              prefixIcon:
-                                  Icon(Iconsax.home, color: Colors.white),
-                            ),
-                            style: TextStyle(color: Colors.white),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Complete el campo';
-                              }
-                              return null; // La validación pasó
-                            },
-                          ),
-                          SizedBox(height: 20),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () => _selectDate(context),
-                                  child: Text('Nacimiento'),
+                                SizedBox(height: 20),
+                                TextFormField(
+                                  controller: txtNomb,
+                                  decoration: const InputDecoration(
+                                    labelText: "Nombre de la mascota",
+                                    labelStyle: TextStyle(color: Colors.white),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.black),
+                                    ),
+                                    prefixIcon: Icon(Iconsax.activity, color: Colors.white),
+                                  ),
+                                  style: TextStyle(color: Colors.white),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Complete el campo';
+                                    }
+                                    return null; // La validación pasó
+                                  },
                                 ),
-                              ),
-                              const SizedBox(width: TSizes.spacebtwInputFields),
-                              Expanded(
-                                child: Text(
-                                  '${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
+                                SizedBox(height: TSizes.spacebtwInputFields),
+                                TextFormField(
+                                  controller: txtCodigo,
+                                  decoration: const InputDecoration(
+                                    labelText: "Codigo",
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                    ),
+                                    labelStyle: TextStyle(color: Colors.white),
+                                    prefixIcon: Icon(Iconsax.code_15, color: Colors.white),
+                                  ),
+                                  style: TextStyle(color: Colors.white),
+                                  onChanged: (value) {
+                                    // Llama a tu función de verificación en la base de datos aquí
+                                    verifCode(value);
+                                  },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Complete el campo';
+                                    } else if (codeExist) {
+                                      return 'Ese codigo ya existe';
+                                    }
+                                    return null; // La validación pasó
+                                  },
+                                ),
+                                //const SizedBox(height: TSizes.spacebtwInputFields),
+                                SizedBox(height: 20),
+                                Text(
+                                  'Direccion',
                                   style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                      fontSize: 20, color: Colors.white),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.0),
-                          _image == null
-                              ? Text(
-                                  'Imagen no seleccionada',
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.white),
-                                )
-                              : Image.file(
-                                  _image!,
-                                  height: 300.0,
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: DropdownButton<int>(
+                                        value: selectedDepartamentoId,
+                                        items:
+                                            departamentos.map((departamento) {
+                                          return DropdownMenuItem<int>(
+                                            value: departamento.id,
+                                            child: Text(
+                                              departamento.nombre,
+                                              style: TextStyle(
+                                                  color: Colors.lightBlue),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedDepartamentoId = value!;
+                                            loadMunicipios(
+                                                selectedDepartamentoId);
+                                            print(selectedDepartamentoId);
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          // Icono de flecha hacia abajo
+                                          color: Colors
+                                              .white, // Cambia el color según tus preferencias
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        width: TSizes.spacebtwInputFields),
+                                    DropdownButton<int>(
+                                      value: selectedtmuniId,
+                                      items: municipios
+                                              ?.toSet()
+                                              .map((municipio) {
+                                            return DropdownMenuItem<int>(
+                                              value: municipio.id,
+                                              child: Text(municipio.nombre,
+                                                  style: TextStyle(
+                                                      color: Colors.lightBlue)),
+                                            );
+                                          }).toList() ??
+                                          [],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedtmuniId = value ?? 0;
+                                        });
+                                        int selectedPosition = municipios
+                                                ?.indexWhere((municipio) =>
+                                                    municipio.id ==
+                                                    selectedtmuniId) ??
+                                            -1;
+                                        print(
+                                            'Seleccionado: $selectedtmuniId, Posición: $selectedPosition');
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_drop_down,
+                                        // Icono de flecha hacia abajo
+                                        color: Colors
+                                            .white, // Cambia el color según tus preferencias
+                                      ),
+                                    ),
+                                    //),*/
+                                  ],
                                 ),
-                          SizedBox(height: 20.0),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _getImageFromCamera,
-                                  child: Text('Tomar foto'),
+                                SizedBox(height: 20),
+                                TextFormField(
+                                  controller: txtDir,
+                                  decoration: const InputDecoration(
+                                    labelText: "Residencia ",
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                    hintStyle: TextStyle(color: Colors.white),
+                                    labelStyle: TextStyle(color: Colors.white),
+                                    prefixIcon:
+                                        Icon(Iconsax.home, color: Colors.white),
+                                  ),
+                                  style: TextStyle(color: Colors.white),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Complete el campo';
+                                    }
+                                    return null; // La validación pasó
+                                  },
                                 ),
-                              ),
-                              const SizedBox(width: TSizes.spacebtwInputFields),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _getImageFromGallery,
-                                  child: Text('Galeria'),
+                                SizedBox(height: 20),
+
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () => _selectDate(context),
+                                        child: Text('Nacimiento'),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        width: TSizes.spacebtwInputFields),
+                                    Expanded(
+                                      child: Text(
+                                        '${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 30),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue,
-                                onPrimary: Colors.white,
-                                fixedSize: Size(0, 50),
-                              ),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  if (_image != null) {
-                                    Mascota nuevoMasc = Mascota(
-                                        usr: widget.usr,
-                                        tpmascota: selectedtipomascId,
-                                        nombre: txtNomb.text,
-                                        codigo: txtCodigo.text,
-                                        municipio: selectedtmuniId,
-                                        dir: txtDir.text,
-                                        nacim:
-                                            '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
-                                        img: _image);
-                                    //insertMasc(/*context,*/ nuevoMasc,);
-                                    insertMasc(nuevoMasc, (response) {
-                                      print(
-                                          'Respuesta del servidor: $response');
-                                    });
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text('Imagen no seleccionada')),
-                                    );
-                                  }
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Campos vacios')),
-                                  );
-                                }
-                              },
-                              child: Text("Agregar Mascota"),
+                                SizedBox(height: 20.0),
+
+                                const SizedBox(height: 30),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.blue,
+                                      onPrimary: Colors.white,
+                                      fixedSize: Size(0, 50),
+                                    ),
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        if (_image != null) {
+                                          Mascota nuevoMasc = Mascota(
+                                              usr: widget.usr,
+                                              tpmascota: selectedtipomascId,
+                                              nombre: txtNomb.text,
+                                              codigo: txtCodigo.text,
+                                              municipio: selectedtmuniId,
+                                              dir: txtDir.text,
+                                              nacim:
+                                                  '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                                              img: _image);
+                                          //insertMasc(/*context,*/ nuevoMasc,);
+                                          insertMasc(nuevoMasc, (response) {
+                                            print(
+                                                'Respuesta del servidor: $response');
+                                          });
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text(
+                                                    'Imagen no seleccionada')),
+                                          );
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Campos vacios')),
+                                        );
+                                      }
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.check),  // Agrega el icono de "check" aquí
+                                        const SizedBox(width: 8),  // Puedes ajustar el espacio según sea necesario
+                                        Text("Confirmar"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 30),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         ));
   }
 
@@ -500,7 +545,9 @@ class _AddMascotaState extends State<AddMascota> {
         selectedDepartamentoId = departamentos[0].id;
       });
       loadMunicipios(selectedDepartamentoId);
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       print('Error loading departamentos: $e');
     }
   }

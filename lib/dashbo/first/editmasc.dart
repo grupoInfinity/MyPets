@@ -50,7 +50,6 @@ class _editmascState extends State<editmasc> {
   bool codeExist = false;
   MascotaLoad mascota = MascotaLoad();
   List<Vacuna> items = [];
-  bool dataLoaded = false;
   bool isLoading = true;
   String estadom='';
 
@@ -73,7 +72,7 @@ class _editmascState extends State<editmasc> {
           backgroundColor: Color.fromARGB(0, 19, 86, 202),
           title: Text('Registro de mascota'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back,color: Colors.white,),
             onPressed: widget.onClose,
           ),
         ),
@@ -155,10 +154,7 @@ class _editmascState extends State<editmasc> {
                                   Icon(Icons.add_a_photo_outlined),
                                 ],
                               ),
-                            ),/*ElevatedButton(
-                              onPressed: _getImageFromCamera,
-                              child: Text('Tomar foto'),
-                            ),*/
+                            ),
                           ),
                           const SizedBox(width: TSizes.spacebtwInputFields),
                           Expanded(
@@ -216,8 +212,9 @@ class _editmascState extends State<editmasc> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                         ),
-                        prefixIcon: Icon(Iconsax.user, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.activity, color: Colors.white),
                       ),
+                      style: TextStyle(color: Colors.white),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Complete el campo';
@@ -230,12 +227,13 @@ class _editmascState extends State<editmasc> {
                       controller: txtCodigo,
                       decoration: const InputDecoration(
                         labelText: "Codigo",
-                        labelStyle: TextStyle(color: Colors.white),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: BorderSide(color: Colors.white),
                         ),
-                        prefixIcon: Icon(Iconsax.user, color: Colors.white),
+                        labelStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Iconsax.code_15, color: Colors.white),
                       ),
+                      style: TextStyle(color: Colors.white),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Complete el campo';
@@ -473,6 +471,7 @@ class _editmascState extends State<editmasc> {
                         },
                       ),
                     ),
+                    const SizedBox(height: 30),
                   ],
                 ),
               ),
