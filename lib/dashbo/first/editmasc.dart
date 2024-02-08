@@ -36,13 +36,13 @@ class _editmascState extends State<editmasc> {
   late List<Municipio> municipios = [];
   late List<Tipomascota> tipomasc = [];
   late List<Vacuna2> tipovac = [];
-  int currentIndex = 0;
   String fechaEd = "";
   TextEditingController txtCodigo = TextEditingController();
   TextEditingController txtNomb = TextEditingController();
   TextEditingController txtDir = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double backgroundHeight = 0.0;
+  int currentIndex = 0;
   int selectedDepartamentoId = 1;
   int selectedtipomascId = 1;
   int selectedtmuniId = 1;
@@ -51,7 +51,7 @@ class _editmascState extends State<editmasc> {
   MascotaLoad mascota = MascotaLoad();
   List<Vacuna> items = [];
   bool isLoading = true;
-  String estadom='';
+  String estadom = '';
 
   @override
   void initState() {
@@ -72,7 +72,10 @@ class _editmascState extends State<editmasc> {
           backgroundColor: Color.fromARGB(0, 19, 86, 202),
           title: Text('Registro de mascota'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back,color: Colors.white,),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
             onPressed: widget.onClose,
           ),
         ),
@@ -381,7 +384,7 @@ class _editmascState extends State<editmasc> {
                           fixedSize: Size(0, 50),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate() ) {
+                          if (_formKey.currentState!.validate()) {
                             Mascota nuevoMasc = Mascota(
                               id: widget.idmasc,
                               usr: widget.usr,
@@ -391,7 +394,8 @@ class _editmascState extends State<editmasc> {
                               municipio: selectedtmuniId,
                               dir: txtDir.text,
                               estado: estadom,
-                              nacim: '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+                              nacim:
+                                  '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
                               img: _image,
                             );
                             editMasc(nuevoMasc, (response) {
@@ -406,8 +410,10 @@ class _editmascState extends State<editmasc> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.check),  // Agrega el icono de "check" aquí
-                            const SizedBox(width: 8),  // Puedes ajustar el espacio según sea necesario
+                            Icon(Icons.check),
+                            // Agrega el icono de "check" aquí
+                            const SizedBox(width: 8),
+                            // Puedes ajustar el espacio según sea necesario
                             Text("Confirmar cambios"),
                           ],
                         ),
@@ -447,7 +453,7 @@ class _editmascState extends State<editmasc> {
                       ),
                     ),
                     Container(
-                      height: 200,  // Ajusta esta altura según sea necesario
+                      height: 200, // Ajusta esta altura según sea necesario
                       child: ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, index) {
@@ -462,7 +468,8 @@ class _editmascState extends State<editmasc> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    alerta(context, "¿Quiere eliminarlo?", items[index].id);
+                                    alerta(context, "¿Quiere eliminarlo?",
+                                        items[index].id);
                                   });
                                 },
                               ),
@@ -481,6 +488,7 @@ class _editmascState extends State<editmasc> {
       ),
     );
   }
+
   void editMasc(Mascota usuario, Function callback) async {
     try {
       var url =
@@ -529,6 +537,7 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
+
   void agregarVacuna(BuildContext context) {
     showDialog(
       context: context,
@@ -583,6 +592,7 @@ class _editmascState extends State<editmasc> {
       },
     );
   }
+
   Future<void> insertVac(BuildContext context) async {
     try {
       final url =
@@ -611,6 +621,7 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
+
   Future<void> cargarDatos() async {
     try {
       await loadTipomasc();
@@ -633,7 +644,8 @@ class _editmascState extends State<editmasc> {
             selectedDepartamentoId = int.parse(mascota.iddepto!);
             selectedtmuniId = int.parse(mascota.idmuni!);
             selectedDate = DateTime.parse(mascota.nacim!);
-            fechaEd = DateFormat('dd-MM-yyyy').format(DateFormat('yyyy-MM-dd').parse(mascota.nacim!));
+            fechaEd = DateFormat('dd-MM-yyyy')
+                .format(DateFormat('yyyy-MM-dd').parse(mascota.nacim!));
             isLoading = false;
           });
         } else {
@@ -650,6 +662,7 @@ class _editmascState extends State<editmasc> {
       });
     }
   }
+
   Future<void> cargarVacuna() async {
     try {
       final url =
@@ -680,6 +693,7 @@ class _editmascState extends State<editmasc> {
       // Manejar excepciones
     }
   }
+
   void alerta(BuildContext context, String mensaje, int idvac) {
     showDialog(
       context: context,
@@ -718,6 +732,7 @@ class _editmascState extends State<editmasc> {
       },
     );
   }
+
   Future<void> eliminarVac(BuildContext context, int idvac) async {
     try {
       final url = 'http://ginfinity.xyz/MyPets_Admin/servicios/'
@@ -746,6 +761,7 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -770,6 +786,7 @@ class _editmascState extends State<editmasc> {
       _image = pickedFile != null ? File(pickedFile.path) : null;
     });
   }
+
   Future<void> _getImageFromGallery() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -778,6 +795,7 @@ class _editmascState extends State<editmasc> {
       print('print $_image');
     });
   }
+
   void _openImageInFullScreen() {
     if (_image != null || mascota.foto != null) {
       showDialog(
@@ -827,6 +845,7 @@ class _editmascState extends State<editmasc> {
       print('Error loading tipo masc: $e');
     }
   }
+
   Future<void> loadDepartamentos() async {
     try {
       departamentos = await getDepartamentos();
@@ -838,6 +857,7 @@ class _editmascState extends State<editmasc> {
       print('Error loading departamentos: $e');
     }
   }
+
   Future<void> loadMunicipios(int departamentoId) async {
     try {
       municipios = await getMunicipios(departamentoId);
@@ -848,6 +868,7 @@ class _editmascState extends State<editmasc> {
       print('Error loading municipios: $e');
     }
   }
+
   Future<void> loadTipovac() async {
     try {
       tipovac = await getTipovac();
@@ -856,6 +877,7 @@ class _editmascState extends State<editmasc> {
       print('Error loading tipo vac: $e');
     }
   }
+
   Future<List<Vacuna2>> getTipovac() async {
     String query1 =
         'https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_tipovacuna.php?accion=C&estado=A&idmasc=${widget.idmasc}';
@@ -869,6 +891,7 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load tipo vacuna');
     }
   }
+
   Future<List<Departamento>> getDepartamentos() async {
     final response = await http.get(Uri.parse(
         'https://ginfinity.xyz/MyPets_Admin/servicios/ctg/ctg_depto.php?accion=C&estado=A'));
@@ -882,6 +905,7 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load departamentos');
     }
   }
+
   Future<List<Municipio>> getMunicipios(int departamentoId) async {
     final response = await http.get(Uri.parse(
         'http://ginfinity.xyz//MyPets_Admin/servicios/ctg/ctg_muni.php?accion=C&estado=A&idDepto=$departamentoId'));
@@ -894,6 +918,7 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load municipios');
     }
   }
+
   Future<List<Tipomascota>> getTipomasc() async {
     final response = await http.get(Uri.parse(
         'https://ginfinity.xyz//MyPets_Admin/servicios/ctg/ctg_tipomascota.php?accion=C&estado=A'));
@@ -906,6 +931,7 @@ class _editmascState extends State<editmasc> {
       throw Exception('Failed to load tipo mascota');
     }
   }
+
   Future<void> verifCode(String code) async {
     try {
       if (code.isEmpty) {
@@ -936,14 +962,16 @@ class _editmascState extends State<editmasc> {
       print("Error: $e");
     }
   }
+
   void handleSwitchValueChanged(bool value) {
     if (value) {
-      estadom='A';
+      estadom = 'A';
     } else {
-      estadom='I';
+      estadom = 'I';
     }
   }
 }
+
 class Vacuna {
   int id;
   String nombrevacuna;
@@ -951,6 +979,7 @@ class Vacuna {
 
   Vacuna(this.nombrevacuna, this.fechaCreacion, this.id);
 }
+
 class Vacuna2 {
   final int id;
   final String nombre;
@@ -961,6 +990,7 @@ class Vacuna2 {
     return Vacuna2(id: int.parse(json['id']), nombre: json['descripcion']);
   }
 }
+
 class Departamento {
   final int id;
   final String nombre;
@@ -971,6 +1001,7 @@ class Departamento {
     return Departamento(id: int.parse(json['id']), nombre: json['descripcion']);
   }
 }
+
 class Municipio {
   final int id;
   final String nombre;
@@ -987,6 +1018,7 @@ class Municipio {
         departamentoId: int.parse(json['id']['id_depto']));
   }
 }
+
 class Tipomascota {
   final int id;
   final String nombre;
@@ -1001,6 +1033,7 @@ class Tipomascota {
     );
   }
 }
+
 class MascotaLoad {
   String? idmasc;
   String? idtpmasc;
@@ -1088,6 +1121,7 @@ class Mascota {
     required this.img,
   });
 }
+
 typedef OnSwitchValueChanged = void Function(bool value);
 
 class MySwitch extends StatefulWidget {
@@ -1144,4 +1178,3 @@ class _MySwitchState extends State<MySwitch> {
     );
   }
 }
-
