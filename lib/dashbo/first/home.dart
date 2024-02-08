@@ -54,6 +54,13 @@ class _HomeState extends State<Home> {
                 .toList(); // Actualizar la lista de mascotas
             _isLoading = false; // Marcar como carga completada
           });
+
+          // Imprimir información de cada mascota en la consola
+          _mascotas.forEach((mascota) {
+            print('Nombre: ${mascota['nmasc']}');
+            print('Código: ${mascota['codigo']}');
+            // Puedes imprimir más información aquí según tus necesidades
+          });
         }
       } else {
         print('Error en la solicitud HTTP: ${response.statusCode}');
@@ -179,11 +186,12 @@ class _HomeState extends State<Home> {
                                               borderRadius:
                                                   BorderRadius.circular(20),
                                             ),
-                                               child: mascota['foto'] != null
-                                            ? Image.memory(
-                                                base64Decode(mascota['foto']),
-                                                fit: BoxFit.cover,)
-                                                       
+                                            child: mascota['foto'] != null
+                                                ? Image.memory(
+                                                    base64Decode(
+                                                        mascota['foto']),
+                                                    fit: BoxFit.cover,
+                                                  )
                                                 : Placeholder(),
                                             // Placeholder si no hay imagen disponible
                                           ),

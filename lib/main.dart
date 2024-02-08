@@ -6,6 +6,7 @@ import 'package:mypets_app/registro.dart';
 
 void main(){
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     routes: {
      '/':(context) => Splash(),
      '/login':(context) => login(),
