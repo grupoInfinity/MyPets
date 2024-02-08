@@ -136,9 +136,9 @@ class _TuPantallaState extends State<_TuPantalla> {
         ),
       ),
     );
-  }/*
+  }
   @override
-  Widget build(BuildContext context) {
+ /* Widget build(BuildContext context) {
     print('Widget reconstruido...');
     return Scaffold(
         extendBodyBehindAppBar: true,
