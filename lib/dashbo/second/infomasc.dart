@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart';
-
+/*
 class infomasc extends StatelessWidget {
   final VoidCallback onClose;
   final String code;
@@ -34,9 +34,19 @@ class _TuPantalla extends StatefulWidget {
 
   @override
   _TuPantallaState createState() => _TuPantallaState();
+}*/
+
+class infomasc extends StatefulWidget {
+  final String code;
+  final VoidCallback onClose;
+
+  infomasc({required this.code, required this.onClose});
+
+  @override
+  _infomascState createState() => _infomascState();
 }
 
-class _TuPantallaState extends State<_TuPantalla> {
+class _infomascState extends State<infomasc> {
   Mascota mascota = Mascota(/*vacuna: []*/);
   List<Vacuna> items = [];
   TextEditingController txtCodigo = TextEditingController();
@@ -60,91 +70,18 @@ class _TuPantallaState extends State<_TuPantalla> {
     super.initState();
     cargarDatos();
   }
+
   @override
   Widget build(BuildContext context) {
-    if (mascota.estadodir == 'I') {
-      print( mascota.estadodir);
-      mascota.direccion = 'Pendiente';
-      // Realizar acciones según sea necesario
-    }
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 51, 163, 255),
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 19, 86, 202),
-        title: Text('Informacion'),
-        // Agregar el botón en la parte superior izquierda
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed:widget.onClose,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: TSizes.spacebtwSections),
-            mascota.foto != null
-                ? Image.memory(
-              base64Decode(mascota.foto!),
-              fit: BoxFit.cover,
-              height: 200,
-            )
-                : Container(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Nombre de la mascota: ${mascota.nmasc}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Fecha de nacimiento: ${mascota.nacim}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Tipo: ${mascota.tipomasc}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Departamento: ${mascota.depto}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Municipio: ${mascota.muni}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Direccion: ${mascota.direccion}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Telefono: ${mascota.telefono}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Email: ${mascota.mail}'),
-                  const SizedBox(height: TSizes.spacebtwInputFields),
-                  Text('Codigo: ${mascota.codigo}'),
-                  SizedBox(height: 30),
-                  // Puedes agregar más detalles según sea necesario
-                ],
-              ),
-            ),
-
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  child: Card(
-                    child: ListTile(
-                      title: Text(items[index].nombrevacuna),
-                      subtitle: Text(items[index].fechaCreacion),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  @override
- /* Widget build(BuildContext context) {
     print('Widget reconstruido...');
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Color.fromARGB(0, 19, 86, 202),
-          title: Text('Registro de mascota'),
+          title: Text(
+            'Información mascota',
+            style: TextStyle(color: Colors.white), // Cambia el color aquí
+          ),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -154,7 +91,7 @@ class _TuPantallaState extends State<_TuPantalla> {
           ),
         ),
         body: GestureDetector(
-          onTap: _openImageInFullScreen,
+          //onTap: _openImageInFullScreen,
           child: isLoading
               ? Center(
                   child: CircularProgressIndicator(),
@@ -205,9 +142,8 @@ class _TuPantallaState extends State<_TuPantalla> {
                               ),
                             ),
                           ),
-                    const SizedBox(height: 30),
-
                     SizedBox(height: 30.0),
+
                     TextFormField(
                       enabled: isEnabled,
                       controller: txtTipomasc,
@@ -217,7 +153,7 @@ class _TuPantallaState extends State<_TuPantalla> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                         ),
-                        prefixIcon: Icon(Iconsax.activity, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.pet, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                     ),
@@ -231,7 +167,7 @@ class _TuPantallaState extends State<_TuPantalla> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                         ),
-                        prefixIcon: Icon(Iconsax.activity, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.textalign_justifycenter, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                     ),
@@ -245,50 +181,45 @@ class _TuPantallaState extends State<_TuPantalla> {
                           borderSide: BorderSide(color: Colors.white),
                         ),
                         labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Iconsax.code_15, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.archive_tick, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                     ),
                     //const SizedBox(height: TSizes.spacebtwInputFields),
                     SizedBox(height: 20),
                     Text(
-                      'Direccion',
+                      'Dirección',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                     SizedBox(height: 10),
-                    Row(
-                      children: [
-                        TextFormField(
-                          enabled: isEnabled,
-                            controller: txtDepto,
-                            decoration: const InputDecoration(
-                              labelText: "Departamento",
-                              labelStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              ),
-                              prefixIcon: Icon(Iconsax.activity, color: Colors.white),
-                            ),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        const SizedBox(width: TSizes.spacebtwInputFields),
-                        TextFormField(
-                          enabled: isEnabled,
-                          controller: txtMunicip,
-                          decoration: const InputDecoration(
-                            labelText: "Municipio",
-                            labelStyle: TextStyle(color: Colors.white),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                            prefixIcon: Icon(Iconsax.activity, color: Colors.white),
-                          ),
-                          style: TextStyle(color: Colors.white),
+
+                    TextFormField(
+                      enabled: isEnabled,
+                      controller: txtDepto,
+                      decoration: const InputDecoration(
+                        labelText: "Departamento",
+                        labelStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
                         ),
-                      ],
+                        prefixIcon: Icon(Iconsax.map, color: Colors.white),
+                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
-
-
+                    SizedBox(height: 20),
+                    TextFormField(
+                      enabled: isEnabled,
+                      controller: txtMunicip,
+                      decoration: const InputDecoration(
+                        labelText: "Municipio",
+                        labelStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        prefixIcon: Icon(Iconsax.map, color: Colors.white),
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
                     SizedBox(height: 20),
                     TextFormField(
                       enabled: isEnabled,
@@ -299,7 +230,7 @@ class _TuPantallaState extends State<_TuPantalla> {
                           borderSide: BorderSide(color: Colors.white),
                         ),
                         labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Iconsax.home, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.map_1, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                     ),
@@ -313,47 +244,42 @@ class _TuPantallaState extends State<_TuPantalla> {
                           borderSide: BorderSide(color: Colors.white),
                         ),
                         labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Iconsax.home, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.timer, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(height: 30),
                     Text(
-                      'Direccion',
+                      'Contacto',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                     SizedBox(height: 20),
-                    Row(
-                      children: [
-                        TextFormField(
-                          enabled: isEnabled,
-                            controller: txtMail,
-                            decoration: const InputDecoration(
-                              labelText: "Email ",
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              labelStyle: TextStyle(color: Colors.white),
-                              prefixIcon: Icon(Iconsax.home, color: Colors.white),
-                            ),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        const SizedBox(width: TSizes.spacebtwInputFields),
-                        TextFormField(
-                          enabled: isEnabled,
-                          controller: txtTel,
-                          decoration: const InputDecoration(
-                            labelText: "Teléfono ",
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            labelStyle: TextStyle(color: Colors.white),
-                            prefixIcon: Icon(Iconsax.home, color: Colors.white),
-                          ),
-                          style: TextStyle(color: Colors.white),
-
+                    TextFormField(
+                      enabled: isEnabled,
+                      controller: txtMail,
+                      decoration: const InputDecoration(
+                        labelText: "Email ",
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
                         ),
-                      ],
+                        labelStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Iconsax.sms, color: Colors.white),
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(height: 30.0),
+                    TextFormField(
+                      enabled: isEnabled,
+                      controller: txtTel,
+                      decoration: const InputDecoration(
+                        labelText: "Teléfono ",
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        labelStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Iconsax.call, color: Colors.white),
+                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(height: 30.0),
                     Center(
@@ -369,20 +295,6 @@ class _TuPantallaState extends State<_TuPantalla> {
                             ),
                           ),
                           const SizedBox(width: TSizes.spacebtwInputFields),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.blue,
-                              onPrimary: Colors.white,
-                            ),
-                            onPressed: () {
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.add),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -395,22 +307,12 @@ class _TuPantallaState extends State<_TuPantalla> {
                             child: ListTile(
                               title: Text(items[index].nombrevacuna),
                               subtitle: Text(items[index].fechaCreacion),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                  });
-                                },
-                              ),
                             ),
                           );
                         },
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -419,10 +321,10 @@ class _TuPantallaState extends State<_TuPantalla> {
         ),
       ),
     );
-  }*/
+  }
 
   void _openImageInFullScreen() {
-    if ( mascota.foto != null) {
+    if (mascota.foto != null) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -446,9 +348,9 @@ class _TuPantallaState extends State<_TuPantalla> {
                     imageProvider: _image != null
                         ? FileImage(_image!)
                         : mascota.foto != null
-                        ? MemoryImage(base64Decode(mascota.foto!))
-                        : AssetImage('assets/imagen_no_disponible.jpg')
-                    as ImageProvider<Object>,
+                            ? MemoryImage(base64Decode(mascota.foto!))
+                            : AssetImage('assets/imagen_no_disponible.jpg')
+                                as ImageProvider<Object>,
                     heroAttributes: PhotoViewHeroAttributes(tag: currentIndex),
                     minScale: PhotoViewComputedScale.contained,
                     maxScale: PhotoViewComputedScale.covered * 2,
@@ -474,13 +376,16 @@ class _TuPantallaState extends State<_TuPantalla> {
           final mascotaInfo = jsonResponse['info']?[0]['mascota'];
           setState(() {
             mascota = Mascota.fromJson(mascotaInfo);
-            txtNomb.text=mascota.nmasc!;
-            txtTipomasc.text=mascota.tipomasc!;
-            txtDepto.text=mascota.depto!;
-            txtMunicip.text=mascota.muni!;
-            txtMail.text=mascota.mail!;
-            txtNacim.text=mascota.nacim!;
-            txtTel.text=mascota.telefono!;
+            txtNomb.text = mascota.nmasc!;
+            txtTipomasc.text = mascota.tipomasc!;
+            txtDepto.text = mascota.depto!;
+            txtMunicip.text = mascota.muni!;
+            txtMail.text = mascota.mail!;
+            txtCodigo.text = mascota.codigo!;
+            txtDir.text = mascota.direccion!;
+            print(txtDir.text+' '+mascota.direccion!);
+            txtNacim.text = mascota.nacim!;
+            txtTel.text = mascota.telefono!;
 
             isLoading = false;
           });
