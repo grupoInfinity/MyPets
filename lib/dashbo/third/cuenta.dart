@@ -112,17 +112,18 @@ class _CuentaPState extends State<CuentaP> {
   }
 
   // Función para enviar los datos actualizados al servidor
-  Future<void> _updateUserData() async {
+  // Función para enviar los datos actualizados al servidor
+Future<void> _updateUserData() async {
   // Construir la URL para la actualización de datos
   String url = 'https://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php';
   // Crear el cuerpo de la solicitud con los datos actualizados
   Map<String, String> body = {
     'accion': 'U',
-    'usr': widget.usr,
-    'clave': userData['Clave'],
-    'nombre': userData['Nombre'],
-    'apellido': userData['Apellido'],
-    'email': userData['Email'],
+    'usr': userData['Usuario'] ?? '',
+    'clave': userData['Clave'] ?? '',
+    'nombre': userData['Nombre'] ?? '',
+    'apellido': userData['Apellido'] ?? '',
+    'email': userData['Email'] ?? '',
   };
 
   try {
