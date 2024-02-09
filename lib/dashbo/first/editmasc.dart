@@ -70,7 +70,7 @@ class _editmascState extends State<editmasc> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Color.fromARGB(0, 19, 86, 202),
-          title: Text('Registro de mascota'),
+          title: Text('Información mascota',style: TextStyle(color: Colors.white), ),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -213,9 +213,9 @@ class _editmascState extends State<editmasc> {
                         labelText: "Nombre de la mascota",
                         labelStyle: TextStyle(color: Colors.white),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: BorderSide(color: Colors.white),
                         ),
-                        prefixIcon: Icon(Iconsax.activity, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.textalign_justifycenter, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                       validator: (value) {
@@ -234,7 +234,7 @@ class _editmascState extends State<editmasc> {
                           borderSide: BorderSide(color: Colors.white),
                         ),
                         labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Iconsax.code_15, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.archive_tick, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                       validator: (value) {
@@ -247,7 +247,7 @@ class _editmascState extends State<editmasc> {
                     //const SizedBox(height: TSizes.spacebtwInputFields),
                     SizedBox(height: 20),
                     Text(
-                      'Direccion',
+                      'Dirección',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                     SizedBox(height: 10),
@@ -318,7 +318,7 @@ class _editmascState extends State<editmasc> {
                           borderSide: BorderSide(color: Colors.white),
                         ),
                         labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Iconsax.home, color: Colors.white),
+                        prefixIcon: Icon(Iconsax.map_1, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
                       validator: (value) {

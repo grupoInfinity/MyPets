@@ -180,7 +180,7 @@ class _AddMascotaState extends State<AddMascota> {
                                     labelText: "Nombre de la mascota",
                                     labelStyle: TextStyle(color: Colors.white),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black),
+                                      borderSide: BorderSide(color: Colors.white),
                                     ),
                                     prefixIcon: Icon(Iconsax.activity, color: Colors.white),
                                   ),

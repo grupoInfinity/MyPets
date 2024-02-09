@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mypets_app/dashboard.dart';
 import 'package:mypets_app/recup/verifUser.dart';
+import 'package:flutter/material.dart';
+import 'package:mypets_app/contanst/app_contanst.dart';
+import 'package:iconsax/iconsax.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -17,7 +20,7 @@ void main() => runApp(
 class login extends StatelessWidget {
   final TextEditingController txtUser = TextEditingController();
   final TextEditingController txtClave = TextEditingController();
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> logear(BuildContext context,String usr,String clave) async {
     try {
@@ -85,171 +88,142 @@ class login extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-      child: SingleChildScrollView(    
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300,
-              width: 350,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('android/assets/images/Logo3.png'),
-                  fit: BoxFit.contain,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(TSizes.defaultspace),
+          child: Column(
+            children: [
+              SizedBox(height: AppBar().preferredSize.height),
+              // Alinea el contenido debajo del AppBar
+
+              const SizedBox(height: TSizes.spacebtwSections),
+              Container(
+                height: 300,
+                width: 350,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('android/assets/images/Logo3.png'),
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
-            Stack(
-              children: [
-                Container(
-                  constraints: BoxConstraints(
-                    maxWidth: 395,
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 7.0, top: 0.1),
-                      child: Text(
-                        "Inicio de Sesion",
-                        style: GoogleFonts.gemunuLibre(
-                           fontSize: 38
-                        ),
-                        
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                        maxLines: null,
-                        overflow: TextOverflow.visible,
+              SizedBox(height: 20),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: txtUser,
+                      expands: false,
+                      decoration: const InputDecoration(
+                          labelText: "Usuario",
+                          labelStyle: TextStyle(color: Colors.white),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          prefixIcon:
+                          Icon(Iconsax.user, color: Colors.white)),
+                      style: TextStyle(color: Colors.white),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Complete el campo';
+                        }
+                        return null; // La validación pasó
+                      },
+                    ),
+                    const SizedBox(height: TSizes.spacebtwInputFields),
+                    TextFormField(
+                      controller: txtClave,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                          labelText: "Clave",
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          labelStyle: TextStyle(color: Colors.white),
+                          prefixIcon: Icon(Iconsax.password_check,
+                              color: Colors.white),
+                          suffixIcon:
+                          Icon(Iconsax.eye_slash, color: Colors.white)),
+                      style: TextStyle(color: Colors.white),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Complete el campo';
+                        }
+                        return null; // La validación pasó
+                      },
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromRGBO(41, 150, 189, 1),
+                                        Color.fromRGBO(41, 150, 189, 1)
+                                      ],
+                                    ),
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      //AQUI
+                                      logear(context,txtUser.text,txtClave.text);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "Iniciar Sesión",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 25),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Navegar a la nueva pantalla cuando se toca el texto
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => verifUser(),
+                                      ),
+                                    );
+
+                                  },
+
+                                  child: Text(
+                                    "¿Se te olvidó la contraseña?",
+                                    style: TextStyle(color: Colors.white, fontFamily: 'Abel'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.all(40.0),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(2),
-                              margin: EdgeInsets.only(bottom: 30.0),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(243, 243, 243, 243),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10.0,
-                                    offset: Offset(0, 10),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextField(
-                                      controller: txtUser,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Usuario",
-                                        hintStyle: TextStyle(color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(243, 243, 243, 243),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 10.0,
-                                    offset: Offset(0, 10),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextField(
-                                       obscureText: true,
-                                      controller: txtClave,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Contraseña",
-                                        hintStyle: TextStyle(color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 40),
-                            Container(
-                              height: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromRGBO(41, 150, 189, 1),
-                                    Color.fromRGBO(41, 150, 189, 1)
-                                  ],
-                                ),
-                              ),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  //AQUI
-                                  logear(context,txtUser.text,txtClave.text);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.transparent,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  "Iniciar Sesión",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 25),
-                            GestureDetector(
-                              onTap: () {
-                                // Navegar a la nueva pantalla cuando se toca el texto
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => verifUser(),
-                                  ),
-                                );
-                                
-                              },
-                             
-                              child: Text(
-                                "¿Se te olvidó la contraseña?",
-                                style: TextStyle(color: Colors.white, fontFamily: 'Abel'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
       )

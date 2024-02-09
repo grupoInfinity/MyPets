@@ -84,7 +84,7 @@ class _RegistroPState extends State<sRegistroP> {
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                                 prefixIcon:
-                                    Icon(Iconsax.user, color: Colors.white),
+                                    Icon(Iconsax.clipboard_text, color: Colors.white),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -106,7 +106,7 @@ class _RegistroPState extends State<sRegistroP> {
                                     borderSide: BorderSide(color: Colors.black),
                                   ),
                                   prefixIcon:
-                                      Icon(Iconsax.user, color: Colors.white)),
+                                      Icon(Iconsax.clipboard_text, color: Colors.white)),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Complete el campo';
@@ -127,7 +127,7 @@ class _RegistroPState extends State<sRegistroP> {
                             ),
                             labelStyle: TextStyle(color: Colors.white),
                             prefixIcon:
-                                Icon(Iconsax.user1, color: Colors.white)),
+                                Icon(Iconsax.user, color: Colors.white)),
                         onChanged: (value) {
                           // Llama a tu función de verificación en la base de datos aquí
                           verifUser(value);
@@ -174,7 +174,7 @@ class _RegistroPState extends State<sRegistroP> {
                               borderSide: BorderSide(color: Colors.black),
                             ),
                             prefixIcon:
-                                Icon(Iconsax.activity, color: Colors.white)),
+                                Icon(Iconsax.call, color: Colors.white)),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Complete el campo';
