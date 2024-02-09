@@ -182,7 +182,7 @@ class _AddMascotaState extends State<AddMascota> {
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(color: Colors.white),
                                     ),
-                                    prefixIcon: Icon(Iconsax.activity, color: Colors.white),
+                                    prefixIcon: Icon(Iconsax.textalign_justifycenter, color: Colors.white),
                                   ),
                                   style: TextStyle(color: Colors.white),
                                   validator: (value) {
@@ -201,7 +201,7 @@ class _AddMascotaState extends State<AddMascota> {
                                       borderSide: BorderSide(color: Colors.white),
                                     ),
                                     labelStyle: TextStyle(color: Colors.white),
-                                    prefixIcon: Icon(Iconsax.code_15, color: Colors.white),
+                                    prefixIcon: Icon(Iconsax.archive_tick, color: Colors.white),
                                   ),
                                   style: TextStyle(color: Colors.white),
                                   onChanged: (value) {
@@ -306,7 +306,7 @@ class _AddMascotaState extends State<AddMascota> {
                                     hintStyle: TextStyle(color: Colors.white),
                                     labelStyle: TextStyle(color: Colors.white),
                                     prefixIcon:
-                                        Icon(Iconsax.home, color: Colors.white),
+                                        Icon(Iconsax.map_1, color: Colors.white),
                                   ),
                                   style: TextStyle(color: Colors.white),
                                   validator: (value) {

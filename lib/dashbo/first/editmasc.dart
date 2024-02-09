@@ -237,9 +237,16 @@ class _editmascState extends State<editmasc> {
                         prefixIcon: Icon(Iconsax.archive_tick, color: Colors.white),
                       ),
                       style: TextStyle(color: Colors.white),
+                      onChanged: (value) {
+                        // Llama a tu función de verificación en la base de datos aquí
+                        verifCode(value);
+                      },
                       validator: (value) {
+
                         if (value == null || value.isEmpty) {
                           return 'Complete el campo';
+                        } else if (codeExist) {
+                          return 'Ese codigo ya existe';
                         }
                         return null; // La validación pasó
                       },
