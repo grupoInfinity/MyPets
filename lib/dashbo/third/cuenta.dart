@@ -68,67 +68,75 @@ class _CuentaPState extends State<CuentaP> {
   }
 
   // Editar Campo
-  Future<void> editField(String field, BuildContext context) async {
-    TextEditingController textController = TextEditingController(text: userData[field]);
+Future<void> editField(String field, BuildContext context) async {
+  TextEditingController textController = TextEditingController(text: userData[field]);
 
-    String? newValue = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text("Editar " + field),
-        content: field == 'Clave'
-            ? TextField(
-                controller: textController,
-                obscureText: true, // Oculta el texto para la contraseña
-              )
-            : TextField(
-                controller: textController,
-              ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              String newValue = textController.text;
-              Navigator.of(context).pop(newValue); // Cierra la alerta y retorna el valor
-            },
-            child: Text('Guardar'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Cierra la alerta sin guardar
-            },
-            child: Text('Cancelar'),
-          ),
-        ],
-      ),
-    );
+  String? newValue = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text("Editar " + field),
+      content: field == 'Clave'
+          ? TextField(
+              controller: textController,
+              obscureText: true, // Oculta el texto para la contraseña
+            )
+          : TextField(
+              controller: textController,
+            ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            String newValue = textController.text;
+            Navigator.of(context).pop(newValue); // Cierra la alerta y retorna el valor
+          },
+          child: Text('Guardar'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Cierra la alerta sin guardar
+          },
+          child: Text('Cancelar'),
+        ),
+      ],
+    ),
+  );
 
-    if (newValue != null && mounted) {
-      setState(() {
-        userData[field] = newValue;
-      });
-      // Enviar los datos actualizados al servidor
-      _updateUserData();
-    }
+  if (newValue != null && mounted) {
+    setState(() {
+      userData[field] = newValue;
+    });
+    // Enviar los datos actualizados al servidor
+    _updateUserData();
   }
-
-  // Función para enviar los datos actualizados al servidor
-  // Función para enviar los datos actualizados al servidor
+}
 Future<void> _updateUserData() async {
   // Construir la URL para la actualización de datos
-  String url = 'https://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php';
-  // Crear el cuerpo de la solicitud con los datos actualizados
+  String url = 'https://ginfinity.xyz/MyPets_Admin/servicios/sec/sec_usuario.php?accion=U&usr=${widget.usr}&usorig=${widget.usr}&clave=${userData['Clave']}&nombre=${userData['Nombre']}&apellido=${userData['Apellido']}';
+
+  // Construir el cuerpo de la solicitud con los datos actualizados
   Map<String, String> body = {
     'accion': 'U',
-    'usr': userData['Usuario'] ?? '',
-    'clave': userData['Clave'] ?? '',
-    'nombre': userData['Nombre'] ?? '',
-    'apellido': userData['Apellido'] ?? '',
-    'email': userData['Email'] ?? '',
+    'usr': widget.usr, // Usar el usuario original que se proporcionó al widget
   };
+
+  // Verificar y agregar solo los datos que han sido modificados
+  if (userData.containsKey('Nombre')) {
+    body['nombre'] = userData['Nombre'] ?? '';
+  }
+  if (userData.containsKey('Apellido')) {
+    body['apellido'] = userData['Apellido'] ?? '';
+  }
+  if (userData.containsKey('Clave')) {
+    body['clave'] = userData['Clave'] ?? '';
+  }
 
   try {
     // Realizar la solicitud HTTP
     final response = await client.post(Uri.parse(url), body: body);
+
+    // Imprimir el cuerpo de la solicitud para depurar
+    print('Request Body: $body');
 
     if (response.statusCode == 200) {
       // Imprimir mensaje de éxito en la consola
@@ -143,6 +151,7 @@ Future<void> _updateUserData() async {
     // Puedes mostrar un mensaje de error al usuario aquí
   }
 }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
